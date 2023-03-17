@@ -10,13 +10,13 @@ const InputForm = (props: { title: string; id: string; type: string }) => {
         id={id}
         type={type}
         onChange={(e) => setLabel(e.target.value === "" ? true : false)}
-        className="w-full peer border-b py-1 transition-colors focus:border-b-2 focus:border-black focus:outline-none"
+        className="peer w-full border-b py-1 transition-colors focus:border-b-2 focus:border-black focus:outline-none"
       />
 
       <label
         htmlFor={id}
-        className={`absolute text-gray-500 left-0 top-1 cursor-text transition-all duration-200 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-black first-letter:capitalize ${
-          !label ? "-top-4 text-xs text-black" : null
+        className={`absolute left-0 top-1 cursor-text text-gray-500 transition-all duration-200 first-letter:capitalize peer-focus:-top-4 peer-focus:text-xs peer-focus:text-black ${
+          !label ? "-top-5 text-xs text-violet-500" : null
         }`}
       >
         {title}
