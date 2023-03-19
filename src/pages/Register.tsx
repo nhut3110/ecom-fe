@@ -31,7 +31,7 @@ const Register = () => {
           type="password"
         />
 
-        <button className="mt-8 h-10 w-full rounded-lg bg-violet-400 text-white hover:bg-violet-700">
+        <button className="mt-8 h-10 w-full rounded-lg bg-black text-white hover:bg-black">
           Create account
         </button>
 

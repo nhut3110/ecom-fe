@@ -17,10 +17,9 @@ const Login = () => {
         <InputForm title="username" id="username-login" type="text" />
         <InputForm title="password" id="password-login" type="password" />
 
-        <button className="mt-8 h-10 w-full rounded-lg bg-violet-400 text-white hover:bg-violet-700">
+        <button className="mt-8 h-10 w-full rounded-lg bg-black text-white hover:bg-black">
           Login
         </button>
-        {/* <SmallButton name="login" /> */}
 
         <p className=" mt-5 w-full text-center text-sm font-normal text-gray-400">
           Not have an account?

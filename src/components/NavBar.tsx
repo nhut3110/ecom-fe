@@ -13,22 +13,22 @@ const NavBar = () => {
   };
 
   return (
-    <div>
-      <nav className="mx-auto flex w-[90%] items-center justify-between">
+    <div className="">
+      <nav className="mx-auto mt-3 flex w-[90%] items-center justify-between">
         <div>
           <img src={FakeLogo} alt="logo" className="h-5" />
         </div>
 
         <div
-          className={`absolute left-0 duration-1000 top-${
-            openNav ? "[10%]" : "[-100%]"
-          } flex min-h-[60vh] w-full items-center justify-center px-5 backdrop-blur-sm md:static md:min-h-fit md:w-auto md:bg-white`}
+          className={`absolute left-0 duration-1000 ${
+            openNav ? "top-12" : "top-[-100%]"
+          } z-30 flex min-h-[60vh] w-full items-center justify-center px-5 backdrop-blur-sm md:static md:min-h-fit md:w-auto md:bg-white`}
         >
           <ul className="flex flex-col items-center gap-8 md:flex-row md:gap-[4vw]">
             {NavList.map((item: string, index: number) => (
               <li
                 key={index}
-                className="text-xl no-underline first-letter:capitalize hover:text-violet-400 hover:underline"
+                className="text-xl no-underline first-letter:capitalize hover:text-slate-700 hover:underline"
               >
                 <Link to={`/${item}`}>{item}</Link>
               </li>
