@@ -6,5 +6,7 @@ import WomenSuit from "./women-suit.png"
 import WomenShirt from "./women-shirt.png"
 import BlueManShirt from "./blue-man-shirt.png"
 import SilverRings from "./silver-ring.png"
+import Headphone from "./headphone.png"
+import Watch from "./watch.png"
 
-export {FakeLogo, ShoppingArt, MenShirt, Ring, WomenSuit, BlueManShirt, WomenShirt, SilverRings}
+export {FakeLogo, Watch, ShoppingArt, MenShirt, Ring, WomenSuit, Headphone, BlueManShirt, WomenShirt, SilverRings}

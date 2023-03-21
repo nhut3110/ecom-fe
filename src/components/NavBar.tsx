@@ -16,7 +16,9 @@ const NavBar = () => {
     <div className="">
       <nav className="mx-auto mt-3 flex w-[90%] items-center justify-between">
         <div>
-          <img src={FakeLogo} alt="logo" className="h-5" />
+          <Link to="/">
+            <img src={FakeLogo} alt="logo" className="h-5" />
+          </Link>
         </div>
 
         <div

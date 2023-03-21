@@ -14,22 +14,38 @@ export interface ProductDetail {
         rate:number
         count:number
     }
+    quantity?:number
 }
+
+export const SortCategoryOptions:string[] = [
+"Electronics",
+"Jewelery",
+"Men's clothing",
+"Women's clothing"
+]
+
+export const SortNameOptions:string[] = [
+    "From A to Z",
+    "From Z to A",
+]
+
+export const SortPriceOptions: string[] = ["From Low to High", "From High to Low"]
 
 export const testProduct:ProductDetail = {
-"id": 9,
-"title": "WD 2TB Elements Portable External Hard Drive - USB 3.0 ",
-"price": 64.99,
-"description": "USB 3.0 and USB 2.0 Compatibility Fast data transfers Improve PC Performance High Capacity; Compatibility Formatted NTFS for Windows 10, Windows 8.1, Windows 7; Reformatting may be required for other operating systems; Compatibility may vary depending on user’s hardware configuration and operating system",
-"category": "electronics",
-"image": "https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg",
-"rating": {
-"rate": 3.3,
-"count": 203
-}
+    "id": 9,
+    "title": "WD 2TB Elements Portable External Hard Drive - USB 3.0 ",
+    "price": 64.99,
+    "description": "USB 3.0 and USB 2.0 Compatibility Fast data transfers Improve PC Performance High Capacity; Compatibility Formatted NTFS for Windows 10, Windows 8.1, Windows 7; Reformatting may be required for other operating systems; Compatibility may vary depending on user’s hardware configuration and operating system",
+    "category": "electronics",
+    "image": "https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_.jpg",
+    "rating": {
+    "rate": 3.3,
+    "count": 203
+    },
+    "quantity": 1
 }
 
-export const NavList:string[] = ["products", "favorites", "cart", "order"];
+export const NavList:string[] = ["product", "favorites", "cart", "order"];
 
 export const CarouselImages:Array<CarouselImage> = [
     {

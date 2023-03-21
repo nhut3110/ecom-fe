@@ -1,14 +1,18 @@
 import React from "react";
 
-const SmallButton = (props: { name: string; onClick?: void }) => {
-  const { name, onClick } = props;
+const SmallButton = (props: {
+  name?: string;
+  onClick?: () => void;
+  children?: JSX.Element;
+}) => {
+  const { name, onClick, children } = props;
   return (
     <div>
       <button
-        onClick={() => onClick}
+        onClick={onClick}
         className="m-1 rounded-full bg-slate-700 py-2 px-5 text-[11px] text-white first-letter:capitalize hover:bg-black sm:text-sm "
       >
-        {name}
+        {name ? name : children}
       </button>
     </div>
   );

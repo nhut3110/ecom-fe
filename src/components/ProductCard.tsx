@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { ProductDetail } from "../constants/data";
 import HeartButton from "./HeartButton";
 import RatingStar from "./RatingStar";
@@ -13,11 +14,14 @@ const ProductCard = (props: { product: ProductDetail }) => {
   return (
     <div className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[1px] border-solid border-black bg-white p-2">
       <div className="relative flex aspect-square w-60 items-center justify-center ">
-        <img
-          src={product.image}
-          alt={product.title}
-          className=" h-36 object-cover"
-        />
+        <Link to="/product/test">
+          <img
+            src={product.image}
+            alt={product.title}
+            className=" h-36 object-cover"
+          />
+        </Link>
+
         <HeartButton
           love={love}
           setLove={setLove}
@@ -27,7 +31,10 @@ const ProductCard = (props: { product: ProductDetail }) => {
 
       <div className="flex w-full justify-between px-2">
         <div className="flex w-[75%] flex-col ">
-          <p className="truncate text-lg font-semibold">{product.title}</p>
+          <Link to="/product/test">
+            <p className="truncate text-lg font-semibold">{product.title}</p>
+          </Link>
+
           <p className="truncate text-sm text-gray-500">
             {product.description}
           </p>
