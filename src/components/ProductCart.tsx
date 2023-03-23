@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { TrashIcon } from "../assets/icons/icons";
-import { ProductDetail } from "../constants/data";
+import { TrashIcon } from "../assets/icons";
+import { ProductDetails } from "../constants/data";
 import QuantityButton from "./QuantityButton";
 import SmallButton from "./SmallButton";
 
-const ProductCart = (props: { product: ProductDetail }) => {
+const ProductCart = (props: {
+  product: ProductDetails;
+}): React.ReactElement => {
   const { product } = props;
   const [quantity, setQuantity] = useState<number>(product.quantity || 1);
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import InputForm from "../components/InputForm";
-import { ShoppingArt } from "../assets/images/images";
-import SmallButton from "../components/SmallButton";
+import { ShoppingArt } from "../assets/images";
 
 const Login = () => {
   return (

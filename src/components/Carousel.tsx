@@ -1,23 +1,24 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { CarouselImages } from "../constants/data";
+import { useEffect, useState } from "react";
+import { carouselImages } from "../constants/data";
 
-const Carousel = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+const Carousel = (): React.ReactElement => {
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const CHANGE_SLIDE_TIME = 5000; // time in milliseconds to change the slide
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide(
-        (currentSlide) => (currentSlide + 1) % CarouselImages.length
+        (currentSlide) => (currentSlide + 1) % carouselImages.length
       );
-    }, 5000);
+    }, CHANGE_SLIDE_TIME);
     return () => clearInterval(interval);
-  }, [CarouselImages.length]);
+  }, [carouselImages.length]);
 
   return (
     <div className="relative m-3 h-72 ">
-      {CarouselImages.map((image, index) => (
+      {carouselImages.map((image, index) => (
         <div
-          key={image.url}
+          key={index}
           className={`absolute top-0 left-0 h-full w-full transition-opacity duration-1000 ${
             index === currentSlide ? "opacity-100" : "hidden opacity-0"
           }`}
@@ -32,7 +33,7 @@ const Carousel = () => {
 
       <div className="absolute -bottom-4 w-full">
         <div className="flex items-center justify-center gap-2">
-          {CarouselImages.map((_, index) => (
+          {carouselImages.map((_, index) => (
             <div
               className={`h-2 w-2 rounded-full bg-black
               transition-all ${

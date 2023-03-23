@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ProductDetail } from "../constants/data";
+import { ProductDetails } from "../constants/data";
+import { FavoriteContext } from "../context/FavoriteContext";
 import HeartButton from "./HeartButton";
 import RatingStar from "./RatingStar";
 import SmallButton from "./SmallButton";
 
-const ProductCard = (props: { product: ProductDetail }) => {
+const ProductCard = (props: {
+  product: ProductDetails;
+}): React.ReactElement => {
   const { product } = props;
-  const [love, setLove] = useState(false);
+  const { state, addFavorite, removeFavorite } = useContext(FavoriteContext);
+  const [love, setLove] = useState(state.favoriteList.includes(product));
 
   const [integerPart, decimalPart] = product.price.toString().split(".");
-
+  const handleFavorites = () => {
+    love ? removeFavorite(product) : addFavorite(product);
+    setLove(!love);
+  };
   return (
     <div className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[1px] border-solid border-black bg-white p-2">
       <div className="relative flex aspect-square w-60 items-center justify-center ">
@@ -24,8 +31,8 @@ const ProductCard = (props: { product: ProductDetail }) => {
 
         <HeartButton
           love={love}
-          setLove={setLove}
           className="absolute top-2 -right-2"
+          onClick={handleFavorites}
         />
       </div>
 

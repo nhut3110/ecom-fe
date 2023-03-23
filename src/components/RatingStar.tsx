@@ -1,6 +1,6 @@
 import React from "react";
 
-const RatingStar = (props: { rating: number }) => {
+const RatingStar = (props: { rating: number }): React.ReactElement => {
   const { rating } = props;
   const totalStars = 5;
   const solidStars = Math.round(rating);
