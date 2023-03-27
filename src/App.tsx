@@ -1,14 +1,28 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Home from "./pages/Home";
+import Product from "./pages/Product";
+import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
+import Favorite from "./pages/Favorite";
+import { FavoriteProvider } from "./context/FavoriteContext";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="App">
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-    </div>
+    <FavoriteProvider favoriteList={[]}>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="/product/test" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/favorites" element={<Favorite />} />
+        </Routes>
+      </Router>
+    </FavoriteProvider>
   );
 }
 
