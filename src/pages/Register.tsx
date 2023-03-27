@@ -1,6 +1,6 @@
 import React from "react";
 import InputForm from "../components/InputForm";
-import { ShoppingArt } from "../assets/images/images";
+import { ShoppingArt } from "../assets/images";
 
 const Register = () => {
   return (

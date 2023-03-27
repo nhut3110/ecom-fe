@@ -4,7 +4,7 @@ const SmallButton = (props: {
   name?: string;
   onClick?: () => void;
   children?: JSX.Element;
-}) => {
+}): React.ReactElement => {
   const { name, onClick, children } = props;
   return (
     <div>

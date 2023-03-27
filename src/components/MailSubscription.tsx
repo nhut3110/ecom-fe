@@ -1,7 +1,7 @@
 import React from "react";
 import InputForm from "./InputForm";
 
-const MailSubscription = () => {
+const MailSubscription = (): React.ReactElement => {
   return (
     <div className="my-4  flex h-auto w-full flex-col items-center justify-around bg-gray-200 py-3 md:h-60 md:flex-row">
       <div className="flex w-2/3 items-center gap-3 md:w-1/4 md:flex-col md:items-start">

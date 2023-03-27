@@ -4,7 +4,7 @@ type QuantityProps = {
   quantity: number;
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
 };
-const QuantityButton = (props: QuantityProps) => {
+const QuantityButton = (props: QuantityProps): React.ReactElement => {
   const { quantity, setQuantity } = props;
   const handleIncrement = () => {
     setQuantity(quantity + 1);

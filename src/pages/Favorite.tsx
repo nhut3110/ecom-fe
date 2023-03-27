@@ -1,5 +1,4 @@
-import React from "react";
-import Carousel from "../components/Carousel";
+import React, { useContext } from "react";
 import Layout from "../layout/Layout";
 import ProductCard from "../components/ProductCard";
 import SelectMenu from "../components/SelectMenu";
@@ -9,13 +8,13 @@ import {
   sortPriceOptions,
   testProduct,
 } from "../constants/data";
+import { FavoriteContext } from "../context/FavoriteContext";
 
-const Product = () => {
+const Favorite = () => {
+  const { state } = useContext(FavoriteContext);
   return (
-    <div className="h-screen ">
+    <div>
       <Layout>
-        <Carousel />
-
         {/* Sort Option List */}
         <div className="md:flex justify-end m-10 gap-5 grid grid-cols-2">
           <SelectMenu options={sortPriceOptions} defaultOption="Price" />
@@ -23,9 +22,9 @@ const Product = () => {
           <SelectMenu options={sortCategoryOptions} defaultOption="Category" />
         </div>
 
-        {/* Product List */}
+        {/* Favorite List  */}
         <div className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
-          {testProduct.map((product, index) => (
+          {state.favoriteList.map((product, index) => (
             <ProductCard product={product} key={index} />
           ))}
         </div>
@@ -34,4 +33,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default Favorite;

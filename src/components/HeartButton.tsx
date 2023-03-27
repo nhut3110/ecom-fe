@@ -2,23 +2,19 @@ import React, { useState } from "react";
 
 type HeartButtonProps = {
   love: boolean;
-  setLove: React.Dispatch<React.SetStateAction<boolean>>;
   className?: string;
+  onClick?: () => void;
 };
 
-const HeartButton = (props: HeartButtonProps) => {
-  const { love, setLove, className } = props;
-
-  const handleLove = () => {
-    setLove(!love);
-  };
+const HeartButton = (props: HeartButtonProps): React.ReactElement => {
+  const { love, className, onClick } = props;
 
   return (
     <button
       className={
         "rounded-full bg-slate-100 p-1 transition-all duration-500 " + className
       }
-      onClick={handleLove}
+      onClick={onClick}
     >
       {love ? (
         <svg

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { FakeLogo } from "../assets/images/images";
-import { NavList } from "../constants/data";
+import { FakeLogo } from "../assets/images";
+import { navList } from "../constants/data";
 import SmallButton from "./SmallButton";
 import { Link } from "react-router-dom";
-import { HamburgerIcon, CloseIcon } from "../assets/icons/icons";
+import { HamburgerIcon, CloseIcon } from "../assets/icons";
 
-const NavBar = () => {
+const NavBar = (): React.ReactElement => {
   const [openNav, setOpenNav] = useState(false);
 
   const toggleNav = () => {
@@ -27,7 +27,7 @@ const NavBar = () => {
           } z-30 flex min-h-[60vh] w-full items-center justify-center px-5 backdrop-blur-sm md:static md:min-h-fit md:w-auto md:bg-white`}
         >
           <ul className="flex flex-col items-center gap-8 md:flex-row md:gap-[4vw]">
-            {NavList.map((item: string, index: number) => (
+            {navList.map((item: string, index: number) => (
               <li
                 key={index}
                 className="text-xl no-underline first-letter:capitalize hover:text-slate-700 hover:underline"

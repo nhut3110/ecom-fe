@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-const InputForm = (props: { title: string; id: string; type: string }) => {
+const InputForm = (props: {
+  title: string;
+  id: string;
+  type: string;
+}): React.ReactElement => {
   const [label, setLabel] = useState(true);
   const { title, id, type } = props;
 
@@ -16,9 +20,9 @@ const InputForm = (props: { title: string; id: string; type: string }) => {
       <label
         htmlFor={id}
         className={`absolute left-0 ${
-          !label ? "-top-4" : "top-1"
+          label ? "top-1" : "-top-4"
         } cursor-text text-gray-500 transition-all duration-200 first-letter:capitalize peer-focus:-top-4 peer-focus:text-xs peer-focus:text-black ${
-          !label ? "text-black-500 text-xs" : null
+          label ? null : "text-black-500 text-xs"
         }`}
       >
         {title}
