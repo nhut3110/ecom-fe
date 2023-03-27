@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import InputForm from "../components/InputForm";
 import { ShoppingArt } from "../assets/images";
 
-const Login = () => {
+const Login = (): React.ReactElement => {
   return (
     <div className="flex h-full w-full">
       <div className="flex h-screen w-full flex-col items-start justify-center  px-10 lg:w-1/3">

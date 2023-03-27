@@ -8,8 +8,9 @@ type ChildrenType = {
 
 const Layout = ({ children }: ChildrenType): ReactElement => {
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <NavBar />
+      {/* children component of layout here */}
       <main>{children}</main>
       <MailSubscription />
       <Footer />

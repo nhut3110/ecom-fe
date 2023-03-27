@@ -1,28 +1,30 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
-import Product from "./pages/Product";
-import ProductDetail from "./pages/ProductDetail";
-import Cart from "./pages/Cart";
-import Favorite from "./pages/Favorite";
-import { FavoriteProvider } from "./context/FavoriteContext";
+import Contexts from "./context/Contexts";
+import { publicRoutes } from "./constants/data";
 
 function App() {
   return (
-    <FavoriteProvider favoriteList={[]}>
+    <Contexts>
       <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/product" element={<Product />} />
-          <Route path="/product/test" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/favorites" element={<Favorite />} />
+          {publicRoutes.map((route, index) => (
+            <Route
+              key={index}
+              path={route.path}
+              element={
+                route.layout ? (
+                  <route.layout>
+                    <route.component />
+                  </route.layout>
+                ) : (
+                  <route.component />
+                )
+              }
+            />
+          ))}
         </Routes>
       </Router>
-    </FavoriteProvider>
+    </Contexts>
   );
 }
 

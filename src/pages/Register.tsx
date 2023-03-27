@@ -2,7 +2,7 @@ import React from "react";
 import InputForm from "../components/InputForm";
 import { ShoppingArt } from "../assets/images";
 
-const Register = () => {
+const Register = (): React.ReactElement => {
   return (
     <div className="flex h-full w-full">
       <div className="hidden h-screen lg:flex lg:w-2/3 lg:items-center lg:justify-center">
