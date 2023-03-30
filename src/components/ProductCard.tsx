@@ -1,37 +1,61 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ProductDetails } from "../constants/data";
-import { CartContext } from "../context/CartContext";
 import { FavoriteContext } from "../context/FavoriteContext";
 import HeartButton from "./HeartButton";
 import RatingStar from "./RatingStar";
 import SmallButton from "./SmallButton";
+import { ProductDetails } from "../constants/data";
+import { CartContext } from "../context/CartContext";
+import { getLocalStorageValue } from "../utils/LocalStorage";
+
+const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
 const ProductCard = (props: {
   product: ProductDetails;
 }): React.ReactElement => {
   const { product } = props;
-  const { favoriteState, addFavorite, removeFavorite } =
+
+  const { addFavorite, removeFavorite, storeFavorite } =
     useContext(FavoriteContext);
-  const { cartState, addToCart, calculateCartValue } = useContext(CartContext);
-  const [love, setLove] = useState(
-    favoriteState.favoriteList.includes(product)
-  );
-  const [integerPart, decimalPart] = product.price.toString().split(".");
-  const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
-  const handleFavorites = () => {
+  const isFavorite = useMemo(() => {
+    const { favoriteList } = getLocalStorageValue({ key: "favorites" });
+    if (favoriteList === undefined) {
+      return false;
+    }
+
+    const checkExisting = favoriteList.find((item: ProductDetails) => {
+      if (item.id == product.id) {
+        return true;
+      }
+      return false;
+    });
+
+    return checkExisting;
+  }, []);
+
+  const { addToCart, calculateCartValue } = useContext(CartContext);
+  const [love, setLove] = useState(isFavorite);
+
+  const handleFavorites = useCallback(() => {
     love ? removeFavorite(product) : addFavorite(product);
+    storeFavorite();
     setLove(!love);
-  };
+  }, [love]);
 
-  const handleAddToCart = () => {
+  const [integerPart, decimalPart] = useMemo(() => {
+    const [integer, decimal] = product.price.toString().split(".");
+
+    return [integer, decimal];
+  }, [product.price]);
+
+  const handleAddToCart = useCallback(() => {
     addToCart(DEFAULT_QUANTITY, product);
     calculateCartValue(DEFAULT_QUANTITY, product);
-  };
+  }, [product]);
 
   return (
-    <div className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[1px] border-solid border-black bg-white p-2">
+    <div className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[0.0625rem] border-solid border-black bg-white p-2 shadow-xl">
       <div className="relative flex aspect-square w-60 items-center justify-center ">
         <Link to="/product/test">
           <img

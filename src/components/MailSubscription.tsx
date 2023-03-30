@@ -8,7 +8,7 @@ const MailSubscription = (): React.ReactElement => {
         <p className="text-xl font-semibold first-letter:text-2xl md:text-4xl md:first-letter:text-5xl">
           Subscribe Mail List
         </p>
-        <p className="text-[9px] font-normal text-gray-500 md:text-sm">
+        <p className="text-[0.5625rem] font-normal text-gray-500 md:text-sm">
           Sign up to be the first to hear about special deals, wonderful offers
           and upcoming products.
         </p>
@@ -21,7 +21,7 @@ const MailSubscription = (): React.ReactElement => {
           id="email-subscription-input"
         />
         <button
-          className="md:text-md mx-2 w-auto rounded bg-transparent py-2 px-4 text-xs font-bold text-black hover:rounded-lg hover:border-[1px] hover:border-solid hover:border-black"
+          className="md:text-md mx-2 w-auto rounded bg-transparent py-2 px-4 text-xs font-bold text-black hover:rounded-lg hover:border-[0.0625rem] hover:border-solid hover:border-black"
           type="submit"
         >
           Send

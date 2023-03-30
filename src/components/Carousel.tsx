@@ -11,6 +11,7 @@ const Carousel = (): React.ReactElement => {
         (currentSlide) => (currentSlide + 1) % carouselImages.length
       );
     }, CHANGE_SLIDE_TIME);
+
     return () => clearInterval(interval);
   }, [carouselImages.length]);
 
@@ -37,7 +38,7 @@ const Carousel = (): React.ReactElement => {
             <div
               className={`h-2 w-2 rounded-full bg-black
               transition-all ${
-                index === currentSlide ? "p-[6px]" : "bg-opacity-50"
+                index === currentSlide ? "p-[0.375rem]" : "bg-opacity-50"
               }`}
               onClick={() => setCurrentSlide(index)}
               key={index}
