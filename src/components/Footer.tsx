@@ -14,7 +14,7 @@ const Footer = (): React.ReactElement => {
         <div className=" flex w-44 flex-col items-center justify-center gap-1 md:items-start">
           <img src={FakeLogo} alt="logo" className="mb-3 h-5" />
           {footerContact.map((info: string, index) => (
-            <p className="text-[10px] text-slate-300" key={index}>
+            <p className="text-[0.625rem] text-slate-300" key={index}>
               {info}
             </p>
           ))}
@@ -30,7 +30,7 @@ const Footer = (): React.ReactElement => {
               <Link
                 key={index}
                 to={`/${data}`}
-                className="text-sm text-slate-300 hover:text-white hover:underline first-letter:capitalize"
+                className="text-sm text-slate-300 first-letter:capitalize hover:text-white hover:underline"
               >
                 {data}
               </Link>

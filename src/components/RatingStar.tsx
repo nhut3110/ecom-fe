@@ -33,6 +33,7 @@ const RatingStar = (props: { rating: number }): React.ReactElement => {
 
     return <span key={i}>{star}</span>;
   });
+
   return <div className="flex ">{stars}</div>;
 };
 

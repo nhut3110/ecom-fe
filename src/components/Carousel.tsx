@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { carouselImages } from "../constants/data";
+const CHANGE_SLIDE_TIME = 5000; // time in milliseconds to change the slide
 
 const Carousel = (): React.ReactElement => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
-  const CHANGE_SLIDE_TIME = 5000; // time in milliseconds to change the slide
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -11,6 +11,7 @@ const Carousel = (): React.ReactElement => {
         (currentSlide) => (currentSlide + 1) % carouselImages.length
       );
     }, CHANGE_SLIDE_TIME);
+
     return () => clearInterval(interval);
   }, [carouselImages.length]);
 
@@ -37,7 +38,7 @@ const Carousel = (): React.ReactElement => {
             <div
               className={`h-2 w-2 rounded-full bg-black
               transition-all ${
-                index === currentSlide ? "p-[6px]" : "bg-opacity-50"
+                index === currentSlide ? "p-1.5" : "bg-opacity-50"
               }`}
               onClick={() => setCurrentSlide(index)}
               key={index}

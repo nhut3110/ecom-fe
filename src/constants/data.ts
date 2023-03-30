@@ -1,8 +1,16 @@
+import { CartStateType } from "../context/CartContext";
+import {
+  AddressType,
+  InformationType,
+  PaymentType,
+} from "../context/FormContext";
 import Layout from "../layout/Layout";
 import Cart from "../pages/Cart";
+import Checkout from "../pages/Checkout";
 import Favorite from "../pages/Favorite";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
+import Order from "../pages/Order";
 import Product from "../pages/Product";
 import ProductDetail from "../pages/ProductDetail";
 import Register from "../pages/Register";
@@ -15,13 +23,26 @@ type CarouselImageType = {
 type Routes = {
   path: string;
   component: React.ElementType;
-  layout: React.ElementType | null;
+  layout?: React.ElementType;
+};
+
+type SortOptionType = {
+  name: string;
+  options: string[];
 };
 
 export type FooterContentType = {
   name: string;
   content: string[];
 };
+
+export type OrderType = CartStateType &
+  InformationType &
+  AddressType &
+  PaymentType & {
+    uuid: string;
+    date: number;
+  };
 
 export interface ProductDetails {
   id: number;
@@ -36,18 +57,19 @@ export interface ProductDetails {
   };
 }
 
-export const sortCategoryOptions: string[] = [
-  "Electronics",
-  "Jewelery",
-  "Men's clothing",
-  "Women's clothing",
-];
-
-export const sortNameOptions: string[] = ["From A to Z", "From Z to A"];
-
-export const sortPriceOptions: string[] = [
-  "From Low to High",
-  "From High to Low",
+export const sortOptions: SortOptionType[] = [
+  {
+    name: "Price",
+    options: ["From Low to High", "From High to Low"],
+  },
+  {
+    name: "Name",
+    options: ["From A to Z", "From Z to A"],
+  },
+  {
+    name: "Category",
+    options: ["Electronics", "Jewelery", "Men's clothing", "Women's clothing"],
+  },
 ];
 
 export const testProduct: ProductDetails[] = [
@@ -223,12 +245,10 @@ export const publicRoutes: Routes[] = [
   {
     path: "/login",
     component: Login,
-    layout: null,
   },
   {
     path: "/register",
     component: Register,
-    layout: null,
   },
   {
     path: "/product",
@@ -248,6 +268,16 @@ export const publicRoutes: Routes[] = [
   {
     path: "/favorites",
     component: Favorite,
+    layout: Layout,
+  },
+  {
+    path: "/checkout",
+    component: Checkout,
+    layout: Layout,
+  },
+  {
+    path: "/order",
+    component: Order,
     layout: Layout,
   },
 ];

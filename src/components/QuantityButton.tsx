@@ -2,26 +2,28 @@ import React from "react";
 
 type QuantityProps = {
   quantity: number;
-  increment: () => void;
-  decrement: () => void;
+  onIncrement: () => void;
+  onDecrement: () => void;
 };
-const QuantityButton = (props: QuantityProps): React.ReactElement => {
-  const { quantity, increment, decrement } = props;
-
+const QuantityButton = ({
+  quantity,
+  onIncrement,
+  onDecrement,
+}: QuantityProps): React.ReactElement => {
   return (
-    <div className="flex items-center justify-around rounded-full p-2 gap-3 max-w-[100px]">
+    <div className="flex max-w-[6.25rem] items-center justify-around gap-3 rounded-full p-2">
       <button
-        onClick={decrement}
-        className="text-2xl font-bold text-center select-none"
+        onClick={onDecrement}
+        className="select-none text-center text-2xl font-bold"
       >
         -
       </button>
-      <p className="w-6 h-6 text-xs md:text-lg font-medium flex justify-center items-center select-none md:w-8 md:h-8 rounded-full bg-slate-200">
+      <p className="flex h-6 w-6 select-none items-center justify-center rounded-full bg-slate-200 text-xs font-medium md:h-8 md:w-8 md:text-lg">
         {quantity}
       </p>
       <button
-        onClick={increment}
-        className="text-2xl font-bold text-center select-none"
+        onClick={onIncrement}
+        className="select-none text-center text-2xl font-bold"
       >
         +
       </button>

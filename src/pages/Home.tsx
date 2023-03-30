@@ -1,22 +1,19 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import SmallButton from "../components/SmallButton";
-import Layout from "../layout/Layout";
 import { FourStarIcon, MoneyIcon, ShirtIcon, TruckIcon } from "../assets/icons";
 import {
   Headphone,
   MenShirt,
-  Ring,
   SilverRings,
   Watch,
-  WomenShirt,
   WomenSuit,
 } from "../assets/images";
 
-const Home = (): ReactElement => {
+const Home = (): React.ReactElement => {
   return (
     <div>
       {/* Header  */}
-      <div className="my-2 flex w-full flex-col items-center justify-around bg-gray-200 p-10 md:h-[500px] md:flex-row md:p-0">
+      <div className="my-2 flex w-full flex-col items-center justify-around bg-gray-200 p-10 md:h-[31.25rem] md:flex-row md:p-0">
         <div className="flex h-[90%] w-[90%] flex-col justify-center gap-5 md:w-1/3">
           <p className="text-3xl font-bold lg:text-6xl">
             Choose Our Top Picks Products
@@ -42,7 +39,7 @@ const Home = (): ReactElement => {
           </div>
         </div>
 
-        <div className="relative hidden aspect-square md:block md:w-1/3 md:max-w-[450px]">
+        <div className="relative hidden aspect-square md:block md:w-1/3 md:max-w-[28.125rem]">
           <div className="absolute aspect-square w-3/4 rounded-full bg-gray-300"></div>
           <img
             src={MenShirt}
@@ -64,7 +61,7 @@ const Home = (): ReactElement => {
 
       {/* Core Value */}
       <div className="flex w-full flex-col items-center justify-center py-6 md:flex-row md:justify-around lg:py-16">
-        <div className="relative w-3/4 p-7 md:h-[200px] md:w-1/3 md:p-8 lg:w-1/4">
+        <div className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
           <div className="absolute top-5 left-5 -z-10 h-2/5 w-1/2 rounded-lg bg-gray-100"></div>
           <img src={TruckIcon} alt="truck" className="w-10" />
           <p className="text-lg font-semibold">Free Worldwide Shipping </p>
@@ -74,7 +71,7 @@ const Home = (): ReactElement => {
           </p>
         </div>
 
-        <div className="relative w-3/4 p-7 md:h-[200px] md:w-1/3 md:p-8 lg:w-1/4">
+        <div className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
           <div className="absolute top-5 left-5 -z-10 h-2/5 w-1/2 rounded-lg bg-gray-100"></div>
           <img src={ShirtIcon} alt="shirt" className="w-10" />
           <p className="text-lg font-semibold">Best Quality Products </p>
@@ -84,7 +81,7 @@ const Home = (): ReactElement => {
           </p>
         </div>
 
-        <div className="relative w-3/4 p-7 md:h-[200px] md:w-1/3 md:p-8 lg:w-1/4">
+        <div className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
           <div className="absolute top-5 left-5 -z-10 h-2/5 w-1/2 rounded-lg bg-gray-100"></div>
           <img src={MoneyIcon} alt="money" className="w-10" />
           <p className="text-lg font-semibold">Super Affordable Price </p>
@@ -101,30 +98,30 @@ const Home = (): ReactElement => {
           <div className="flex h-40 w-3/4 items-center justify-center justify-items-center rounded-lg bg-gray-200">
             <div className="ml-5">
               <p className="text-xl text-gray-400">#Jewelry</p>
-              <p className="lg:text-xl font-bold">
+              <p className="font-bold lg:text-xl">
                 Discover Our Jewelry Collection
               </p>
             </div>
             <img
               src={SilverRings}
               alt="ring"
-              className="w-1/3 object-contain mr-1"
+              className="mr-1 w-1/3 object-contain"
             />
           </div>
         </div>
 
-        <div className="md:row-span-2 flex justify-start h-40 md:h-auto">
-          <div className=" relative flex w-3/4 items-center md:items-start  justify-items-center rounded-lg bg-gray-200">
+        <div className="flex h-40 justify-start md:row-span-2 md:h-auto">
+          <div className=" relative flex w-3/4 items-center justify-items-center  rounded-lg bg-gray-200 md:items-start">
             <div className="ml-5 md:mt-10 md:ml-10">
               <p className="text-xl text-gray-400">#Clothing</p>
-              <p className="lg:text-xl md:w-1/2 font-bold">
+              <p className="font-bold md:w-1/2 lg:text-xl">
                 Express Your Life Through Clothes
               </p>
             </div>
             <img
               src={WomenSuit}
               alt="ring"
-              className="w-2/5 object-contain md:absolute bottom-10 right-10 mr-1 max-h-[80%]"
+              className="bottom-10 right-10 mr-1 max-h-[80%] w-2/5 object-contain md:absolute"
             />
           </div>
         </div>
@@ -133,30 +130,30 @@ const Home = (): ReactElement => {
           <div className="flex h-40 w-3/4 items-center justify-center justify-items-center rounded-lg bg-gray-200">
             <div className="ml-5">
               <p className="text-xl text-gray-400">#Electronic</p>
-              <p className="lg:text-xl font-bold">
+              <p className="font-bold lg:text-xl">
                 Make Your Life More Comfortable
               </p>
             </div>
             <img
               src={Headphone}
               alt="ring"
-              className="w-1/4 object-contain mr-1sss"
+              className="mr-1sss w-1/4 object-contain"
             />
           </div>
         </div>
       </div>
 
       {/* Store Description */}
-      <div className="flex w-full flex-col md:flex-row md:h-80 my-10 justify-center items-center gap-10 md:gap-32">
+      <div className="my-10 flex w-full flex-col items-center justify-center gap-10 md:h-80 md:flex-row md:gap-32">
         <div className="relative ">
-          <div className="absolute aspect-square w-full rounded-full bg-gray-200 -z-10 -bottom-10 -left-10"></div>
-          <img src={Watch} alt="" className="w-[200px]" />
+          <div className="absolute -bottom-10 -left-10 -z-10 aspect-square w-full rounded-full bg-gray-200"></div>
+          <img src={Watch} alt="" className="w-[12.5rem]" />
         </div>
         <div className="w-4/5 md:w-1/3">
-          <p className="text-xl md:text-xl lg:text-3xl font-bold my-3">
+          <p className="my-3 text-xl font-bold md:text-xl lg:text-3xl">
             Experienced in making your life more modern and comfortable
           </p>
-          <p className="text-xs md:text-sm text-gray-400">
+          <p className="text-xs text-gray-400 md:text-sm">
             We have helped thousands of customers by making their lives more
             modern and comfortable, don't let yourself have missed any quality
             products from us
@@ -165,15 +162,15 @@ const Home = (): ReactElement => {
       </div>
 
       {/* Quote */}
-      <div className="flex flex-col justify-center items-center mb-10">
-        <div className="flex flex-col justify-center items-center w-4/5 bg-gray-200 p-5 md:p-10 gap-3 rounded-md">
-          <p className="text-4xl relative top-2">"</p>
-          <p className="text-md md:text-xl w-3/4 text-gray-500 text-center">
+      <div className="mb-10 flex flex-col items-center justify-center">
+        <div className="flex w-4/5 flex-col items-center justify-center gap-3 rounded-md bg-gray-200 p-5 md:p-10">
+          <p className="relative top-2 text-4xl">"</p>
+          <p className="text-md w-3/4 text-center text-gray-500 md:text-xl">
             Their products are Amazing! This is the best place to buy any
             products with super fantastic quality and design. With super many
             benefits, you must try it.
           </p>
-          <p className="text-lg font-bold mt-2">Vo Minh Nhut</p>
+          <p className="mt-2 text-lg font-bold">Vo Minh Nhut</p>
         </div>
       </div>
     </div>
