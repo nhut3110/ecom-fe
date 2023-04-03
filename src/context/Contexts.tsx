@@ -19,7 +19,7 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
 
   const orderList = getLocalStorageValue({ key: "orders" });
   const [orders, setOrders] = useState<OrderType[]>(
-    orderList === undefined ? [] : orderList
+    Object.keys(orderList).length === 0 ? [] : orderList
   );
 
   return (
