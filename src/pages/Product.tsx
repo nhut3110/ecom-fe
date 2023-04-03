@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Carousel from "../components/Carousel";
 import ProductCard from "../components/ProductCard";
-import { testProduct } from "../constants/data";
+import { ProductDetails, testProduct } from "../constants/data";
 import SelectSortMenu from "../utils/SelectSortMenu";
+import { FetchProducts } from "../services/api";
 
 const Product = (): React.ReactElement => {
+  const { products, isLoading } = FetchProducts();
+
   return (
     <div className=" ">
       <Carousel />
@@ -16,9 +19,11 @@ const Product = (): React.ReactElement => {
 
       {/* Product List */}
       <div className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
-        {testProduct.map((product, index) => (
-          <ProductCard product={product} key={index} />
-        ))}
+        {isLoading
+          ? "loading..."
+          : products.map((product: ProductDetails) => (
+              <ProductCard product={product} key={product.id} />
+            ))}
       </div>
     </div>
   );

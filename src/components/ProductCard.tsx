@@ -65,7 +65,7 @@ const ProductCard = (props: {
       {renderNotification()}
 
       <div className="relative flex aspect-square w-60 items-center justify-center ">
-        <Link to="/product/test">
+        <Link to={`/product/${product.id}`}>
           <img
             src={product.image}
             alt={product.title}

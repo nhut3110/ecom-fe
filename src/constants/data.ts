@@ -256,7 +256,7 @@ export const publicRoutes: Routes[] = [
     layout: Layout,
   },
   {
-    path: "/product/test",
+    path: "/product/:productId",
     component: ProductDetail,
     layout: Layout,
   },
