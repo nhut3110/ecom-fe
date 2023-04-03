@@ -1,19 +1,16 @@
 import React, { useCallback, useContext, useMemo, useState } from "react";
+import { useNavigatePage } from "../hooks/useNavigatePage";
 import Modal from "../components/Modal";
-import Notification from "../components/Notification";
 import OrderSummary from "../components/OrderSummary";
 import SmallButton from "../components/SmallButton";
 import { CartContext } from "../context/CartContext";
-import { useNavigatePage } from "../hooks/useNavigatePage";
-import { useNotification } from "../hooks/useNotification";
 import { renderCartList } from "../utils/RenderCartList";
+import { NotificationContext } from "../context/NotificationContext";
 
 const Cart = (): React.ReactElement => {
   const { cartState, removeAllFromCart } = useContext(CartContext);
+  const { addNotification } = useContext(NotificationContext);
   const [showModal, setShowModal] = useState<boolean>(false);
-
-  const { renderNotification, handleOpenNotification, setContent, setIsError } =
-    useNotification();
 
   const { redirect } = useNavigatePage();
 
@@ -24,9 +21,12 @@ const Cart = (): React.ReactElement => {
   const handleCheckout = () => {
     if (cartState.cartValue) redirect("/checkout");
     else {
-      setContent("Can't checkout with an empty cart");
-      setIsError(true);
-      handleOpenNotification();
+      addNotification({
+        id: crypto.randomUUID(),
+        content: "Cannot checkout with an empty cart",
+        isOpen: true,
+        type: "warning",
+      });
     }
   };
 
@@ -34,10 +34,13 @@ const Cart = (): React.ReactElement => {
     setShowModal(false);
   };
 
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
   return (
     <div>
-      {/* Notification and Modal */}
-      {renderNotification()}
+      {/* Modal */}
       <Modal
         isOpen={showModal}
         title="Warning"
@@ -50,7 +53,7 @@ const Cart = (): React.ReactElement => {
       {/* Header */}
       <div className="mx-auto my-5 flex w-4/5 items-center justify-between">
         <p className="text-xl font-bold">Review your bag</p>
-        <SmallButton name="Delete all" onClick={() => setShowModal(true)} />
+        <SmallButton name="Delete all" onClick={handleOpenModal} />
       </div>
 
       {/* Cart Content */}

@@ -100,7 +100,7 @@ const cartReducer = (state: CartStateType, action: ReducerAction) => {
           ...state.cartList,
           [cartItemID]: {
             ...cartItem,
-            quantity: cartItem.quantity - 1 >= 0 ? cartItem.quantity - 1 : 0,
+            quantity: cartItem.quantity - 1 > 0 ? cartItem.quantity - 1 : 0,
           },
         },
       };

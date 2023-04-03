@@ -1,24 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { NotificationContext } from "../context/NotificationContext";
+import { determineNotificationType } from "../utils/DetermineNotificationType";
 
-type NotificationProps = {
+export type NotificationProps = {
+  id?: string;
   isOpen: boolean;
   onClose?: () => void;
   children?: React.ReactElement | React.ReactElement[];
   content?: string;
-  isError: boolean;
+  type: string;
+};
+
+type NotificationStyle = {
+  style: string;
+  icon: React.ReactElement;
 };
 
 const NOTIFICATION_DURATION = 1500; // appear 1.5s
 
-const Notification = ({
-  isOpen,
-  onClose,
-  children,
-  content,
-  isError = false,
-}: NotificationProps): React.ReactElement => {
+const Notification = (props: NotificationProps): React.ReactElement => {
+  const { id, isOpen, onClose, children, content, type } = props;
   const [visible, setVisible] = useState<boolean>(false);
+  const [style, setStyle] = useState<NotificationStyle>(() =>
+    determineNotificationType(type)
+  );
+  const { removeNotification } = useContext(NotificationContext);
 
   useEffect(() => {
     if (isOpen) {
@@ -27,8 +34,10 @@ const Notification = ({
         setVisible(false);
         if (onClose) {
           onClose();
+          removeNotification(props);
         }
       }, NOTIFICATION_DURATION);
+
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -36,18 +45,12 @@ const Notification = ({
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
-          className="fixed top-0 right-0 z-50 p-6"
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          exit={{ y: -100 }}
-        >
+        <motion.div initial={{ x: 50 }} animate={{ x: 0 }} exit={{ x: 500 }}>
           <div
-            className={`${
-              isError ? "bg-red-400" : "bg-green-400"
-            } rounded-lg  py-2 px-4 text-white shadow-lg`}
+            className={`my-4 rounded-lg p-6 py-2 px-4 shadow-xl ${style.style} flex items-center justify-center gap-3`}
           >
-            {children ? children : <p>{content}</p>}
+            <div className="w-5">{style.icon}</div>
+            {children ?? <p>{content}</p>}
           </div>
         </motion.div>
       )}

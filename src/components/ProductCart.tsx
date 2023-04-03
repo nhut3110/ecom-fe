@@ -19,7 +19,7 @@ type ProductCartType = {
   quantity: number;
 };
 
-const trashButtonVariant = {
+const trashButtonVariants = {
   hover: {
     scale: 1.2,
   },
@@ -94,7 +94,7 @@ const ProductCart = ({
         </div>
 
         <motion.img
-          variants={trashButtonVariant}
+          variants={trashButtonVariants}
           whileHover="hover"
           src={TrashIcon}
           alt="trash"
