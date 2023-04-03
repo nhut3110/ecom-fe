@@ -194,7 +194,7 @@ export const testProduct: ProductDetails[] = [
   },
 ];
 
-export const navList: string[] = ["product", "favorites", "cart", "order"];
+export const navList: string[] = ["products", "favorites", "cart", "orders"];
 
 export const carouselImages: Array<CarouselImageType> = [
   {
@@ -251,7 +251,7 @@ export const publicRoutes: Routes[] = [
     component: Register,
   },
   {
-    path: "/product",
+    path: "/products",
     component: Product,
     layout: Layout,
   },
@@ -276,7 +276,7 @@ export const publicRoutes: Routes[] = [
     layout: Layout,
   },
   {
-    path: "/order",
+    path: "/orders",
     component: Order,
     layout: Layout,
   },

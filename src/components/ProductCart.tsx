@@ -5,19 +5,33 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { motion } from "framer-motion";
 import QuantityButton from "./QuantityButton";
+import Modal from "./Modal";
 import { CartContext } from "../context/CartContext";
 import { TrashIcon } from "../assets/icons";
 import { ProductDetails } from "../constants/data";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 unit in cart page
 
-const ProductCart = (props: {
+type ProductCartType = {
   product: ProductDetails;
   quantity: number;
-}): React.ReactElement => {
-  const { product, quantity } = props;
+};
 
+const trashButtonVariant = {
+  hover: {
+    scale: 1.2,
+  },
+  tap: {
+    scale: 0.9,
+  },
+};
+
+const ProductCart = ({
+  product,
+  quantity,
+}: ProductCartType): React.ReactElement => {
   const {
     increaseQuantity,
     decreaseQuantity,
@@ -26,7 +40,7 @@ const ProductCart = (props: {
   } = useContext(CartContext);
 
   const [quantities, setQuantities] = useState<number>(quantity);
-  const [isDecreasing, setIsDecreasing] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleIncrement = useCallback(() => {
     setQuantities(quantities + DEFAULT_QUANTITY_CHANGE);
@@ -55,6 +69,10 @@ const ProductCart = (props: {
     calculateCartValue(-DEFAULT_QUANTITY_CHANGE, product);
   }, [quantities]);
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   const handleRemove = useCallback(() => {
     removeFromCart(product);
     calculateCartValue(-quantities, product);
@@ -79,13 +97,26 @@ const ProductCart = (props: {
           />
         </div>
 
-        <img
+        <motion.img
+          variants={trashButtonVariant}
+          whileHover="hover"
           src={TrashIcon}
           alt="trash"
-          className="w-3 cursor-pointer self-start md:w-5"
-          onClick={handleRemove}
+          className="w-3 cursor-pointer self-start rounded-full md:w-5"
+          onClick={() => setShowModal(true)}
         />
       </div>
+
+      <Modal
+        isOpen={showModal}
+        title="Warning"
+        onSubmit={handleRemove}
+        onClose={handleCloseModal}
+      >
+        <p>
+          Do you want to delete <strong>{product.title}</strong> from the cart?
+        </p>
+      </Modal>
     </div>
   );
 };
