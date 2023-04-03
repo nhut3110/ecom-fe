@@ -7,7 +7,11 @@ import SmallButton from "./SmallButton";
 import { ProductDetails } from "../constants/data";
 import { CartContext } from "../context/CartContext";
 import { getLocalStorageValue } from "../utils/LocalStorage";
+<<<<<<< HEAD
 import { NotificationContext } from "../context/NotificationContext";
+=======
+import { useNotification } from "../hooks/useNotification";
+>>>>>>> c253e3a (feature/implement-modal-and-notification)
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
@@ -16,7 +20,13 @@ const ProductCard = (props: {
 }): React.ReactElement => {
   const { product } = props;
 
+<<<<<<< HEAD
   const { notify } = useContext(NotificationContext);
+=======
+  const { renderNotification, handleOpenNotification, setContent } =
+    useNotification();
+
+>>>>>>> c253e3a (feature/implement-modal-and-notification)
   const { addFavorite, removeFavorite, storeFavorite } =
     useContext(FavoriteContext);
   const { addToCart, calculateCartValue } = useContext(CartContext);
@@ -65,6 +75,7 @@ const ProductCard = (props: {
 
   return (
     <div className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[0.0625rem] border-solid border-black bg-white p-2 shadow-xl">
+
       <div className="relative flex aspect-square w-60 items-center justify-center ">
         <Link to={`/product/${product.id}`}>
           <img
