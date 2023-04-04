@@ -9,7 +9,7 @@ import { NotificationContext } from "../context/NotificationContext";
 
 const Cart = (): React.ReactElement => {
   const { cartState, removeAllFromCart } = useContext(CartContext);
-  const { addNotification } = useContext(NotificationContext);
+  const { notify } = useContext(NotificationContext);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const { redirect } = useNavigatePage();
@@ -21,7 +21,7 @@ const Cart = (): React.ReactElement => {
   const handleCheckout = () => {
     if (cartState.cartValue) redirect("/checkout");
     else {
-      addNotification({
+      notify({
         id: crypto.randomUUID(),
         content: "Cannot checkout with an empty cart",
         isOpen: true,

@@ -16,7 +16,7 @@ const ProductCard = (props: {
 }): React.ReactElement => {
   const { product } = props;
 
-  const { addNotification } = useContext(NotificationContext);
+  const { notify } = useContext(NotificationContext);
   const { addFavorite, removeFavorite, storeFavorite } =
     useContext(FavoriteContext);
   const { addToCart, calculateCartValue } = useContext(CartContext);
@@ -36,6 +36,12 @@ const ProductCard = (props: {
 
   const handleFavorites = useCallback(() => {
     love ? removeFavorite(product) : addFavorite(product);
+    notify({
+      content: `Successfully ${love ? "remove from" : "added to"} favorites`,
+      type: "favorite",
+      isOpen: true,
+      id: crypto.randomUUID(),
+    });
     storeFavorite();
     setLove(!love);
   }, [love]);
@@ -49,7 +55,7 @@ const ProductCard = (props: {
   const handleAddToCart = useCallback(() => {
     addToCart(DEFAULT_QUANTITY, product);
     calculateCartValue(DEFAULT_QUANTITY, product);
-    addNotification({
+    notify({
       id: crypto.randomUUID(),
       content: "Add to cart successfully",
       isOpen: true,
