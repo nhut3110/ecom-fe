@@ -2,20 +2,16 @@ import React from "react";
 
 type QuantityProps = {
   quantity: number;
-  setQuantity: React.Dispatch<React.SetStateAction<number>>;
+  increment: () => void;
+  decrement: () => void;
 };
 const QuantityButton = (props: QuantityProps): React.ReactElement => {
-  const { quantity, setQuantity } = props;
-  const handleIncrement = () => {
-    setQuantity(quantity + 1);
-  };
-  const handleDecrement = () => {
-    setQuantity((quantity) => (quantity - 1 < 0 ? 0 : quantity - 1));
-  };
+  const { quantity, increment, decrement } = props;
+
   return (
     <div className="flex items-center justify-around rounded-full p-2 gap-3 max-w-[100px]">
       <button
-        onClick={handleDecrement}
+        onClick={decrement}
         className="text-2xl font-bold text-center select-none"
       >
         -
@@ -24,7 +20,7 @@ const QuantityButton = (props: QuantityProps): React.ReactElement => {
         {quantity}
       </p>
       <button
-        onClick={handleIncrement}
+        onClick={increment}
         className="text-2xl font-bold text-center select-none"
       >
         +

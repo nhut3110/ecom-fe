@@ -1,9 +1,24 @@
+import Layout from "../layout/Layout";
+import Cart from "../pages/Cart";
+import Favorite from "../pages/Favorite";
+import Home from "../pages/Home";
+import Login from "../pages/Login";
+import Product from "../pages/Product";
+import ProductDetail from "../pages/ProductDetail";
+import Register from "../pages/Register";
+
 type CarouselImageType = {
   url: string;
   category: string;
 };
 
-export type footerContentType = {
+type Routes = {
+  path: string;
+  component: React.ElementType;
+  layout: React.ElementType | null;
+};
+
+export type FooterContentType = {
   name: string;
   content: string[];
 };
@@ -19,7 +34,6 @@ export interface ProductDetails {
     rate: number;
     count: number;
   };
-  quantity?: number;
 }
 
 export const sortCategoryOptions: string[] = [
@@ -155,7 +169,6 @@ export const testProduct: ProductDetails[] = [
       rate: 3.3,
       count: 203,
     },
-    quantity: 1,
   },
 ];
 
@@ -186,7 +199,7 @@ export const footerContact: string[] = [
   "Email: fake.store@info.com",
 ];
 
-export const footerContents: footerContentType[] = [
+export const footerContents: FooterContentType[] = [
   {
     name: "Useful Links",
     content: ["favorites", "cart", "order"],
@@ -198,5 +211,43 @@ export const footerContents: footerContentType[] = [
   {
     name: "Social Media",
     content: ["Facebook", "Instagram", "Twitter"],
+  },
+];
+
+export const publicRoutes: Routes[] = [
+  {
+    path: "/",
+    component: Home,
+    layout: Layout,
+  },
+  {
+    path: "/login",
+    component: Login,
+    layout: null,
+  },
+  {
+    path: "/register",
+    component: Register,
+    layout: null,
+  },
+  {
+    path: "/product",
+    component: Product,
+    layout: Layout,
+  },
+  {
+    path: "/product/test",
+    component: ProductDetail,
+    layout: Layout,
+  },
+  {
+    path: "/cart",
+    component: Cart,
+    layout: Layout,
+  },
+  {
+    path: "/favorites",
+    component: Favorite,
+    layout: Layout,
   },
 ];

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ProductDetails } from "../constants/data";
+import { CartContext } from "../context/CartContext";
 import { FavoriteContext } from "../context/FavoriteContext";
 import HeartButton from "./HeartButton";
 import RatingStar from "./RatingStar";
@@ -10,14 +11,25 @@ const ProductCard = (props: {
   product: ProductDetails;
 }): React.ReactElement => {
   const { product } = props;
-  const { state, addFavorite, removeFavorite } = useContext(FavoriteContext);
-  const [love, setLove] = useState(state.favoriteList.includes(product));
-
+  const { favoriteState, addFavorite, removeFavorite } =
+    useContext(FavoriteContext);
+  const { cartState, addToCart, calculateCartValue } = useContext(CartContext);
+  const [love, setLove] = useState(
+    favoriteState.favoriteList.includes(product)
+  );
   const [integerPart, decimalPart] = product.price.toString().split(".");
+  const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
+
   const handleFavorites = () => {
     love ? removeFavorite(product) : addFavorite(product);
     setLove(!love);
   };
+
+  const handleAddToCart = () => {
+    addToCart(DEFAULT_QUANTITY, product);
+    calculateCartValue(DEFAULT_QUANTITY, product);
+  };
+
   return (
     <div className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[1px] border-solid border-black bg-white p-2">
       <div className="relative flex aspect-square w-60 items-center justify-center ">
@@ -62,7 +74,7 @@ const ProductCard = (props: {
       </div>
 
       <div className="mt-2 w-auto self-start">
-        <SmallButton name="Add to Cart" />
+        <SmallButton name="Add to Cart" onClick={handleAddToCart} />
       </div>
     </div>
   );

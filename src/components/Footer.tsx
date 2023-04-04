@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   footerContact,
   footerContents,
-  footerContentType,
+  FooterContentType,
 } from "../constants/data";
 import { FakeLogo } from "../assets/images";
 
@@ -20,14 +20,15 @@ const Footer = (): React.ReactElement => {
           ))}
         </div>
 
-        {footerContents.map((info: footerContentType, index) => (
+        {footerContents.map((info: FooterContentType, index) => (
           <div
             key={index}
             className="flex flex-col items-center justify-center gap-1 md:items-start"
           >
             <p className="text-lg font-semibold">{info.name}</p>
-            {info.content.map((data: string) => (
+            {info.content.map((data: string, index) => (
               <Link
+                key={index}
                 to={`/${data}`}
                 className="text-sm text-slate-300 hover:text-white hover:underline first-letter:capitalize"
               >

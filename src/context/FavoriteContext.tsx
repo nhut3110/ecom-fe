@@ -35,7 +35,7 @@ const favoriteReducer = (state: FavoriteStateType, action: ReducerAction) => {
 };
 
 const useFavoriteContext = (initState: FavoriteStateType) => {
-  const [state, dispatch] = useReducer(favoriteReducer, initState);
+  const [favoriteState, dispatch] = useReducer(favoriteReducer, initState);
 
   const addFavorite = useCallback(
     (product: ProductDetails) =>
@@ -49,13 +49,13 @@ const useFavoriteContext = (initState: FavoriteStateType) => {
     []
   );
 
-  return { state, addFavorite, removeFavorite };
+  return { favoriteState, addFavorite, removeFavorite };
 };
 
-type UseFavoriteContextType = ReturnType<typeof useFavoriteContext>;
+export type UseFavoriteContextType = ReturnType<typeof useFavoriteContext>;
 
 const initContextState: UseFavoriteContextType = {
-  state: { favoriteList: [] },
+  favoriteState: { favoriteList: [] },
   addFavorite: (product: ProductDetails) => {},
   removeFavorite: (product: ProductDetails) => {},
 };
@@ -63,14 +63,14 @@ const initContextState: UseFavoriteContextType = {
 export const FavoriteContext =
   createContext<UseFavoriteContextType>(initContextState);
 
-type childrenType = {
-  children?: ReactElement | undefined;
+type ChildrenType = {
+  children?: ReactElement | ReactElement[] | undefined;
 };
 
 export const FavoriteProvider = ({
   children,
   ...initState
-}: FavoriteStateType & childrenType): ReactElement => {
+}: FavoriteStateType & ChildrenType): ReactElement => {
   return (
     <FavoriteContext.Provider value={useFavoriteContext(initState)}>
       {children}
