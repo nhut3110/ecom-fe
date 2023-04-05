@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { carouselImages } from "../constants/data";
+import OpacityMotionDiv from "./Animation/OpacityMotionDiv";
 const CHANGE_SLIDE_TIME = 5000; // time in milliseconds to change the slide
 
 const Carousel = (): React.ReactElement => {
@@ -27,7 +28,7 @@ const Carousel = (): React.ReactElement => {
           <img
             src={image.url}
             alt={image.category}
-            className="h-full w-full rounded-xl object-cover object-top md:object-fill"
+            className="object-fit h-full w-full rounded-xl object-top md:object-fill"
           />
         </div>
       ))}

@@ -36,6 +36,7 @@ const Notification = ({
   const handleHoverStart = () => {
     clearTimeout(timerId);
   };
+  console.log(children);
 
   const handleHoverEnd = () => {
     const newTimerId = setTimeout(() => {
