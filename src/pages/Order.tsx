@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import OrderCard from "../components/OrderCard";
 import { OrderType } from "../constants/data";
 import { OrderContext } from "../context/OrderContext";
+import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 
 const Order = (): React.ReactElement => {
   const { orderState } = useContext(OrderContext);
@@ -12,7 +13,9 @@ const Order = (): React.ReactElement => {
       <hr className="my-2 h-px border-0 bg-gray-200" />
       <div className="mx-auto flex flex-col items-center justify-center gap-20 md:w-4/5">
         {orderState.orderList.map((order: OrderType) => (
-          <OrderCard order={order} key={order.uuid} />
+          <OpacityMotionWrapper className="w-full">
+            <OrderCard order={order} key={order.uuid} />
+          </OpacityMotionWrapper>
         ))}
       </div>
     </div>

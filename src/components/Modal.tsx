@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import PortalWrapper from "./PortalWrapper";
 
-type ModalProps = {
-  isOpen: boolean;
+type ModalType = {
+  open: boolean;
   onClose?: () => void;
   onSubmit?: () => void;
   title?: string;
@@ -25,8 +25,8 @@ const modalVariants = {
   },
 };
 
-const Modal = ({ isOpen, onClose, onSubmit, title, children }: ModalProps) => {
-  const [visibility, setVisibility] = useState<boolean>(isOpen);
+const Modal = ({ open, onClose, onSubmit, title, children }: ModalType) => {
+  const [visibility, setVisibility] = useState<boolean>(open);
 
   const handleSubmit = () => {
     setVisibility(false);
@@ -39,8 +39,8 @@ const Modal = ({ isOpen, onClose, onSubmit, title, children }: ModalProps) => {
   };
 
   useEffect(() => {
-    if (isOpen) setVisibility(true);
-  }, [isOpen]);
+    if (open) setVisibility(true);
+  }, [open]);
 
   return (
     <PortalWrapper>

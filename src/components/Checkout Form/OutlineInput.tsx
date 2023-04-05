@@ -7,7 +7,7 @@ import {
 } from "../../context/FormContext";
 import { ErrorMessage } from "@hookform/error-message";
 
-interface OutlineInputProps {
+interface OutlineInputType {
   label: string;
   name: Path<InformationType | AddressType | PaymentType>;
   error?: any;
@@ -19,7 +19,7 @@ const OutlineInput = ({
   name,
   error,
   register,
-}: OutlineInputProps): React.ReactElement => {
+}: OutlineInputType): React.ReactElement => {
   return (
     <div className="flex w-full flex-col gap-2 pb-2">
       <label htmlFor={name} className="font-semibold first-letter:capitalize">

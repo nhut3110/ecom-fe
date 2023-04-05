@@ -7,21 +7,14 @@ import { FavoriteProvider } from "./FavoriteContext";
 import { defaultForm, FormProvider } from "./FormContext";
 import { OrderProvider } from "./OrderContext";
 import { NotificationProvider } from "./NotificationContext";
-import { NotificationProps } from "../components/Notification";
+import { NotificationType } from "../components/Notification";
 
 type ChildrenType = {
   children: React.ReactElement | React.ReactElement[];
 };
 
-<<<<<<< HEAD
 const initCartList = {};
-const initNotificationList: NotificationProps[] = [];
-=======
-const Contexts = ({ children }: ChildrenType): React.ReactElement => {
-  const queryClient = new QueryClient();
-
-  const { favoriteList } = getLocalStorageValue({ key: "favorites" });
->>>>>>> c31c060 (feature/implement-fetch-product-api)
+const initNotificationList: NotificationType[] = [];
 
 const Contexts = ({ children }: ChildrenType): React.ReactElement => {
   const queryClient = new QueryClient();
