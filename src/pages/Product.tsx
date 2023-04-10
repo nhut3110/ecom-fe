@@ -1,13 +1,8 @@
 import React from "react";
 import Carousel from "../components/Carousel";
 import ProductCard from "../components/ProductCard";
-import SelectMenu from "../components/SelectMenu";
-import {
-  sortCategoryOptions,
-  sortNameOptions,
-  sortPriceOptions,
-  testProduct,
-} from "../constants/data";
+import { testProduct } from "../constants/data";
+import SelectSortMenu from "../utils/SelectSortMenu";
 
 const Product = (): React.ReactElement => {
   return (
@@ -15,10 +10,8 @@ const Product = (): React.ReactElement => {
       <Carousel />
 
       {/* Sort Option List */}
-      <div className="md:flex justify-end m-10 gap-5 grid grid-cols-2">
-        <SelectMenu options={sortPriceOptions} defaultOption="Price" />
-        <SelectMenu options={sortNameOptions} defaultOption="Name" />
-        <SelectMenu options={sortCategoryOptions} defaultOption="Category" />
+      <div className="m-10 grid grid-cols-2 justify-end gap-5 md:flex">
+        {SelectSortMenu()}
       </div>
 
       {/* Product List */}
