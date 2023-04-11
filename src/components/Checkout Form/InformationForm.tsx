@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import OutlineInput from "./OutlineInput";
 import SmallButton from "../SmallButton";
 import { useGetOrderFormFields } from "../../hooks/useGetOrderFormFields";
 import { FormContext, InformationType } from "../../context/FormContext";
+import { validationInformationSchema } from "../../constants/validate";
 
 const InformationForm = (): React.ReactElement => {
   const { formState, moveNextStep, setInformation } = useContext(FormContext);
@@ -22,6 +24,7 @@ const InformationForm = (): React.ReactElement => {
       email: formData.email,
       phone: formData.phone,
     },
+    resolver: yupResolver(validationInformationSchema),
   });
 
   const onSubmit = (data: InformationType) => {

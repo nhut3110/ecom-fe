@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useGetOrderFormFields } from "../../hooks/useGetOrderFormFields";
+import { yupResolver } from "@hookform/resolvers/yup";
 import SmallButton from "../SmallButton";
 import OutlineInput from "./OutlineInput";
 import { FormContext, PaymentType } from "../../context/FormContext";
+import { validationPaymentSchema } from "../../constants/validate";
 
 const PaymentForm = (): React.ReactElement => {
   const { formState, moveNextStep, movePreviousStep, setPayment } =
@@ -17,7 +19,14 @@ const PaymentForm = (): React.ReactElement => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PaymentType>();
+  } = useForm<PaymentType>({
+    resolver: yupResolver(validationPaymentSchema),
+    defaultValues: {
+      owner: formData.owner,
+      cvc: formData.cvc,
+      cardNumber: formData.cardNumber,
+    },
+  });
 
   const onSubmit = (data: PaymentType) => {
     setPayment(data);

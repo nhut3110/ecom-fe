@@ -1,16 +1,19 @@
 import { map } from "lodash";
 import React, { useContext } from "react";
+import SmallButton from "../SmallButton";
 import { OrderType } from "../../constants/data";
 import { CartContext } from "../../context/CartContext";
 import { FormContext } from "../../context/FormContext";
 import { OrderContext } from "../../context/OrderContext";
 import { useNavigatePage } from "../../hooks/useNavigatePage";
-import { getLocalStorageValue } from "../../utils/LocalStorage";
-import SmallButton from "../SmallButton";
+import { NotificationContext } from "../../context/NotificationContext";
+
+const DELAY_BEFORE_REDIRECT = 3000; // After 3s, user will be redirected to home page
 
 const ConfirmForm = (): React.ReactElement => {
   const { formState, movePreviousStep, resetForm } = useContext(FormContext);
   const { cartState, removeAllFromCart } = useContext(CartContext);
+  const { notify } = useContext(NotificationContext);
   const { addOrder, storeOrder } = useContext(OrderContext);
   const { redirect } = useNavigatePage();
 
@@ -29,12 +32,19 @@ const ConfirmForm = (): React.ReactElement => {
       date: Date.now(),
       uuid: crypto.randomUUID(),
     };
-    console.log(orderData);
     addOrder(orderData);
     storeOrder();
-    redirect("/");
-    resetForm();
-    removeAllFromCart();
+    notify({
+      id: crypto.randomUUID(),
+      content: "Order successfully, check your order history",
+      isOpen: true,
+      type: "success",
+    });
+    setTimeout(() => {
+      redirect("/orders");
+      resetForm();
+      removeAllFromCart();
+    }, DELAY_BEFORE_REDIRECT);
   };
 
   return (

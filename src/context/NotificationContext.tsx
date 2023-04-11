@@ -45,7 +45,7 @@ const useNotificationContext = (initState: NotificationStateType) => {
     initState
   );
 
-  const addNotification = useCallback(
+  const notify = useCallback(
     (notification: NotificationProps) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.ADD_NOTIFICATION,
@@ -54,7 +54,7 @@ const useNotificationContext = (initState: NotificationStateType) => {
     [dispatch]
   );
 
-  const removeNotification = useCallback(
+  const dismiss = useCallback(
     (notification: NotificationProps) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.REMOVE_NOTIFICATION,
@@ -63,7 +63,7 @@ const useNotificationContext = (initState: NotificationStateType) => {
     [dispatch]
   );
 
-  return { notificationState, addNotification, removeNotification };
+  return { notificationState, notify, dismiss };
 };
 
 export type UseNotificationContextType = ReturnType<
@@ -72,8 +72,8 @@ export type UseNotificationContextType = ReturnType<
 
 const initContextState: UseNotificationContextType = {
   notificationState: initNotificationState,
-  addNotification: (notification: NotificationProps) => {},
-  removeNotification: (notification: NotificationProps) => {},
+  notify: (notification: NotificationProps) => {},
+  dismiss: (notification: NotificationProps) => {},
 };
 
 export const NotificationContext =
