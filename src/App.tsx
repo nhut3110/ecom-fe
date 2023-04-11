@@ -1,11 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Contexts from "./context/Contexts";
 import { publicRoutes } from "./constants/data";
+import NotificationWrapper from "./components/NotificationWrapper";
 
 function App() {
   return (
     <Contexts>
       <Router>
+        <NotificationWrapper />
         <Routes>
           {publicRoutes.map((route, index) => (
             <Route

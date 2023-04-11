@@ -7,6 +7,7 @@ import SmallButton from "./SmallButton";
 import { ProductDetails } from "../constants/data";
 import { CartContext } from "../context/CartContext";
 import { getLocalStorageValue } from "../utils/LocalStorage";
+import { NotificationContext } from "../context/NotificationContext";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
@@ -15,6 +16,7 @@ const ProductCard = (props: {
 }): React.ReactElement => {
   const { product } = props;
 
+  const { addNotification } = useContext(NotificationContext);
   const { addFavorite, removeFavorite, storeFavorite } =
     useContext(FavoriteContext);
   const { addToCart, calculateCartValue } = useContext(CartContext);
@@ -47,12 +49,18 @@ const ProductCard = (props: {
   const handleAddToCart = useCallback(() => {
     addToCart(DEFAULT_QUANTITY, product);
     calculateCartValue(DEFAULT_QUANTITY, product);
+    addNotification({
+      id: crypto.randomUUID(),
+      content: "Add to cart successfully",
+      isOpen: true,
+      type: "success",
+    });
   }, [product]);
 
   return (
     <div className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[0.0625rem] border-solid border-black bg-white p-2 shadow-xl">
       <div className="relative flex aspect-square w-60 items-center justify-center ">
-        <Link to="/product/test">
+        <Link to={`/product/${product.id}`}>
           <img
             src={product.image}
             alt={product.title}
@@ -73,7 +81,7 @@ const ProductCard = (props: {
             <p className="truncate text-lg font-semibold">{product.title}</p>
           </Link>
 
-          <p className="truncate text-sm text-gray-500">
+          <p className="text-sm text-gray-500 line-clamp-2">
             {product.description}
           </p>
         </div>

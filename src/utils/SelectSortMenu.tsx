@@ -1,19 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
 import SelectMenu from "../components/SelectMenu";
-import { sortOptions } from "../constants/data";
 
-const SelectSortMenu = (): React.ReactElement => {
-  return (
-    <>
-      {sortOptions.map((list, index) => (
-        <SelectMenu
-          options={list.options}
-          key={index}
-          defaultOption={list.name}
-        />
-      ))}
-    </>
-  );
+type SortOptionType = {
+  name: string;
+  options: string[];
 };
 
-export default SelectSortMenu;
+const sortOptions: SortOptionType[] = [
+  {
+    name: "Price",
+    options: ["From Low to High", "From High to Low"],
+  },
+  {
+    name: "Name",
+    options: ["From A to Z", "From Z to A"],
+  },
+];
+
+const filterOptions: SortOptionType[] = [
+  {
+    name: "Category",
+    options: ["Electronics", "Jewelery", "Men's clothing", "Women's clothing"],
+  },
+];
+
+export const selectSortMenu = () => {
+  const [selectedSort, setSelectedSort] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
+
+  const handleSortChange = (selectedOption: string) => {
+    setSelectedSort(selectedOption);
+  };
+
+  const handleFilterChange = (selectedOption: string) => {
+    setSelectedFilter(selectedOption);
+  };
+
+  const renderSelectSortMenu = () => {
+    return (
+      <React.Fragment>
+        {sortOptions.map((sortOption, index) => (
+          <SelectMenu
+            options={sortOption.options}
+            defaultOption={sortOption.name}
+            onSelectionChange={handleSortChange}
+            key={index}
+          />
+        ))}
+
+        {filterOptions.map((filterOption, index) => (
+          <SelectMenu
+            options={filterOption.options}
+            defaultOption={filterOption.name}
+            onSelectionChange={handleFilterChange}
+            key={index}
+          />
+        ))}
+      </React.Fragment>
+    );
+  };
+
+  return { selectedSort, selectedFilter, renderSelectSortMenu };
+};
