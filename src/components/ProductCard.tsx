@@ -90,8 +90,13 @@ const ProductCard = (props: {
 
         <div className="flex w-full justify-between px-2">
           <div className="flex w-[75%] flex-col ">
-            <Link to="/product/test">
-              <p className="truncate text-lg font-semibold">{product.title}</p>
+            <Link to={`/product/${product.id}`}>
+              <motion.p
+                whileHover={{ scale: 1.05 }}
+                className="truncate text-lg font-semibold"
+              >
+                {product.title}
+              </motion.p>
             </Link>
 
             <p className="text-sm text-gray-500 line-clamp-2">

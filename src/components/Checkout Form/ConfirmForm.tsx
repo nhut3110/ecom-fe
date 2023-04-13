@@ -1,5 +1,6 @@
 import { map } from "lodash";
 import React, { useContext } from "react";
+import { motion } from "framer-motion";
 import SmallButton from "../SmallButton";
 import { OrderType } from "../../constants/data";
 import { CartContext } from "../../context/CartContext";
@@ -16,6 +17,7 @@ const ConfirmForm = (): React.ReactElement => {
   const { notify } = useContext(NotificationContext);
   const { addOrder, storeOrder } = useContext(OrderContext);
   const { redirect } = useNavigatePage();
+  console.log(cartState);
 
   const { information, address, payment } = formState;
 
@@ -36,9 +38,10 @@ const ConfirmForm = (): React.ReactElement => {
     storeOrder();
     notify({
       id: crypto.randomUUID(),
-      content: "Order successfully, check your order history",
+      content: "Order successfully, you will be redirected in 3s...",
       isOpen: true,
       type: "success",
+      timeout: DELAY_BEFORE_REDIRECT,
     });
     setTimeout(() => {
       redirect("/orders");
@@ -48,26 +51,51 @@ const ConfirmForm = (): React.ReactElement => {
   };
 
   return (
-    <>
-      <div className="w-full rounded-lg border border-gray-400 p-5">
-        <p className="text-xl font-bold">Shipping Summary</p>
-        <div className="p-2">
-          <p className="text-lg font-semibold">User's Contact Detail</p>
-          <p>{userContact}</p>
-          <p>{information.email}</p>
-          <p>{userAddress}</p>
-        </div>
-        <div className="p-2">
-          <p className="text-lg font-semibold">User's Payment Detail</p>
-          <p>{payment.owner}</p>
-          <p>{userPayment}</p>
+    <motion.div
+      initial={{ x: -100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+    >
+      <div className="rounded-lg border border-gray-400 p-5">
+        <p className="text-xl font-bold xl:text-2xl">Shipping Summary</p>
+        <div className="flex w-full flex-col">
+          <div className="flex flex-col justify-between md:flex-row">
+            <div className="p-2">
+              <p className="font-semibold underline xl:text-lg xl:font-bold">
+                Contact Detail
+              </p>
+              <p>{userContact}</p>
+              <p>{information.email}</p>
+              <p>{userAddress}</p>
+            </div>
+            <div className="p-2">
+              <p className="font-semibold underline xl:text-lg xl:font-bold">
+                Payment Detail
+              </p>
+              <p>{payment.owner}</p>
+              <p>{userPayment}</p>
+            </div>
+          </div>
+
+          <div className="p-2">
+            <p className="font-semibold underline xl:text-lg xl:font-bold">
+              Cart List
+            </p>
+            {map(cartState.cartList).map((item) => (
+              <div className="flex justify-between">
+                <p className="max-w-[90%] truncate font-semibold">
+                  {item.product.title}
+                </p>
+                <strong>x{item.quantity}</strong>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div className="my-2 flex w-full justify-between">
         <SmallButton name="back" onClick={movePreviousStep} />
         <SmallButton name="confirm" onClick={handleSubmit} />
       </div>
-    </>
+    </motion.div>
   );
 };
 
