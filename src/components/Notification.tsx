@@ -69,7 +69,7 @@ const Notification = ({
         <motion.div
           initial={{ x: 50 }}
           animate={{ x: 0 }}
-          exit={{ x: 500 }}
+          exit={{ x: "200vh" }}
           onMouseEnter={handleHoverStart}
           onMouseLeave={handleHoverEnd}
         >
