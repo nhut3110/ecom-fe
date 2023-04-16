@@ -7,15 +7,27 @@ import PortalWrapper from "../PortalWrapper";
 import Cart from "../../pages/Cart";
 
 const miniCartContentVariants = {
-  hidden: { opacity: 0, scale: 0, x: "100%", y: "100%" },
+  hidden: {
+    clipPath: "inset(100% 0% 0% 100%)",
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 24,
+      bounce: 0,
+      duration: 0.3,
+    },
+  },
   visible: {
-    opacity: 1,
-    scale: 1,
-    x: 0,
-    y: 0,
-    originX: 1,
-    originY: 1,
-    transition: { duration: 0.5, ease: "easeInOut" },
+    clipPath: "inset(0% 0% 0% 0%)",
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 24,
+      bounce: 0,
+      duration: 0.7,
+      delayChildren: 0.3,
+      staggerChildren: 0.05,
+    },
   },
   exit: {
     opacity: 0,
@@ -72,7 +84,7 @@ const CartButton = () => {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="scrollbar-rounded-md fixed bottom-24 right-0 h-96 w-full min-w-[25rem] max-w-xl overflow-auto rounded-xl border bg-white shadow-xl scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-700 scrollbar-hide md:right-10 md:w-auto md:scrollbar-default"
+              className="fixed bottom-24 right-0 h-96 w-full min-w-[25rem] max-w-xl overflow-auto rounded-xl border-2 bg-white p-5 shadow-xl scrollbar-hide md:right-10 md:w-auto"
             >
               <Cart />
             </motion.div>
