@@ -76,7 +76,7 @@ export const selectSortMenu = () => {
 
   const renderSelectSortMenu = () => {
     return (
-      <React.Fragment>
+      <div className="flex flex-col gap-5 md:flex-row">
         <div>
           <div className="flex items-center gap-1">
             <Tooltip content="Only one sort type in a time">
@@ -131,7 +131,7 @@ export const selectSortMenu = () => {
             ))}
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   };
 
