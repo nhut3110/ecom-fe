@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { useNavigatePage } from "../hooks/useNavigatePage";
 import Modal from "../components/Modal";
+import CartList from "../components/CartList";
 import OrderSummary from "../components/OrderSummary";
 import SmallButton from "../components/SmallButton";
 import { CartContext } from "../context/CartContext";
-import { renderCartList } from "../utils/RenderCartList";
 import { NotificationContext } from "../context/NotificationContext";
 
 const Cart = (): React.ReactElement => {
@@ -24,7 +24,7 @@ const Cart = (): React.ReactElement => {
       notify({
         id: crypto.randomUUID(),
         content: "Cannot checkout with an empty cart",
-        isOpen: true,
+        open: true,
         type: "warning",
       });
     }
@@ -42,7 +42,7 @@ const Cart = (): React.ReactElement => {
     <div>
       {/* Modal */}
       <Modal
-        isOpen={showModal}
+        open={showModal}
         title="Warning"
         onSubmit={removeAllFromCart}
         onClose={handleCloseModal}
@@ -69,7 +69,7 @@ const Cart = (): React.ReactElement => {
             </p>
           </div>
         ) : (
-          renderCartList()
+          <CartList />
         )}
 
         {/* Order Summary */}

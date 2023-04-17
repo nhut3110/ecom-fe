@@ -37,7 +37,7 @@ const ConfirmForm = (): React.ReactElement => {
     notify({
       id: crypto.randomUUID(),
       content: "Order successfully, check your order history",
-      isOpen: true,
+      open: true,
       type: "success",
     });
     setTimeout(() => {

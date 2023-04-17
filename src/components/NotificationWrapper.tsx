@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import Notification, { NotificationProps } from "../components/Notification";
+import Notification, { NotificationType } from "../components/Notification";
 import PortalWrapper from "../components/PortalWrapper";
 import { NotificationContext } from "../context/NotificationContext";
 
@@ -9,10 +9,10 @@ const NotificationWrapper = () => {
     <PortalWrapper>
       <div className="fixed top-0 right-0 z-50">
         {notificationState.notificationList.map(
-          (notification: NotificationProps, index) => (
+          (notification: NotificationType, index) => (
             <Notification
               id={notification.id}
-              isOpen={notification.isOpen}
+              open={notification.open}
               content={notification.content}
               type={notification.type}
               key={index}

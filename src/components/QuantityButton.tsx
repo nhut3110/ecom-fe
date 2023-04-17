@@ -1,6 +1,6 @@
 import React from "react";
 
-type QuantityProps = {
+type QuantityType = {
   quantity: number;
   onIncrement: () => void;
   onDecrement: () => void;
@@ -9,7 +9,7 @@ const QuantityButton = ({
   quantity,
   onIncrement,
   onDecrement,
-}: QuantityProps): React.ReactElement => {
+}: QuantityType): React.ReactElement => {
   return (
     <div className="flex max-w-[6.25rem] items-center justify-around gap-3 rounded-full p-2">
       <button

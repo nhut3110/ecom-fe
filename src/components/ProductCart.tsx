@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import React, {
   useCallback,
   useContext,
@@ -5,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { motion } from "framer-motion";
 import QuantityButton from "./QuantityButton";
 import Modal from "./Modal";
 import { CartContext } from "../context/CartContext";
@@ -79,7 +79,7 @@ const ProductCart = ({
       <img
         src={product.image}
         alt={product.title}
-        className="h-4/5 min-w-[5.625rem] self-center object-contain"
+        className="h-4/5 min-w-[5.6rem] max-w-[6rem] self-center object-contain"
       />
 
       <div className="flex w-full justify-between ">
@@ -104,7 +104,7 @@ const ProductCart = ({
       </div>
 
       <Modal
-        isOpen={showModal}
+        open={showModal}
         title="Warning"
         onSubmit={handleRemove}
         onClose={handleCloseModal}

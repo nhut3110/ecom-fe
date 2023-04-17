@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 
-type HeartButtonProps = {
+type HeartButtonType = {
   love: boolean;
   className?: string;
   onClick?: () => void;
 };
 
-const HeartButton = (props: HeartButtonProps): React.ReactElement => {
-  const { love, className, onClick } = props;
-
+const HeartButton = ({
+  love,
+  className,
+  onClick,
+}: HeartButtonType): React.ReactElement => {
   return (
     <button
       className={
