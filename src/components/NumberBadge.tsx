@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 type BadgeType = {
   value: number;
@@ -12,10 +12,17 @@ const badgeVariants = {
 };
 
 const NumberBadge = ({ color, value }: BadgeType) => {
-  const [visibility, setVisibility] = useState<boolean>(value ? true : false);
+  const [visibility, setVisibility] = useState<boolean>(!!value);
+
+  const badgeVariants = useMemo(() => {
+    return {
+      hidden: { opacity: 0, scale: 0.2 },
+      visible: { opacity: 1, scale: [1, 1.5, 1] },
+    };
+  }, []);
 
   useEffect(() => {
-    if (value) setVisibility(true);
+    setVisibility(!!value);
   }, [value]);
 
   return (

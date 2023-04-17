@@ -2,7 +2,7 @@ import map from "lodash/map";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useCallback, useContext, useMemo } from "react";
 import OpacityMotionWrapper from "./Animation/OpacityMotionWrapper";
-import SlideDownDisappearDiv from "./Animation/SlideDownDisappearDiv";
+import SlideDownDisappearWrapper from "./Animation/SlideDownDisappearWrapper";
 import ProductCart from "./ProductCart";
 import { CartContext } from "../context/CartContext";
 
@@ -13,14 +13,14 @@ const CartList = (): React.ReactElement => {
     <OpacityMotionWrapper>
       <AnimatePresence>
         {map(cartState.cartList).map((data) => (
-          <SlideDownDisappearDiv key={data.product.id}>
+          <SlideDownDisappearWrapper key={data.product.id}>
             <ProductCart
               product={data.product}
               quantity={data.quantity}
               key={data.product.id}
             />
             <hr className="my-4 h-px border-0 bg-gray-200" />
-          </SlideDownDisappearDiv>
+          </SlideDownDisappearWrapper>
         ))}
       </AnimatePresence>
     </OpacityMotionWrapper>

@@ -9,17 +9,16 @@ type TooltipType = {
 const Tooltip = ({ content, children }: TooltipType) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const handleShowTooltip = () => {
-    setShowTooltip(true);
-  };
-
-  const handleHideTooltip = () => {
-    setShowTooltip(false);
-  };
-
   return (
     <div className="relative">
-      <div onMouseEnter={handleShowTooltip} onMouseLeave={handleHideTooltip}>
+      <div
+        onMouseEnter={() => {
+          setShowTooltip(true);
+        }}
+        onMouseLeave={() => {
+          setShowTooltip(false);
+        }}
+      >
         {children}
       </div>
       <AnimatePresence>

@@ -22,18 +22,18 @@ export type CartStateType = {
 const DEFAULT_CART_VALUE: number = 0;
 
 const enum REDUCER_ACTION_TYPE {
-  ADD_TO_CART = "add_to_cart",
-  INCREASE_QUANTITY = "increase_quantity",
-  DECREASE_QUANTITY = "decrease_quantity",
-  REMOVE_PRODUCT = "remove_product",
-  REMOVE_ALL = "remove_all",
-  CALCULATE_VALUE = "calculate_value",
+  ADD_TO_CART = "ADD_TO_CART",
+  INCREASE_QUANTITY = "INCREASE_QUANTITY",
+  DECREASE_QUANTITY = "DECREASE_QUANTITY",
+  REMOVE_PRODUCT = "REMOVE_PRODUCT",
+  REMOVE_ALL = "REMOVE_ALL",
+  CALCULATE_VALUE = "CALCULATE_VALUE",
 }
 
 const enum ANIMATION_ACTION_TYPE {
-  UPDATE_CART_POSITIONS = "update_cart_position",
-  ADD_CART_ANIMATION = "add_cart_animation",
-  REMOVE_CART_ANIMATION = "remove_cart_animation",
+  UPDATE_CART_POSITIONS = "UPDATE_CART_POSITIONS",
+  ADD_CART_ANIMATION = "ADD_CART_ANIMATION",
+  REMOVE_CART_ANIMATION = "REMOVE_CART_ANIMATION",
 }
 
 type ReducerAction =
@@ -93,10 +93,12 @@ const cartReducer = (state: CartStateType, action: ReducerAction) => {
       if (!cartItem || !cartItem.id) {
         return state;
       }
+
       const animatedItem = {
         id: action.payload!.id,
         product: action.payload!.product,
       };
+
       const existingItem = state.cartList[cartItem.id];
       if (existingItem)
         return {

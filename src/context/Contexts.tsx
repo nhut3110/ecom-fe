@@ -14,7 +14,6 @@ type ChildrenType = {
 };
 
 const initCartList = {};
-const initCartAnimation: { id: string; product: ProductDetails }[] = [];
 const initNotificationList: NotificationType[] = [];
 const initCartPosition = {
   cartX: 0,
@@ -43,7 +42,6 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
               cartList={initCartList}
               cartValue={0}
               cartPositions={initCartPosition}
-              cartAnimations={initCartAnimation}
             >
               <FormProvider
                 information={defaultForm.information}

@@ -60,8 +60,9 @@ const SelectMenu = ({
   const ref = useRef<HTMLDivElement>(null);
 
   const handleSelectionChange = (value: string) => {
-    setSelectedOption(value);
-    onSelectionChange(value);
+    const selectedValue = value === "Default" ? defaultOption : value;
+    setSelectedOption(selectedValue);
+    onSelectionChange(selectedValue);
     setIsOpen(false);
   };
 

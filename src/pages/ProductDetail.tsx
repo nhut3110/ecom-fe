@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import React, { useContext, useEffect, useState } from "react";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
-import SlideDownDisappearDiv from "../components/Animation/SlideDownDisappearDiv";
+import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
 import DotsLoading from "../components/Animation/DotsLoading";
 import QuantityButton from "../components/QuantityButton";
 import RatingStar from "../components/RatingStar";
@@ -48,14 +48,14 @@ const ProductDetail = (): React.ReactElement => {
   };
 
   return (
-    <div>
+    <>
       {isLoading ? (
         <AnimatePresence>
-          <SlideDownDisappearDiv>
+          <SlideDownDisappearWrapper>
             <div className="flex h-screen w-full items-center justify-center">
               <DotsLoading />
             </div>
-          </SlideDownDisappearDiv>
+          </SlideDownDisappearWrapper>
         </AnimatePresence>
       ) : (
         <OpacityMotionWrapper>
@@ -140,7 +140,7 @@ const ProductDetail = (): React.ReactElement => {
           </div>
         </OpacityMotionWrapper>
       )}
-    </div>
+    </>
   );
 };
 

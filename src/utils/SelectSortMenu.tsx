@@ -24,18 +24,24 @@ const iconVariants = {
 const sortOptions: SortOptionType[] = [
   {
     name: "Price",
-    options: ["Low to High", "High to Low"],
+    options: ["Low to High", "High to Low", "Default"],
   },
   {
     name: "Name",
-    options: ["A to Z", "Z to A"],
+    options: ["A to Z", "Z to A", "Default"],
   },
 ];
 
 const filterOptions: SortOptionType[] = [
   {
     name: "Category",
-    options: ["Electronics", "Jewelery", "Men's clothing", "Women's clothing"],
+    options: [
+      "Electronics",
+      "Jewelery",
+      "Men's clothing",
+      "Women's clothing",
+      "Default",
+    ],
   },
 ];
 

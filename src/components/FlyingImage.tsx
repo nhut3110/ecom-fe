@@ -15,14 +15,13 @@ const CART_RADIUS = 50;
 
 const FlyingImage = ({ image, alt, timeout, id, product }: FlyingImageType) => {
   const [visibility, setVisibility] = useState<boolean>(true);
-  const { cartState, removeCartAnimation } = useContext(CartContext); // cartState.cartPositions contains x and y position of cart
   const [distance, setDistance] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
   });
-
-  // Get the initial position of the component
+  const { cartState, removeCartAnimation } = useContext(CartContext);
   const ref = useRef<HTMLImageElement>(null);
+
   useEffect(() => {
     const handleResize = () => {
       const positions = ref.current?.getBoundingClientRect();
@@ -79,6 +78,7 @@ export const FlyingImageWrapper = ({
   product: ProductDetails;
 }) => {
   const { cartState } = useContext(CartContext);
+
   const productAnimations = useMemo(() => {
     if (cartState.cartList[product.id])
       return cartState.cartList[product.id].cartAnimations;

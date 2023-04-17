@@ -53,21 +53,25 @@ const CartButton = () => {
     setOpenSmallCart(!openSmallCart);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      const positions = ref.current?.getBoundingClientRect();
-      if (positions) {
-        updateCartPositions({ cartX: positions?.x, cartY: positions?.y });
-      }
-    };
+  const handleResize = () => {
+    const positions = ref.current?.getBoundingClientRect();
+    if (positions) {
+      updateCartPositions({ cartX: positions?.x, cartY: positions?.y });
+    }
+  };
 
-    handleResize(); // call once to update initial position
+  useEffect(() => {
+    // handleResize(); // call once to update initial position
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [updateCartPositions]);
+  }, [cartState]);
+
+  useEffect(() => {
+    handleResize();
+  }, []);
 
   return (
     <div
