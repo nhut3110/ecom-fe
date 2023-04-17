@@ -40,7 +40,7 @@ const ProductCard = (props: {
     notify({
       content: `Successfully ${love ? "remove from" : "added to"} favorites`,
       type: "favorite",
-      isOpen: true,
+      open: true,
       id: crypto.randomUUID(),
     });
     storeFavorite();
@@ -59,7 +59,7 @@ const ProductCard = (props: {
     notify({
       id: crypto.randomUUID(),
       content: "Add to cart successfully",
-      isOpen: true,
+      open: true,
       type: "success",
     });
   }, [product]);
@@ -131,24 +131,24 @@ export default ProductCard;
 export const ProductCardSkeleton = () => {
   return (
     <div className="flex h-[25.625rem] w-80 animate-pulse flex-col items-center justify-center gap-1 rounded-lg border-[0.0625rem] border-solid border-slate-400 bg-white p-2 shadow-xl">
-      <div className="relative flex aspect-square h-60 w-64 items-center justify-center rounded-3xl bg-slate-100"></div>
+      <div className="relative flex aspect-square h-60 w-64 items-center justify-center rounded-3xl bg-slate-100" />
       <div className="flex w-full justify-between">
         <div className="flex w-[75%] flex-col gap-2">
-          <div className="h-7 w-52 rounded-full bg-slate-100"></div>
-          <div className="h-10 w-52 rounded-full bg-slate-100"></div>
+          <div className="h-7 w-52 rounded-full bg-slate-100" />
+          <div className="h-10 w-52 rounded-full bg-slate-100" />
         </div>
 
         <div className="flex items-start justify-end">
-          <div className="h-7 w-10 rounded-full bg-slate-100"></div>
+          <div className="h-7 w-10 rounded-full bg-slate-100" />
         </div>
       </div>
 
       <div className="flex items-center gap-1 self-start px-1">
-        <div className="h-5 w-36 rounded-full bg-slate-100"></div>
+        <div className="h-5 w-36 rounded-full bg-slate-100" />
       </div>
 
       <div className="mt-2 w-auto self-start">
-        <div className="m-1 h-9 w-28 rounded-md bg-slate-100"></div>
+        <div className="m-1 h-9 w-28 rounded-md bg-slate-100" />
       </div>
     </div>
   );

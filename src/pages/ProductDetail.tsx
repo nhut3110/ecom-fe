@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import OpacityMotionDiv from "../components/Animation/OpacityMotionDiv";
-import SlideDownDisappearDiv from "../components/Animation/SlideDownDisappearDiv";
+import React, { useContext, useEffect, useState } from "react";
+import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
+import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
 import DotsLoading from "../components/Animation/DotsLoading";
 import QuantityButton from "../components/QuantityButton";
 import RatingStar from "../components/RatingStar";
@@ -40,23 +40,23 @@ const ProductDetail = (): React.ReactElement => {
     notify({
       content: `Successfully add ${data.title} to cart`,
       type: "success",
-      isOpen: true,
+      open: true,
       id: crypto.randomUUID(),
     });
   };
 
   return (
-    <div>
+    <>
       {isLoading ? (
         <AnimatePresence>
-          <SlideDownDisappearDiv>
+          <SlideDownDisappearWrapper>
             <div className="flex h-screen w-full items-center justify-center">
               <DotsLoading />
             </div>
-          </SlideDownDisappearDiv>
+          </SlideDownDisappearWrapper>
         </AnimatePresence>
       ) : (
-        <OpacityMotionDiv>
+        <OpacityMotionWrapper>
           <div className="my-10 flex w-full flex-col items-center justify-center gap-5 md:flex-row">
             <div className="flex w-full items-center justify-center md:w-1/2">
               <img
@@ -77,7 +77,7 @@ const ProductDetail = (): React.ReactElement => {
               </div>
 
               <div className="md:w-3/4">
-                <hr className="my-5 h-px border-0 bg-gray-200"></hr>
+                <hr className="my-5 h-px border-0 bg-gray-200" />
 
                 <p className="text-2xl font-semibold">
                   ${data.price.toFixed(2)} or {(data.price / 12).toFixed(2)}
@@ -88,7 +88,7 @@ const ProductDetail = (): React.ReactElement => {
                   Suggested payments with 6 or 12 months special financing
                 </p>
 
-                <hr className="my-2 h-px border-0 bg-gray-200 md:my-5"></hr>
+                <hr className="my-2 h-px border-0 bg-gray-200 md:my-5" />
               </div>
               <div className="mx-5 scale-150 md:mx-0 md:scale-100">
                 <QuantityButton
@@ -129,13 +129,13 @@ const ProductDetail = (): React.ReactElement => {
             <p className="text-2xl font-semibold md:text-3xl">
               About the Product
             </p>
-            <hr className="my-3 h-px border-0 bg-gray-200"></hr>
+            <hr className="my-3 h-px border-0 bg-gray-200" />
             <p className="text-justify">{data.description}</p>
-            <hr className="my-3 h-px border-0 bg-gray-200"></hr>
+            <hr className="my-3 h-px border-0 bg-gray-200" />
           </div>
-        </OpacityMotionDiv>
+        </OpacityMotionWrapper>
       )}
-    </div>
+    </>
   );
 };
 

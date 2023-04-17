@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import React, {
   useCallback,
   useContext,
@@ -5,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { motion } from "framer-motion";
 import QuantityButton from "./QuantityButton";
 import Modal from "./Modal";
 import { CartContext } from "../context/CartContext";
@@ -104,7 +104,7 @@ const ProductCart = ({
       </div>
 
       <Modal
-        isOpen={showModal}
+        open={showModal}
         title="Warning"
         onSubmit={handleRemove}
         onClose={handleCloseModal}

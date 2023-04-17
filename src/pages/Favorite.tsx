@@ -2,10 +2,9 @@ import React, { useContext, useState } from "react";
 import { useSortAndFilterProduct } from "../hooks/useSortAndFilterProduct";
 import ProductCard from "../components/ProductCard";
 import { selectSortMenu } from "../utils/SelectSortMenu";
-import OpacityMotionDiv from "../components/Animation/OpacityMotionDiv";
+import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 import { ProductDetails } from "../constants/data";
 import { FavoriteContext } from "../context/FavoriteContext";
-import { SortAndFilterProduct } from "../utils/SortAndFilterProduct";
 
 const Favorite = (): React.ReactElement => {
   const { favoriteState } = useContext(FavoriteContext);
@@ -26,11 +25,11 @@ const Favorite = (): React.ReactElement => {
       </div>
 
       {/* Favorite List  */}
-      <OpacityMotionDiv className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
+      <OpacityMotionWrapper className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
         {filteredProducts.map((product: ProductDetails) => (
           <ProductCard product={product} key={product.id} />
         ))}
-      </OpacityMotionDiv>
+      </OpacityMotionWrapper>
     </div>
   );
 };

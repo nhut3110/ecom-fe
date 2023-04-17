@@ -1,8 +1,8 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import { NotificationProps } from "../components/Notification";
+import { NotificationType } from "../components/Notification";
 
 export type NotificationStateType = {
-  notificationList: NotificationProps[];
+  notificationList: NotificationType[];
 };
 
 const initNotificationState: NotificationStateType = {
@@ -16,7 +16,7 @@ const enum REDUCER_ACTION_TYPE {
 
 type ReducerAction = {
   type: REDUCER_ACTION_TYPE;
-  payload: NotificationProps;
+  payload: NotificationType;
 };
 
 const notificationReducer = (
@@ -46,7 +46,7 @@ const useNotificationContext = (initState: NotificationStateType) => {
   );
 
   const notify = useCallback(
-    (notification: NotificationProps) =>
+    (notification: NotificationType) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.ADD_NOTIFICATION,
         payload: notification,
@@ -55,7 +55,7 @@ const useNotificationContext = (initState: NotificationStateType) => {
   );
 
   const dismiss = useCallback(
-    (notification: NotificationProps) =>
+    (notification: NotificationType) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.REMOVE_NOTIFICATION,
         payload: notification,
@@ -72,8 +72,8 @@ export type UseNotificationContextType = ReturnType<
 
 const initContextState: UseNotificationContextType = {
   notificationState: initNotificationState,
-  notify: (notification: NotificationProps) => {},
-  dismiss: (notification: NotificationProps) => {},
+  notify: (notification: NotificationType) => {},
+  dismiss: (notification: NotificationType) => {},
 };
 
 export const NotificationContext =

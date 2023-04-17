@@ -1,6 +1,6 @@
 import { ProductDetails } from "../constants/data";
 
-type SortAndFilterProductProps = {
+type SortAndFilterProductType = {
   selectedSort: string;
   selectedFilter: string;
   products: ProductDetails[];
@@ -17,7 +17,7 @@ export const useSortAndFilterProduct = ({
   selectedSort,
   selectedFilter,
   products,
-}: SortAndFilterProductProps) => {
+}: SortAndFilterProductType) => {
   const sortProducts = (products: ProductDetails[], sortOption: string) => {
     let sortedProducts = [...products];
     switch (sortOption) {

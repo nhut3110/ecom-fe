@@ -1,22 +1,17 @@
-import React from "react";
 import { motion } from "framer-motion";
+import React from "react";
 
-type LeftAppearDivType = {
+type LeftAppearWrapperType = {
   children: React.ReactElement[] | React.ReactElement;
   className?: string;
   loop?: boolean;
 };
 
-const leftAppearDivVariants = {
+const LeftAppearWrapperVariants = {
   initial: {
     opacity: 0,
     x: -100,
     transition: { duration: 0.4 },
-  },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 2, staggerChildren: 0.1 },
   },
   onScreen: {
     opacity: 1,
@@ -25,17 +20,17 @@ const leftAppearDivVariants = {
   },
 };
 
-const LeftAppearDiv = ({
+const LeftAppearWrapper = ({
   children,
   className,
   loop = false,
-}: LeftAppearDivType): React.ReactElement => {
+}: LeftAppearWrapperType): React.ReactElement => {
   return (
     <motion.div
       className={className}
-      variants={leftAppearDivVariants}
+      variants={LeftAppearWrapperVariants}
       initial="initial"
-      animate={loop ? "" : "visible"}
+      animate={!loop && "onScreen"}
       whileInView={loop ? "onScreen" : ""}
     >
       {children}
@@ -43,4 +38,4 @@ const LeftAppearDiv = ({
   );
 };
 
-export default LeftAppearDiv;
+export default LeftAppearWrapper;

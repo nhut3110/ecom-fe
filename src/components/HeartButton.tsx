@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-type HeartButtonProps = {
+type HeartButtonType = {
   love: boolean;
   className?: string;
   onClick?: () => void;
 };
 
-const ANIMATION_DURATION = 1500;
-
-const HeartButton = (props: HeartButtonProps): React.ReactElement => {
-  const { love, className, onClick } = props;
-
+const HeartButton = ({
+  love,
+  className,
+  onClick,
+}: HeartButtonType): React.ReactElement => {
   return (
     <motion.button
       whileHover={{ scale: 1.2 }}

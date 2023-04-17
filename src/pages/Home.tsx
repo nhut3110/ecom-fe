@@ -8,16 +8,16 @@ import {
   Watch,
   WomenSuit,
 } from "../assets/images";
-import LeftAppearDiv from "../components/Animation/LeftAppearDiv";
-import OpacityMotionDiv from "../components/Animation/OpacityMotionDiv";
-import RightAppearDiv from "../components/Animation/RightAppearDiv";
+import LeftAppearWrapper from "../components/Animation/LeftAppearWrapper";
+import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
+import RightAppearWrapper from "../components/Animation/RightAppearWrapper";
 
 const Home = (): React.ReactElement => {
   return (
     <div className="max-w-screen">
       {/* Header  */}
       <div className="my-2 flex w-full flex-col items-center justify-around bg-gray-200 p-10 md:h-[31.25rem] md:flex-row md:p-0">
-        <LeftAppearDiv className="flex h-[90%] w-[90%] flex-col justify-center gap-5 md:w-1/3">
+        <LeftAppearWrapper className="flex h-[90%] w-[90%] flex-col justify-center gap-5 md:w-1/3">
           <p className="text-3xl font-bold lg:text-6xl">
             Choose Our Top Picks Products
           </p>
@@ -40,11 +40,11 @@ const Home = (): React.ReactElement => {
               </p>
             </div>
           </div>
-        </LeftAppearDiv>
+        </LeftAppearWrapper>
 
         <div className="relative hidden aspect-square md:block md:w-1/3 md:max-w-[28.125rem]">
-          <div className="absolute aspect-square w-3/4 rounded-full bg-gray-300"></div>
-          <OpacityMotionDiv>
+          <div className="absolute aspect-square w-3/4 rounded-full bg-gray-300" />
+          <OpacityMotionWrapper>
             <img
               src={MenShirt}
               alt="men-shirt"
@@ -61,44 +61,44 @@ const Home = (): React.ReactElement => {
               alt="star-4"
               className="absolute bottom-7 right-16 w-8 lg:bottom-10 lg:right-48 lg:w-10 "
             />
-          </OpacityMotionDiv>
+          </OpacityMotionWrapper>
         </div>
       </div>
 
       {/* Core Value */}
       <div className="flex w-full flex-col items-center justify-center py-6 md:flex-row md:justify-around lg:py-16">
-        <OpacityMotionDiv className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
+        <OpacityMotionWrapper className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
           <img src={TruckIcon} alt="truck" className="w-10" />
           <p className="text-lg font-semibold">Free Worldwide Shipping </p>
           <p className=" text-sm text-gray-400">
             Free shipping to all over the world with many specials only for our
             dear customers
           </p>
-        </OpacityMotionDiv>
+        </OpacityMotionWrapper>
 
-        <OpacityMotionDiv className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
+        <OpacityMotionWrapper className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
           <img src={ShirtIcon} alt="shirt" className="w-10" />
           <p className="text-lg font-semibold">Best Quality Products </p>
           <p className=" text-sm text-gray-400">
             Many customers entrust various products needs to us, and customer
             satisfaction is our pride
           </p>
-        </OpacityMotionDiv>
+        </OpacityMotionWrapper>
 
-        <OpacityMotionDiv className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
+        <OpacityMotionWrapper className="relative w-3/4 p-7 md:h-[12.5rem] md:w-1/3 md:p-8 lg:w-1/4">
           <img src={MoneyIcon} alt="money" className="w-10" />
           <p className="text-lg font-semibold">Super Affordable Price </p>
           <p className=" text-sm text-gray-400">
             You can get various products with the highest quality at an
             affordable price
           </p>
-        </OpacityMotionDiv>
+        </OpacityMotionWrapper>
       </div>
 
       {/* Main Categories */}
       <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-2 md:grid-rows-2">
         <div className="flex justify-end">
-          <OpacityMotionDiv className="flex h-40 w-3/4 items-center justify-center justify-items-center rounded-lg bg-gray-200">
+          <OpacityMotionWrapper className="flex h-40 w-3/4 items-center justify-center justify-items-center rounded-lg bg-gray-200">
             <div className="ml-5">
               <p className="text-xl text-gray-400">#Jewelry</p>
               <p className="font-bold lg:text-xl">
@@ -110,11 +110,11 @@ const Home = (): React.ReactElement => {
               alt="ring"
               className="mr-1 max-h-[90%] w-1/3 object-contain"
             />
-          </OpacityMotionDiv>
+          </OpacityMotionWrapper>
         </div>
 
         <div className="flex h-40 justify-start md:row-span-2 md:h-auto">
-          <OpacityMotionDiv className=" relative flex w-3/4 items-center justify-items-center  rounded-lg bg-gray-200 md:items-start">
+          <OpacityMotionWrapper className="relative flex w-3/4 items-center justify-items-center rounded-lg bg-gray-200 md:items-start">
             <div className="ml-5 md:mt-10 md:ml-10">
               <p className="text-xl text-gray-400">#Clothing</p>
               <p className="font-bold md:w-1/2 lg:text-xl">
@@ -126,11 +126,11 @@ const Home = (): React.ReactElement => {
               alt="ring"
               className="bottom-10 right-10 mr-1 max-h-[80%] w-2/5 object-contain md:absolute"
             />
-          </OpacityMotionDiv>
+          </OpacityMotionWrapper>
         </div>
 
         <div className=" flex justify-end">
-          <OpacityMotionDiv className="flex h-40 w-3/4 items-center justify-center justify-items-center rounded-lg bg-gray-200">
+          <OpacityMotionWrapper className="flex h-40 w-3/4 items-center justify-center justify-items-center rounded-lg bg-gray-200">
             <div className="ml-5">
               <p className="text-xl text-gray-400">#Electronic</p>
               <p className="font-bold lg:text-xl">
@@ -142,17 +142,17 @@ const Home = (): React.ReactElement => {
               alt="ring"
               className="mr-1sss max-h-[90%] w-1/4 object-contain"
             />
-          </OpacityMotionDiv>
+          </OpacityMotionWrapper>
         </div>
       </div>
 
       {/* Store Description */}
       <div className="my-10 flex w-full flex-col items-center justify-center gap-10 md:h-80 md:flex-row md:gap-32">
-        <OpacityMotionDiv loop={true} className="relative">
-          <div className="absolute -bottom-10 -left-10 -z-10 aspect-square w-full rounded-full bg-gray-200"></div>
+        <OpacityMotionWrapper loop={true} className="relative">
+          <div className="absolute -bottom-10 -left-10 -z-10 aspect-square w-full rounded-full bg-gray-200" />
           <img src={Watch} alt="" className="w-[12.5rem]" />
-        </OpacityMotionDiv>
-        <RightAppearDiv loop={true} className="w-4/5 md:w-1/3">
+        </OpacityMotionWrapper>
+        <RightAppearWrapper loop={true} className="w-4/5 md:w-1/3">
           <p className="my-3 text-xl font-bold md:text-xl lg:text-3xl">
             Experienced in making your life more modern and comfortable
           </p>
@@ -161,7 +161,7 @@ const Home = (): React.ReactElement => {
             modern and comfortable, don't let yourself have missed any quality
             products from us
           </p>
-        </RightAppearDiv>
+        </RightAppearWrapper>
       </div>
 
       {/* Quote */}

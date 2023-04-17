@@ -38,8 +38,8 @@ const ConfirmForm = (): React.ReactElement => {
     storeOrder();
     notify({
       id: crypto.randomUUID(),
-      content: "Order successfully, you will be redirected in 3s...",
-      isOpen: true,
+      content: "Order successfully, check your order history",
+      open: true,
       type: "success",
       timeout: DELAY_BEFORE_REDIRECT,
     });

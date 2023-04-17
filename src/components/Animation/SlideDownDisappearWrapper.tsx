@@ -1,7 +1,7 @@
-import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import React from "react";
 
-type SlideDownDisappearDivType = {
+type SlideDownDisappearWrapperType = {
   children: React.ReactElement[] | React.ReactElement;
   className?: string;
 };
@@ -11,10 +11,10 @@ const childVariants = {
   exit: { y: 50, opacity: 0, transition: { duration: 0.3 } },
 };
 
-const SlideDownDisappearDiv = ({
+const SlideDownDisappearWrapper = ({
   children,
   className,
-}: SlideDownDisappearDivType): React.ReactElement => {
+}: SlideDownDisappearWrapperType): React.ReactElement => {
   return (
     <motion.div
       className={className}
@@ -27,4 +27,4 @@ const SlideDownDisappearDiv = ({
   );
 };
 
-export default SlideDownDisappearDiv;
+export default SlideDownDisappearWrapper;

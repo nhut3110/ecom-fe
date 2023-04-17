@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import React, { useContext, useEffect, useState } from "react";
 import { NotificationContext } from "../context/NotificationContext";
 import { determineNotificationType } from "../utils/DetermineNotificationType";
 
-export type NotificationProps = {
+export type NotificationType = {
   id?: string;
-  isOpen: boolean;
+  open: boolean;
   onClose?: () => void;
   children?: React.ReactElement | React.ReactElement[];
   content?: string;
@@ -24,8 +24,8 @@ const Notification = ({
   timeout = NOTIFICATION_DURATION,
   id = crypto.randomUUID(),
   ...props
-}: NotificationProps): React.ReactElement => {
-  const { isOpen, onClose, children, content, type } = props;
+}: NotificationType): React.ReactElement => {
+  const { open, onClose, children, content, type } = props;
   const [visible, setVisible] = useState<boolean>(false);
   const [style, setStyle] = useState<NotificationStyle>(() =>
     determineNotificationType(type)
@@ -50,7 +50,7 @@ const Notification = ({
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (open) {
       setVisible(true);
       const newTimerId = setTimeout(() => {
         setVisible(false);
@@ -62,7 +62,7 @@ const Notification = ({
       setTimerId(newTimerId);
       return () => clearTimeout(newTimerId);
     }
-  }, [isOpen]);
+  }, [open]);
 
   return (
     <AnimatePresence>
