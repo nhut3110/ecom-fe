@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGetOrderFormFields } from "../../hooks/useGetOrderFormFields";
 import SmallButton from "../SmallButton";
@@ -10,6 +11,7 @@ import { validationAddressSchema } from "../../constants/validate";
 const AddressForm = (): React.ReactElement => {
   const { formState, moveNextStep, movePreviousStep, setAddress } =
     useContext(FormContext);
+  const [showForm, setShowForm] = useState<boolean>(true);
 
   const formData = formState.address;
 
@@ -32,28 +34,38 @@ const AddressForm = (): React.ReactElement => {
 
   const onSubmit = (data: AddressType) => {
     setAddress(data);
+    setShowForm(false);
     moveNextStep();
   };
 
   return (
-    <form>
-      <div className="grid-cols-2 gap-5 md:grid">
-        {addressFormArray.map((field, index) => (
-          <OutlineInput
-            label={field.label}
-            name={field.name}
-            register={register}
-            error={errors}
-            key={index}
-          />
-        ))}
-      </div>
+    <>
+      {showForm && (
+        <form>
+          <motion.div
+            initial={{ x: -100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+          >
+            <div className="grid-cols-2 gap-5 md:grid">
+              {addressFormArray.map((field, index) => (
+                <OutlineInput
+                  label={field.label}
+                  name={field.name}
+                  register={register}
+                  error={errors}
+                  key={index}
+                />
+              ))}
+            </div>
+          </motion.div>
 
-      <div className="mt-4 flex w-full justify-between">
-        <SmallButton name="Back" onClick={movePreviousStep} />
-        <SmallButton name="Next" onClick={handleSubmit(onSubmit)} />
-      </div>
-    </form>
+          <div className="mt-4 flex w-full justify-between">
+            <SmallButton name="Back" onClick={movePreviousStep} />
+            <SmallButton name="Next" onClick={handleSubmit(onSubmit)} />
+          </div>
+        </form>
+      )}
+    </>
   );
 };
 

@@ -19,7 +19,7 @@ const Cart = (): React.ReactElement => {
   }, [cartState.cartList]);
 
   const handleCheckout = () => {
-    if (cartState.cartValue) redirect("/checkout");
+    if (cartState.cartValue > 0) redirect("/checkout");
     else {
       notify({
         id: crypto.randomUUID(),

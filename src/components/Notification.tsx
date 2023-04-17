@@ -36,6 +36,7 @@ const Notification = ({
   const handleHoverStart = () => {
     clearTimeout(timerId);
   };
+  console.log(children);
 
   const handleHoverEnd = () => {
     const newTimerId = setTimeout(() => {
@@ -84,9 +85,9 @@ const Notification = ({
             {/* Progress bar here */}
             <div className={`h-1 bg-transparent`}>
               <motion.div
-                className="h-full bg-gradient-to-r from-white to-gray-600"
-                initial={{ width: "100%" }}
-                animate={{ width: "0%" }}
+                className="h-full bg-gray-200"
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
                 transition={{ duration: timeout / 1000, ease: "linear" }}
               />
             </div>

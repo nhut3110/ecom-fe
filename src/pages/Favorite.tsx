@@ -5,7 +5,6 @@ import { selectSortMenu } from "../utils/SelectSortMenu";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 import { ProductDetails } from "../constants/data";
 import { FavoriteContext } from "../context/FavoriteContext";
-import { SortAndFilterProduct } from "../utils/SortAndFilterProduct";
 
 const Favorite = (): React.ReactElement => {
   const { favoriteState } = useContext(FavoriteContext);

@@ -65,57 +65,64 @@ const ProductCard = (props: {
   }, [product]);
 
   return (
-    <motion.div
-      whileHover={{
-        scale: 1.1,
-      }}
-      className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[0.0625rem] border-solid border-black bg-white p-2 shadow-xl"
-    >
-      <div className="relative flex aspect-square w-60 items-center justify-center">
-        <Link to={`/product/${product.id}`}>
-          <img
-            src={product.image}
-            alt={product.title}
-            className="object-fit h-36"
-          />
-        </Link>
-
-        <HeartButton
-          love={love}
-          className="absolute top-2 -right-2"
-          onClick={handleFavorites}
-        />
-      </div>
-
-      <div className="flex w-full justify-between px-2">
-        <div className="flex w-[75%] flex-col ">
-          <Link to="/product/test">
-            <p className="truncate text-lg font-semibold">{product.title}</p>
+    <>
+      <motion.div
+        whileHover={{
+          scale: 1.1,
+        }}
+        className="flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[0.0625rem] border-solid border-black bg-white p-2 shadow-xl"
+      >
+        <div className="relative flex aspect-square w-60 items-center justify-center">
+          <Link to={`/product/${product.id}`}>
+            <img
+              src={product.image}
+              alt={product.title}
+              className="object-fit h-36"
+            />
           </Link>
 
-          <p className="text-sm text-gray-500 line-clamp-2">
-            {product.description}
-          </p>
+          <HeartButton
+            love={love}
+            className="absolute top-2 -right-2"
+            onClick={handleFavorites}
+          />
         </div>
 
-        <div className="flex items-start justify-end">
-          <p className="text-xs font-bold">$</p>
-          <p className="text-lg font-bold">{integerPart}</p>
-          <p className="text-xs font-bold">
-            .{decimalPart ? decimalPart : "00"}
-          </p>
+        <div className="flex w-full justify-between px-2">
+          <div className="flex w-[75%] flex-col ">
+            <Link to={`/product/${product.id}`}>
+              <motion.p
+                whileHover={{ scale: 1.05 }}
+                className="truncate text-lg font-semibold"
+              >
+                {product.title}
+              </motion.p>
+            </Link>
+
+            <p className="text-sm text-gray-500 line-clamp-2">
+              {product.description}
+            </p>
+          </div>
+
+          <div className="flex items-start justify-end">
+            <p className="text-xs font-bold">$</p>
+            <p className="text-lg font-bold">{integerPart}</p>
+            <p className="text-xs font-bold">
+              .{decimalPart ? decimalPart : "00"}
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="flex items-center gap-1 self-start px-1">
-        <RatingStar rating={product.rating.rate} />
-        <p className="text-sm text-gray-500">({product.rating.count})</p>
-      </div>
+        <div className="flex items-center gap-1 self-start px-1">
+          <RatingStar rating={product.rating.rate} />
+          <p className="text-sm text-gray-500">({product.rating.count})</p>
+        </div>
 
-      <div className="mt-2 w-auto self-start">
-        <SmallButton name="Add to Cart" onClick={handleAddToCart} />
-      </div>
-    </motion.div>
+        <div className="mt-2 w-auto self-start">
+          <SmallButton name="Add to Cart" onClick={handleAddToCart} />
+        </div>
+      </motion.div>
+    </>
   );
 };
 

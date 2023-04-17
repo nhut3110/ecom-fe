@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Contexts from "./context/Contexts";
-import { publicRoutes } from "./constants/data";
 import NotificationWrapper from "./components/NotificationWrapper";
 import ScrollToTopWrapper from "./components/ScrollToTopWrapper";
+import { publicRoutes } from "./constants/data";
 
 function App() {
   return (
