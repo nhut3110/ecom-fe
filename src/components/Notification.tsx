@@ -36,7 +36,6 @@ const Notification = ({
   const handleHoverStart = () => {
     clearTimeout(timerId);
   };
-  console.log(children);
 
   const handleHoverEnd = () => {
     const newTimerId = setTimeout(() => {
@@ -70,7 +69,7 @@ const Notification = ({
         <motion.div
           initial={{ x: 50 }}
           animate={{ x: 0 }}
-          exit={{ x: 500 }}
+          exit={{ x: "100vw" }}
           onMouseEnter={handleHoverStart}
           onMouseLeave={handleHoverEnd}
         >

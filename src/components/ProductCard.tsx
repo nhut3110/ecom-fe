@@ -1,9 +1,16 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import HeartButton from "./HeartButton";
 import RatingStar from "./RatingStar";
 import SmallButton from "./SmallButton";
+import { FlyingImageWrapper } from "./FlyingImage";
 import { ProductDetails } from "../constants/data";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { CartContext } from "../context/CartContext";
@@ -20,7 +27,7 @@ const ProductCard = (props: {
   const { notify } = useContext(NotificationContext);
   const { addFavorite, removeFavorite, storeFavorite } =
     useContext(FavoriteContext);
-  const { addToCart, calculateCartValue } = useContext(CartContext);
+  const { addToCart, calculateCartValue, cartState } = useContext(CartContext);
 
   const isFavorite = useMemo(() => {
     const { favoriteList } = getLocalStorageValue({ key: "favorites" });
@@ -34,6 +41,7 @@ const ProductCard = (props: {
   }, []);
 
   const [love, setLove] = useState(isFavorite);
+  const [animation, setAnimation] = useState<boolean>(false);
 
   const handleFavorites = useCallback(() => {
     love ? removeFavorite(product) : addFavorite(product);
@@ -54,7 +62,7 @@ const ProductCard = (props: {
   }, [product.price]);
 
   const handleAddToCart = useCallback(() => {
-    addToCart(DEFAULT_QUANTITY, product);
+    addToCart(DEFAULT_QUANTITY, product, crypto.randomUUID());
     calculateCartValue(DEFAULT_QUANTITY, product);
     notify({
       id: crypto.randomUUID(),
@@ -63,6 +71,13 @@ const ProductCard = (props: {
       type: "success",
     });
   }, [product]);
+
+  useEffect(() => {
+    const cartProduct = cartState.cartList[product.id];
+    if (cartProduct) {
+      setAnimation(!!cartProduct.cartAnimations.length);
+    }
+  }, [cartState.cartList[product.id]]);
 
   return (
     <>
@@ -74,6 +89,7 @@ const ProductCard = (props: {
       >
         <div className="relative flex aspect-square w-60 items-center justify-center">
           <Link to={`/product/${product.id}`}>
+            {animation && <FlyingImageWrapper product={product} />}
             <img
               src={product.image}
               alt={product.title}

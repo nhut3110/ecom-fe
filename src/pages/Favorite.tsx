@@ -25,11 +25,13 @@ const Favorite = (): React.ReactElement => {
       </div>
 
       {/* Favorite List  */}
-      <OpacityMotionWrapper className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
+      <div className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
         {filteredProducts.map((product: ProductDetails) => (
-          <ProductCard product={product} key={product.id} />
+          <OpacityMotionWrapper key={product.id}>
+            <ProductCard product={product} key={product.id} />
+          </OpacityMotionWrapper>
         ))}
-      </OpacityMotionWrapper>
+      </div>
     </div>
   );
 };

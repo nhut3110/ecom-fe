@@ -15,6 +15,10 @@ type ChildrenType = {
 
 const initCartList = {};
 const initNotificationList: NotificationType[] = [];
+const initCartPosition = {
+  cartX: 0,
+  cartY: 0,
+};
 
 const Contexts = ({ children }: ChildrenType): React.ReactElement => {
   const queryClient = new QueryClient();
@@ -34,7 +38,11 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
       <QueryClientProvider client={queryClient}>
         <OrderProvider orderList={orders}>
           <FavoriteProvider favoriteList={list}>
-            <CartProvider cartList={initCartList} cartValue={0}>
+            <CartProvider
+              cartList={initCartList}
+              cartValue={0}
+              cartPositions={initCartPosition}
+            >
               <FormProvider
                 information={defaultForm.information}
                 address={defaultForm.address}

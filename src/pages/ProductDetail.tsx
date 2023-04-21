@@ -7,6 +7,7 @@ import DotsLoading from "../components/Animation/DotsLoading";
 import QuantityButton from "../components/QuantityButton";
 import RatingStar from "../components/RatingStar";
 import SmallButton from "../components/SmallButton";
+import { FlyingImageWrapper } from "../components/FlyingImage";
 import { fetchProductDetails } from "../services/api";
 import { GoodsIcon, TruckIcon } from "../assets/icons";
 import { NotificationContext } from "../context/NotificationContext";
@@ -35,7 +36,7 @@ const ProductDetail = (): React.ReactElement => {
   };
 
   const handleAddToCart = () => {
-    addToCart(quantity, data);
+    addToCart(quantity, data, crypto.randomUUID());
     calculateCartValue(quantity, data);
     notify({
       content: `Successfully add ${data.title} to cart`,
@@ -43,6 +44,7 @@ const ProductDetail = (): React.ReactElement => {
       open: true,
       id: crypto.randomUUID(),
     });
+    // addCartAnimation({ id: crypto.randomUUID(), image: data.image });
   };
 
   return (
@@ -59,11 +61,14 @@ const ProductDetail = (): React.ReactElement => {
         <OpacityMotionWrapper>
           <div className="my-10 flex w-full flex-col items-center justify-center gap-5 md:flex-row">
             <div className="flex w-full items-center justify-center md:w-1/2">
-              <img
-                src={data.image}
-                alt="product-image"
-                className="w-1/2 object-contain"
-              />
+              <div className="relative w-1/2" id={`product-detail-${data.id}`}>
+                <img
+                  src={data.image}
+                  alt="product-image"
+                  className="object-fit z-10"
+                />
+                <FlyingImageWrapper product={data} />
+              </div>
             </div>
 
             <div className="mx-5 flex max-w-[90%] flex-col items-start gap-2 md:ml-0 md:w-2/5">

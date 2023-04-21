@@ -84,7 +84,9 @@ const ProductCart = ({
 
       <div className="flex w-full justify-between ">
         <div className="flex flex-col justify-around p-2">
-          <p className="text-xs font-semibold md:text-lg">{product.title}</p>
+          <p className="text-xs font-semibold line-clamp-2 md:text-base lg:text-lg">
+            {product.title}
+          </p>
           <p className="md:text-md text-xs font-semibold">${totalPrice}</p>
           <QuantityButton
             quantity={quantities}

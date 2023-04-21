@@ -7,10 +7,10 @@ type SortAndFilterProductType = {
 };
 
 enum SortValue {
-  AZ = "From A to Z",
-  ZA = "From Z to A",
-  PRICE_ASC = "From Low to High",
-  PRICE_DESC = "From High to Low",
+  AZ = "A to Z",
+  ZA = "Z to A",
+  PRICE_ASC = "Low to High",
+  PRICE_DESC = "High to Low",
 }
 
 export const useSortAndFilterProduct = ({

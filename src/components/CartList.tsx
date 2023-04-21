@@ -13,7 +13,7 @@ const CartList = (): React.ReactElement => {
     <OpacityMotionWrapper>
       <AnimatePresence>
         {map(cartState.cartList).map((data) => (
-          <SlideDownDisappearWrapper>
+          <SlideDownDisappearWrapper key={data.product.id}>
             <ProductCart
               product={data.product}
               quantity={data.quantity}

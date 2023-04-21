@@ -17,7 +17,6 @@ const ConfirmForm = (): React.ReactElement => {
   const { notify } = useContext(NotificationContext);
   const { addOrder, storeOrder } = useContext(OrderContext);
   const { redirect } = useNavigatePage();
-  console.log(cartState);
 
   const { information, address, payment } = formState;
 

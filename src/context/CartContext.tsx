@@ -7,28 +7,70 @@ export type CartStateType = {
     [productID: string]: {
       quantity: number;
       product: ProductDetails;
+      cartAnimations: {
+        id: string;
+        product: ProductDetails;
+      }[];
     };
+  };
+  cartPositions: {
+    cartX: number;
+    cartY: number;
   };
 };
 
 const DEFAULT_CART_VALUE: number = 0;
 
 const enum REDUCER_ACTION_TYPE {
-  ADD_TO_CART,
-  INCREASE_QUANTITY,
-  DECREASE_QUANTITY,
-  REMOVE_PRODUCT,
-  REMOVE_ALL,
-  CALCULATE_VALUE,
+  ADD_TO_CART = "ADD_TO_CART",
+  INCREASE_QUANTITY = "INCREASE_QUANTITY",
+  DECREASE_QUANTITY = "DECREASE_QUANTITY",
+  REMOVE_PRODUCT = "REMOVE_PRODUCT",
+  REMOVE_ALL = "REMOVE_ALL",
+  CALCULATE_VALUE = "CALCULATE_VALUE",
 }
 
-type ReducerAction = {
-  type: REDUCER_ACTION_TYPE;
-  payload?: {
-    quantity?: number;
-    product: ProductDetails;
-  };
-};
+const enum ANIMATION_ACTION_TYPE {
+  UPDATE_CART_POSITIONS = "UPDATE_CART_POSITIONS",
+  ADD_CART_ANIMATION = "ADD_CART_ANIMATION",
+  REMOVE_CART_ANIMATION = "REMOVE_CART_ANIMATION",
+}
+
+type ReducerAction =
+  | {
+      type: REDUCER_ACTION_TYPE.ADD_TO_CART;
+      payload: {
+        quantity: number;
+        product: ProductDetails;
+        id: string;
+      };
+    }
+  | {
+      type:
+        | REDUCER_ACTION_TYPE.INCREASE_QUANTITY
+        | REDUCER_ACTION_TYPE.DECREASE_QUANTITY
+        | REDUCER_ACTION_TYPE.REMOVE_PRODUCT
+        | REDUCER_ACTION_TYPE.REMOVE_ALL
+        | REDUCER_ACTION_TYPE.CALCULATE_VALUE;
+      payload?: {
+        quantity?: number;
+        product: ProductDetails;
+      };
+    }
+  | {
+      type: ANIMATION_ACTION_TYPE.UPDATE_CART_POSITIONS;
+      payload: {
+        cartX: number;
+        cartY: number;
+      };
+    }
+  | {
+      type: ANIMATION_ACTION_TYPE.REMOVE_CART_ANIMATION;
+      payload: {
+        id: string;
+        product: ProductDetails;
+      };
+    };
 
 const cartReducer = (state: CartStateType, action: ReducerAction) => {
   switch (action.type) {
@@ -48,6 +90,15 @@ const cartReducer = (state: CartStateType, action: ReducerAction) => {
 
     case REDUCER_ACTION_TYPE.ADD_TO_CART: {
       const cartItem = action.payload!.product;
+      if (!cartItem || !cartItem.id) {
+        return state;
+      }
+
+      const animatedItem = {
+        id: action.payload!.id,
+        product: action.payload!.product,
+      };
+
       const existingItem = state.cartList[cartItem.id];
       if (existingItem)
         return {
@@ -57,6 +108,7 @@ const cartReducer = (state: CartStateType, action: ReducerAction) => {
             [cartItem.id]: {
               ...existingItem,
               quantity: existingItem.quantity + action.payload!.quantity!,
+              cartAnimations: [...existingItem.cartAnimations, animatedItem],
             },
           },
         };
@@ -68,6 +120,7 @@ const cartReducer = (state: CartStateType, action: ReducerAction) => {
           [cartItem.id]: {
             product: cartItem,
             quantity: action.payload!.quantity,
+            cartAnimations: [animatedItem],
           },
         },
       };
@@ -118,8 +171,36 @@ const cartReducer = (state: CartStateType, action: ReducerAction) => {
       return { ...state, cartList: {}, cartValue: DEFAULT_CART_VALUE };
     }
 
+    case ANIMATION_ACTION_TYPE.UPDATE_CART_POSITIONS: {
+      return {
+        ...state,
+        cartPositions: {
+          cartX: action.payload.cartX,
+          cartY: action.payload.cartY,
+        },
+      };
+    }
+
+    case ANIMATION_ACTION_TYPE.REMOVE_CART_ANIMATION: {
+      const cartItemID = action.payload!.product.id;
+      const cartItem = state.cartList[cartItemID];
+
+      return {
+        ...state,
+        cartList: {
+          ...state.cartList,
+          [cartItemID]: {
+            ...cartItem,
+            cartAnimations: cartItem.cartAnimations.filter(
+              (animation) => animation.id !== action.payload.id
+            ),
+          },
+        },
+      };
+    }
+
     default:
-      throw new Error(`Unknown action type ${action.type}`);
+      return state;
   }
 };
 
@@ -136,10 +217,10 @@ const useCartContext = (initState: CartStateType) => {
   );
 
   const addToCart = useCallback(
-    (quantity: number, product: ProductDetails) =>
+    (quantity: number, product: ProductDetails, id: string) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.ADD_TO_CART,
-        payload: { quantity, product },
+        payload: { quantity, product, id },
       }),
     [dispatch]
   );
@@ -180,6 +261,24 @@ const useCartContext = (initState: CartStateType) => {
     [dispatch]
   );
 
+  const updateCartPositions = useCallback(
+    (position: { cartX: number; cartY: number }) =>
+      dispatch({
+        type: ANIMATION_ACTION_TYPE.UPDATE_CART_POSITIONS,
+        payload: position,
+      }),
+    [dispatch]
+  );
+
+  const removeCartAnimation = useCallback(
+    (animation: { id: string; product: ProductDetails }) =>
+      dispatch({
+        type: ANIMATION_ACTION_TYPE.REMOVE_CART_ANIMATION,
+        payload: animation,
+      }),
+    [dispatch]
+  );
+
   return {
     cartState,
     calculateCartValue,
@@ -188,19 +287,28 @@ const useCartContext = (initState: CartStateType) => {
     decreaseQuantity,
     removeFromCart,
     removeAllFromCart,
+    updateCartPositions,
+    removeCartAnimation,
   };
 };
 
 export type UseCartContextType = ReturnType<typeof useCartContext>;
 
 const initContextState: UseCartContextType = {
-  cartState: { cartList: {}, cartValue: DEFAULT_CART_VALUE },
+  cartState: {
+    cartList: {},
+    cartValue: DEFAULT_CART_VALUE,
+    cartPositions: { cartX: 0, cartY: 0 },
+  },
   calculateCartValue: (quantity: number, product: ProductDetails) => {},
   addToCart: (quantity: number, product: ProductDetails) => {},
   increaseQuantity: (quantity: number, product: ProductDetails) => {},
   decreaseQuantity: (quantity: number, product: ProductDetails) => {},
   removeFromCart: (product: ProductDetails) => {},
   removeAllFromCart: () => {},
+  updateCartPositions: (position: { cartX: number; cartY: number }) => {},
+  removeCartAnimation: (animation: { id: string }) => {},
+  // addCartAnimation: (animation: { id: string; product: ProductDetails }) => {},
 };
 
 export const CartContext = createContext<UseCartContextType>(initContextState);

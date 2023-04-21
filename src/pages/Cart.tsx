@@ -38,8 +38,15 @@ const Cart = (): React.ReactElement => {
     setShowModal(true);
   };
 
+  const handleButtonClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      event.stopPropagation();
+    },
+    []
+  );
+
   return (
-    <div>
+    <div onClick={handleButtonClick}>
       {/* Modal */}
       <Modal
         open={showModal}
