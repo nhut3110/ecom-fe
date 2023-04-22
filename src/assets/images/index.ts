@@ -8,6 +8,7 @@ import BlueManShirt from "./blue-man-shirt.png";
 import SilverRings from "./silver-ring.png";
 import Headphone from "./headphone.png";
 import Watch from "./watch.png";
+import LoginBackground from "./login-background.jpg";
 
 export {
   FakeLogo,
@@ -20,4 +21,5 @@ export {
   BlueManShirt,
   WomenShirt,
   SilverRings,
+  LoginBackground,
 };

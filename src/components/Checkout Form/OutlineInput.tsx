@@ -9,8 +9,9 @@ import { ErrorMessage } from "@hookform/error-message";
 
 interface OutlineInputType {
   label: string;
-  name: Path<InformationType | AddressType | PaymentType>;
+  name: Path<any>;
   error?: any;
+  type?: string;
   register: UseFormRegister<any>;
 }
 
@@ -19,6 +20,7 @@ const OutlineInput = ({
   name,
   error,
   register,
+  type,
 }: OutlineInputType): React.ReactElement => {
   return (
     <div className="flex w-full flex-col gap-2 pb-2">
@@ -26,12 +28,13 @@ const OutlineInput = ({
         {label}
       </label>
       <input
+        type={type ? type : "text"}
         id={name}
         {...register(name)}
-        className="min-h-[1.5rem] rounded-lg bg-gray-100 p-3 focus:border-l focus:border-black"
+        className="min-h-[1.5rem] rounded-lg bg-gray-50 p-3 focus:border-l focus:border-black"
       />
       {error && (
-        <span className="text-md italic text-red-400">
+        <span className="text-sm italic text-red-400">
           <ErrorMessage errors={error} name={name} />
         </span>
       )}
