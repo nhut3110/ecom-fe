@@ -8,6 +8,7 @@ import Layout from "../layout/Layout";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import Favorite from "../pages/Favorite";
+import GetToken from "../pages/GetToken";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Order from "../pages/Order";
@@ -137,5 +138,9 @@ export const publicRoutes: Routes[] = [
     path: "/orders",
     component: Order,
     layout: Layout,
+  },
+  {
+    path: "/auth/callback/:token",
+    component: GetToken,
   },
 ];

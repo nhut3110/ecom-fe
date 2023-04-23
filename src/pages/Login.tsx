@@ -1,13 +1,19 @@
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import React, { useContext, useMemo, useState } from "react";
 import { FakeLogo, LoginBackground, ShoppingArt } from "../assets/images";
 import FacebookButton from "../components/Animation/FacebookButton";
 import GoogleButton from "../components/Animation/GoogleButton";
 import TwitterButton from "../components/Animation/TwitterButton";
 import OutlineInput from "../components/Checkout Form/OutlineInput";
 import { validationLoginSchema } from "../constants/validate";
+import { login } from "../services/auth.api";
+import { NotificationContext } from "../context/NotificationContext";
+import { useNavigatePage } from "../hooks/useNavigatePage";
+
+const DELAY_BEFORE_REDIRECT = 1500;
 
 export type LoginFormType = {
   email: string;
@@ -23,34 +29,65 @@ const Login = (): React.ReactElement => {
     resolver: yupResolver(validationLoginSchema),
   });
 
-  const containerVariants = {
-    initial: {
-      transition: {
-        staggerChildren: 0.5,
-      },
+  const { notify } = useContext(NotificationContext);
+  const { redirect } = useNavigatePage();
+
+  const { mutate } = useMutation(login, {
+    onSuccess: () => {
+      notify({
+        content: `Login successfully`,
+        type: "success",
+        open: true,
+        id: crypto.randomUUID(),
+      });
+      setTimeout(() => {
+        redirect("/");
+      }, DELAY_BEFORE_REDIRECT);
     },
-    animate: {
-      transition: {
-        staggerChildren: 0.5,
-        delay: 1.5,
-      },
+    onError: () => {
+      notify({
+        content: `Wrong credentials`,
+        type: "error",
+        open: true,
+        id: crypto.randomUUID(),
+      });
     },
-  };
+  });
 
-  const buttonVariants = {
-    initial: { y: -30, opacity: 0 },
-    animate: { y: 0, opacity: 1 },
-    transition: { duration: 1, type: "easeIn" },
-  };
+  const containerVariants = useMemo(() => {
+    return {
+      initial: {
+        transition: {
+          staggerChildren: 0.5,
+        },
+      },
+      animate: {
+        transition: {
+          staggerChildren: 0.5,
+          delay: 1.5,
+        },
+      },
+    };
+  }, []);
 
-  const LeftAppearVariants = {
-    initial: { x: -200, opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    transition: { duration: 0.5, type: "easeIn" },
-  };
+  const buttonVariants = useMemo(() => {
+    return {
+      initial: { y: -30, opacity: 0 },
+      animate: { y: 0, opacity: 1 },
+      transition: { duration: 1, type: "easeIn" },
+    };
+  }, []);
 
-  const onSubmit = (data: LoginFormType) => {
-    console.log(data);
+  const LeftAppearVariants = useMemo(() => {
+    return {
+      initial: { x: -200, opacity: 0 },
+      animate: { x: 0, opacity: 1 },
+      transition: { duration: 0.5, type: "easeIn" },
+    };
+  }, []);
+
+  const onSubmit = (loginData: LoginFormType) => {
+    mutate(loginData);
   };
 
   return (

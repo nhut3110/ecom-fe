@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { UseFormRegister, Path } from "react-hook-form";
 import {
   AddressType,
@@ -6,6 +6,7 @@ import {
   PaymentType,
 } from "../../context/FormContext";
 import { ErrorMessage } from "@hookform/error-message";
+import EyeButton from "../Animation/EyeButton";
 
 interface OutlineInputType {
   label: string;
@@ -22,17 +23,36 @@ const OutlineInput = ({
   register,
   type,
 }: OutlineInputType): React.ReactElement => {
+  const [inputType, setInputType] = useState<string>(type ?? "text");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="flex w-full flex-col gap-2 pb-2">
       <label htmlFor={name} className="font-semibold first-letter:capitalize">
         {label}
       </label>
-      <input
-        type={type ? type : "text"}
-        id={name}
-        {...register(name)}
-        className="min-h-[1.5rem] rounded-lg bg-gray-50 p-3 focus:border-l focus:border-black"
-      />
+      <div className="relative w-full rounded-lg bg-gray-50 p-3 focus-within:border-2 focus-within:border-black">
+        <input
+          type={showPassword ? "text" : inputType}
+          id={name}
+          {...register(name)}
+          className={`min-h-[1.5rem] ${
+            type === "password" ? "w-[90%]" : "w-full"
+          } bg-transparent focus:outline-none`}
+        />
+        {type === "password" && (
+          <EyeButton
+            isEyeClosed={showPassword}
+            onClick={toggleShowPassword}
+            className="absolute top-1/2 right-3 aspect-square w-5 -translate-y-1/2 transform"
+          />
+        )}
+      </div>
+
       {error && (
         <span className="text-sm italic text-red-400">
           <ErrorMessage errors={error} name={name} />

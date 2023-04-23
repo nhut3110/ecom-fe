@@ -79,9 +79,5 @@ export const validationLoginSchema = yup.object<Shape<LoginFormType>>().shape({
     .string()
     .required("Password is required")
     .min(8, "Password must be at least 8 characters")
-    .max(64, "Password must be at most 64 characters")
-    .matches(
-      /^(?=.*[A-Z]).+$/,
-      "Password must contain at least one capitalized character"
-    ),
+    .max(64, "Password must be at most 64 characters"),
 });

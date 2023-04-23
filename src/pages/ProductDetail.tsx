@@ -8,7 +8,7 @@ import QuantityButton from "../components/QuantityButton";
 import RatingStar from "../components/RatingStar";
 import SmallButton from "../components/SmallButton";
 import { FlyingImageWrapper } from "../components/FlyingImage";
-import { fetchProductDetails } from "../services/api";
+import { fetchProductDetails } from "../services/products.api";
 import { GoodsIcon, TruckIcon } from "../assets/icons";
 import { NotificationContext } from "../context/NotificationContext";
 import { CartContext } from "../context/CartContext";
