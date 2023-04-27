@@ -20,6 +20,11 @@ type LoginType = {
   password: string;
 };
 
+type FacebookLoginType = {
+  code: string;
+  callbackUrl: string;
+};
+
 const authApi = axios.create({
   baseURL: BASE_URL_API,
 });
@@ -60,7 +65,8 @@ const refreshToken = async () => {
 
 authApi.interceptors.request.use(
   (config) => {
-    if (config.url === "/auth/login") return config;
+    if (config.url === "/auth/login" || config.url === "/auth/facebook")
+      return config;
 
     const user = getUserData();
     if (user && user.accessToken) {
@@ -83,7 +89,11 @@ authApi.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (originalRequest.url === "/auth/login") return Promise.reject(error);
+    if (
+      originalRequest.url === "/auth/login" ||
+      originalRequest.url === "/auth/facebook"
+    )
+      return Promise.reject(error);
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -103,6 +113,21 @@ authApi.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+const loginFacebook = (loginData: FacebookLoginType) => {
+  return authApi.post("/auth/facebook", loginData).then((response) => {
+    updateLocalStorageValue({
+      key: "key",
+      value: {
+        email: DecodeEmailFromJWT(response.data?.accessToken),
+        accessToken: response.data?.accessToken,
+        refreshToken: response.data?.refreshToken,
+      },
+    });
+    console.log(DecodeEmailFromJWT(response.data?.accessToken));
+    return response.data;
+  });
+};
 
 const login = (loginData: LoginType) => {
   return authApi.post("/auth/login", loginData).then((response) => {
@@ -131,4 +156,4 @@ const getUserInfo = ({ email }: { email: string }) => {
   return { userInfo: data, error, isLoading };
 };
 
-export { authApi, login, getUserInfo };
+export { authApi, login, getUserInfo, loginFacebook };
