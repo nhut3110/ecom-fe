@@ -68,7 +68,7 @@ const Notification = ({
       {visible && (
         <motion.div
           initial={{ x: 50 }}
-          animate={{ x: 0 }}
+          animate={{ x: -10 }}
           exit={{ x: "100vw" }}
           onMouseEnter={handleHoverStart}
           onMouseLeave={handleHoverEnd}
@@ -78,7 +78,9 @@ const Notification = ({
           >
             <div className="mx-4 flex items-center gap-3 py-2 font-semibold">
               <div className="w-5">{style.icon}</div>
-              {children ?? <p>{content}</p>}
+              {children ?? (
+                <p className="max-w-[16rem] line-clamp-2">{content}</p>
+              )}
             </div>
 
             {/* Progress bar here */}

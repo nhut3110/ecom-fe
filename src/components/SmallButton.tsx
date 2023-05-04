@@ -11,7 +11,6 @@ const SmallButton = (props: {
   return (
     <div>
       <motion.button
-        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.8 }}
         onClick={onClick}
         className="m-1 rounded-md bg-slate-700 py-2 px-5 text-[0.6875rem] text-white first-letter:capitalize hover:bg-black sm:text-sm "

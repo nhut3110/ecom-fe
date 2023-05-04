@@ -4,6 +4,7 @@ import {
   InformationType,
   PaymentType,
 } from "../context/FormContext";
+import { LoginFormType } from "../pages/Login";
 
 export type ConditionalSchema<T> = T extends string
   ? yup.StringSchema
@@ -65,4 +66,18 @@ export const validationPaymentSchema = yup.object<Shape<PaymentType>>().shape({
     .string()
     .required("CVC is required")
     .matches(/^\d{3}$/, "CVC must be 3 digits"),
+});
+
+export const validationLoginSchema = yup.object<Shape<LoginFormType>>().shape({
+  email: yup
+    .string()
+    .email("Invalid email")
+    .required("Email is required")
+    .min(6, "Email must be at least 6 characters")
+    .max(64, "Email must be at most 64 characters"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(64, "Password must be at most 64 characters"),
 });

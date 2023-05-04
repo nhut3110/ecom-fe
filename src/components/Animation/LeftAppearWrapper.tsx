@@ -7,7 +7,7 @@ type LeftAppearWrapperType = {
   loop?: boolean;
 };
 
-const LeftAppearWrapperVariants = {
+const leftAppearWrapperVariants = {
   initial: {
     opacity: 0,
     x: -100,
@@ -28,7 +28,7 @@ const LeftAppearWrapper = ({
   return (
     <motion.div
       className={className}
-      variants={LeftAppearWrapperVariants}
+      variants={leftAppearWrapperVariants}
       initial="initial"
       animate={!loop && "onScreen"}
       whileInView={loop ? "onScreen" : ""}
