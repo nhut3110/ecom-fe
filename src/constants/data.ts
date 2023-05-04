@@ -53,7 +53,17 @@ export interface ProductDetails {
   };
 }
 
-export const navList: string[] = ["products", "favorites", "cart", "orders"];
+export enum NavItemType {
+  PRODUCTS = "products",
+  FAVORITES = "favorites",
+  ORDERS = "orders",
+}
+
+export const navList: NavItemType[] = [
+  NavItemType.PRODUCTS,
+  NavItemType.FAVORITES,
+  NavItemType.ORDERS,
+];
 
 export const carouselImages: Array<CarouselImageType> = [
   {

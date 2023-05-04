@@ -7,7 +7,7 @@ import { FakeLogo, LoginBackground, ShoppingArt } from "../assets/images";
 import FacebookButton from "../components/Animation/FacebookButton";
 import GoogleButton from "../components/Animation/GoogleButton";
 import TwitterButton from "../components/Animation/TwitterButton";
-import OutlineInput from "../components/Checkout Form/OutlineInput";
+import OutlineInput from "../components/CheckoutForm/OutlineInput";
 import { validationLoginSchema } from "../constants/validate";
 import { login } from "../services/auth.api";
 import { NotificationContext } from "../context/NotificationContext";
@@ -78,7 +78,7 @@ const Login = (): React.ReactElement => {
     };
   }, []);
 
-  const LeftAppearVariants = useMemo(() => {
+  const leftAppearVariants = useMemo(() => {
     return {
       initial: { x: -200, opacity: 0 },
       animate: { x: 0, opacity: 1 },
@@ -103,7 +103,7 @@ const Login = (): React.ReactElement => {
         className="object-fit absolute -z-0 h-full w-full lg:hidden"
       />
       <motion.div
-        variants={LeftAppearVariants}
+        variants={leftAppearVariants}
         className="z-10 mx-3 my-auto flex h-fit w-full flex-col items-start justify-center rounded-lg border-2 bg-white px-10 py-10 shadow-2xl md:w-1/2 lg:w-1/3"
       >
         <img src={FakeLogo} alt="logo" className="h-2" />
@@ -147,7 +147,7 @@ const Login = (): React.ReactElement => {
         </div>
 
         <motion.form
-          variants={LeftAppearVariants}
+          variants={leftAppearVariants}
           className="w-full"
           onSubmit={handleSubmit(onSubmit)}
         >
@@ -167,7 +167,7 @@ const Login = (): React.ReactElement => {
           />
 
           <motion.button
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ background: "gray" }}
             whileTap={{ scale: 0.8 }}
             className="mt-8 h-10 w-full rounded-lg border-2 bg-black font-semibold text-white "
           >
@@ -181,7 +181,6 @@ const Login = (): React.ReactElement => {
             href=""
             className="mt-5 w-full text-center text-sm font-semibold text-gray-400"
           >
-            {" "}
             Register
           </a>
         </p>
@@ -189,7 +188,7 @@ const Login = (): React.ReactElement => {
 
       <div className="hidden h-screen items-center justify-center lg:flex lg:w-2/3">
         <motion.img
-          variants={LeftAppearVariants}
+          variants={leftAppearVariants}
           src={ShoppingArt}
           alt="background-login"
           className="h-2/3 object-cover "

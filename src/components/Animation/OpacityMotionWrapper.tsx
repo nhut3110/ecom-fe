@@ -7,7 +7,7 @@ type OpacityMotionWrapperType = {
   loop?: boolean;
 };
 
-const opacityDivVariants = {
+const opacityMotionWrapperVariants = {
   initial: {
     opacity: 0,
     transition: { duration: 0.4 },
@@ -26,7 +26,7 @@ const OpacityMotionWrapper = ({
   return (
     <motion.div
       className={className}
-      variants={opacityDivVariants}
+      variants={opacityMotionWrapperVariants}
       initial="initial"
       animate={!loop && "onScreen"}
       whileInView={loop ? "onScreen" : ""}

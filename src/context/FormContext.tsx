@@ -1,8 +1,8 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import AddressForm from "../components/Checkout Form/AddressForm";
-import ConfirmForm from "../components/Checkout Form/ConfirmForm";
-import InformationForm from "../components/Checkout Form/InformationForm";
-import PaymentForm from "../components/Checkout Form/PaymentForm";
+import AddressForm from "../components/CheckoutForm/AddressForm";
+import ConfirmForm from "../components/CheckoutForm/ConfirmForm";
+import InformationForm from "../components/CheckoutForm/InformationForm";
+import PaymentForm from "../components/CheckoutForm/PaymentForm";
 
 export type InformationType = {
   name: string;

@@ -1,18 +1,13 @@
-import React, { useState } from "react";
 import { UseFormRegister, Path } from "react-hook-form";
-import {
-  AddressType,
-  InformationType,
-  PaymentType,
-} from "../../context/FormContext";
 import { ErrorMessage } from "@hookform/error-message";
+import React, { HTMLInputTypeAttribute, useState } from "react";
 import EyeButton from "../Animation/EyeButton";
 
 interface OutlineInputType {
   label: string;
   name: Path<any>;
   error?: any;
-  type?: string;
+  type?: HTMLInputTypeAttribute;
   register: UseFormRegister<any>;
 }
 
@@ -21,9 +16,8 @@ const OutlineInput = ({
   name,
   error,
   register,
-  type,
+  type = "text",
 }: OutlineInputType): React.ReactElement => {
-  const [inputType, setInputType] = useState<string>(type ?? "text");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const toggleShowPassword = () => {
@@ -37,7 +31,7 @@ const OutlineInput = ({
       </label>
       <div className="relative w-full rounded-lg bg-gray-50 p-3 focus-within:border-2 focus-within:border-black">
         <input
-          type={showPassword ? "text" : inputType}
+          type={showPassword ? "text" : type}
           id={name}
           {...register(name)}
           className={`min-h-[1.5rem] ${
