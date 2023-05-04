@@ -7,7 +7,7 @@ type RightAppearWrapperType = {
   loop?: boolean;
 };
 
-const RightAppearWrapperVariants = {
+const rightAppearWrapperVariants = {
   initial: {
     opacity: 0,
     x: 100,
@@ -28,7 +28,7 @@ const RightAppearWrapper = ({
   return (
     <motion.div
       className={className}
-      variants={RightAppearWrapperVariants}
+      variants={rightAppearWrapperVariants}
       initial="initial"
       animate={!loop && "onScreen"}
       whileInView={loop ? "onScreen" : ""}

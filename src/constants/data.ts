@@ -8,6 +8,7 @@ import Layout from "../layout/Layout";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import Favorite from "../pages/Favorite";
+import GetToken from "../pages/GetToken";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Order from "../pages/Order";
@@ -52,7 +53,17 @@ export interface ProductDetails {
   };
 }
 
-export const navList: string[] = ["products", "favorites", "cart", "orders"];
+export enum NavItemType {
+  PRODUCTS = "products",
+  FAVORITES = "favorites",
+  ORDERS = "orders",
+}
+
+export const navList: NavItemType[] = [
+  NavItemType.PRODUCTS,
+  NavItemType.FAVORITES,
+  NavItemType.ORDERS,
+];
 
 export const carouselImages: Array<CarouselImageType> = [
   {
@@ -68,7 +79,7 @@ export const carouselImages: Array<CarouselImageType> = [
     category: "women clothing",
   },
   {
-    url: "https://www.intelligencenode.com/blog/wp-content/uploads/2019/02/electronics.jpg",
+    url: "https://img.freepik.com/free-vector/shopping-time-banner-with-realistic-map-cart-gift-bags-vector-illustration_548887-120.jpg?w=2000&t=st=1682409168~exp=1682409768~hmac=76f38dd9de68734b8747b91ce52dce34f959949b298b34d48efdb42db67efe43",
     category: "electronics",
   },
 ];
@@ -137,5 +148,9 @@ export const publicRoutes: Routes[] = [
     path: "/orders",
     component: Order,
     layout: Layout,
+  },
+  {
+    path: "/auth/callback/:token",
+    component: GetToken,
   },
 ];

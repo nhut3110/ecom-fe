@@ -1,28 +1,24 @@
-import { OrderType } from "../constants/data";
-import { CartStateType } from "../context/CartContext";
-import { FavoriteStateType } from "../context/FavoriteContext";
-
-type LocalStorageProps = {
+type LocalStorageType = {
   key: string;
-  value?: OrderType[] | FavoriteStateType;
+  value?: any;
 };
 
 const initLocalStorage = (key: string) => {
   localStorage.setItem(key, "{}");
 };
 
-const getLocalStorageValue = (data: LocalStorageProps) => {
+const getLocalStorageValue = (data: LocalStorageType) => {
   const value = localStorage.getItem(data.key);
   if (value === null) initLocalStorage(data.key);
-  return JSON.parse(value ?? "");
+  return JSON.parse(value ?? "{}");
 };
 
-const updateLocalStorageValue = (data: LocalStorageProps) => {
+const updateLocalStorageValue = (data: LocalStorageType) => {
   const value = JSON.stringify(data.value);
   localStorage.setItem(data.key, value);
 };
 
-const removeLocalStorageValue = (data: LocalStorageProps) => {
+const removeLocalStorageValue = (data: LocalStorageType) => {
   localStorage.removeItem(data.key);
 };
 
