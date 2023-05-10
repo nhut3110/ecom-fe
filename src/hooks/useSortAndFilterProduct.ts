@@ -1,4 +1,5 @@
 import { ProductDetails } from "../constants/data";
+import { sortProducts } from "../utils/SortProducts";
 
 type SortAndFilterProductType = {
   selectedSort: string;
@@ -6,38 +7,11 @@ type SortAndFilterProductType = {
   products: ProductDetails[];
 };
 
-enum SortValue {
-  AZ = "A to Z",
-  ZA = "Z to A",
-  PRICE_ASC = "Low to High",
-  PRICE_DESC = "High to Low",
-}
-
 export const useSortAndFilterProduct = ({
   selectedSort,
   selectedFilter,
   products,
 }: SortAndFilterProductType) => {
-  const sortProducts = (products: ProductDetails[], sortOption: string) => {
-    let sortedProducts = [...products];
-    switch (sortOption) {
-      case SortValue.PRICE_ASC:
-        return sortedProducts.sort((a, b) => a.price - b.price);
-
-      case SortValue.PRICE_DESC:
-        return sortedProducts.sort((a, b) => b.price - a.price);
-
-      case SortValue.AZ:
-        return sortedProducts.sort((a, b) => a.title.localeCompare(b.title));
-
-      case SortValue.ZA:
-        return sortedProducts.sort((a, b) => b.title.localeCompare(a.title));
-
-      default:
-        return sortedProducts;
-    }
-  };
-
   const capitalizeFirstLetter = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
@@ -50,17 +24,15 @@ export const useSortAndFilterProduct = ({
     );
   };
 
-  let sortedProducts = selectedSort
+  const sortedProducts = selectedSort
     ? sortProducts(products, selectedSort)
     : products;
 
-  let filteredProducts = selectedFilter
+  const filteredProducts = selectedFilter
     ? filterProducts(sortedProducts, selectedFilter)
     : sortedProducts;
 
   return {
-    sortProducts,
-    capitalizeFirstLetter,
     sortedProducts,
     filteredProducts,
   };
