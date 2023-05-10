@@ -53,6 +53,11 @@ export interface ProductDetails {
   };
 }
 
+export const facebookConstants = {
+  clientID: "1213240936224087",
+  callbackUrl: "http://localhost:5173/auth/facebook/callback/",
+};
+
 export enum NavItemType {
   PRODUCTS = "products",
   FAVORITES = "favorites",
@@ -150,7 +155,7 @@ export const publicRoutes: Routes[] = [
     layout: Layout,
   },
   {
-    path: "/auth/callback/:token",
+    path: "/auth/:socialType/callback/",
     component: GetToken,
   },
 ];
