@@ -114,32 +114,14 @@ authApi.interceptors.response.use(
   }
 );
 
-const loginFacebook = (loginData: FacebookLoginType) => {
-  return authApi.post("/auth/facebook", loginData).then((response) => {
-    updateLocalStorageValue({
-      key: "key",
-      value: {
-        email: DecodeEmailFromJWT(response.data?.accessToken),
-        accessToken: response.data?.accessToken,
-        refreshToken: response.data?.refreshToken,
-      },
-    });
-    console.log(DecodeEmailFromJWT(response.data?.accessToken));
+const loginFacebook = async (loginData: FacebookLoginType) => {
+  return await authApi.post("/auth/facebook", loginData).then((response) => {
     return response.data;
   });
 };
 
-const login = (loginData: LoginType) => {
-  return authApi.post("/auth/login", loginData).then((response) => {
-    updateLocalStorageValue({
-      key: "key",
-      value: {
-        email: loginData.email,
-        accessToken: response.data?.accessToken,
-        refreshToken: response.data?.refreshToken,
-      },
-    });
-
+const login = async (loginData: LoginType) => {
+  return await authApi.post("/auth/login", loginData).then((response) => {
     return response.data;
   });
 };
