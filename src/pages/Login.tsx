@@ -103,9 +103,10 @@ const Login = (): React.ReactElement => {
   };
 
   useEffect(() => {
-    if (!!Object.keys(authState).length)
-      if (!!Object.keys(getLocalStorageValue({ key: "key" })).length)
-        redirect("/");
+    const isLogin = !!Object.keys(authState).length;
+    const localStg = !!Object.keys(getLocalStorageValue({ key: "key" })).length;
+
+    if (isLogin && localStg) redirect("/");
   }, []);
 
   return (

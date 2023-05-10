@@ -7,6 +7,8 @@ import {
 } from "../utils/LocalStorage";
 import DecodeEmailFromJWT from "../utils/DecodeJWT";
 
+const BASE_URL_API = "http://localhost:3000/";
+
 export type UserDataType = {
   email?: string;
   accessToken?: string;
@@ -19,7 +21,7 @@ type LoginType = {
 };
 
 const authApi = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: BASE_URL_API,
 });
 
 const getUserData = (): UserDataType | null => {

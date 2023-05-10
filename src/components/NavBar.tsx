@@ -1,28 +1,23 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import Modal from "./Modal";
+import { useValidateLoginExpiration } from "../hooks/useValidateLoginExpiration";
+import { useNavigatePage } from "../hooks/useNavigatePage";
+import { useMenuAnimation } from "../hooks/useMenuAnimation";
 import SmallButton from "./SmallButton";
 import { NavSideMenu } from "./Animation/NavSideMenu";
 import HamburgerButton from "./Animation/HamburgerButton";
 import { LogoTransparent } from "../assets/images";
 import { navList } from "../constants/data";
-import { AuthContext } from "../context/AuthContext";
-import { useNavigatePage } from "../hooks/useNavigatePage";
-import { getLocalStorageValue } from "../utils/LocalStorage";
-import { getUserInfo } from "../services/auth.api";
-import { useMenuAnimation } from "../hooks/useMenuAnimation";
-import DecodeEmailFromJWT from "../utils/DecodeJWT";
 
 const NavBar = (): React.ReactElement => {
   const [openUserBox, setOpenUserBox] = useState<boolean>(false);
   const [sticky, setSticky] = useState<boolean>(false);
-  const [openModal, setOpenModal] = useState<boolean>(false);
   const [openMobileNav, setOpenMobileNav] = useState<boolean>(false);
 
-  const { authState, removeUserData } = useContext(AuthContext);
-
   const { redirect } = useNavigatePage();
+  const { isLogin, isLoading, userInfo, handleLogout } =
+    useValidateLoginExpiration();
   const scope = useMenuAnimation(openMobileNav);
 
   const navRef = useRef<HTMLDivElement>(null);
@@ -80,39 +75,11 @@ const NavBar = (): React.ReactElement => {
     };
   }, []);
 
-  const isLogin = useMemo(() => {
-    return !!Object.keys(getLocalStorageValue({ key: "key" })).length;
-  }, [authState]);
-
-  const { userInfo, isLoading } = getUserInfo({
-    email: getLocalStorageValue({ key: "key" }).email
-      ? getLocalStorageValue({ key: "key" }).email
-      : DecodeEmailFromJWT(getLocalStorageValue({ key: "key" })?.accessToken),
-  });
-
   const handleScroll = () => {
     const navPositions = navRef.current?.getBoundingClientRect().top;
-    const scrollPositions = window.scrollY;
-    if (navPositions !== undefined)
-      navPositions < scrollPositions ? setSticky(true) : setSticky(false);
-  };
+    if (!navPositions) return;
 
-  const handleSubmitModal = () => {
-    setOpenModal(false);
-    handleLogout();
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    removeUserData();
-    localStorage.removeItem("key");
-    window.location.reload();
-  };
-
-  const handleLogout = () => {
-    removeUserData();
-    localStorage.removeItem("key");
-    redirect("/login");
+    navPositions < window.scrollY ? setSticky(true) : setSticky(false);
   };
 
   useEffect(() => {
@@ -120,14 +87,6 @@ const NavBar = (): React.ReactElement => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   });
-
-  useEffect(() => {
-    if (isLoading || !isLogin) return;
-
-    if (!userInfo) {
-      setOpenModal(true);
-    }
-  }, [isLoading]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -159,15 +118,6 @@ const NavBar = (): React.ReactElement => {
         sticky ? "fixed" : "relative"
       } z-50 flex w-full justify-center bg-white pb-2 shadow-sm`}
     >
-      <Modal
-        open={openModal}
-        title="Warning"
-        onSubmit={handleSubmitModal}
-        onClose={handleCloseModal}
-      >
-        <p>Session expired, please login again!</p>
-      </Modal>
-
       <div ref={scope}>
         <NavSideMenu ref={navMobileMenuRef} />
       </div>
@@ -221,7 +171,7 @@ const NavBar = (): React.ReactElement => {
         {/* Avatar and User Dialog */}
         <div className="flex items-center gap-6">
           {isLogin ? (
-            <>
+            <div>
               {!isLoading && (
                 <motion.div className="relative">
                   {userInfo ? (
@@ -255,7 +205,7 @@ const NavBar = (): React.ReactElement => {
                   </motion.div>
                 </motion.div>
               )}
-            </>
+            </div>
           ) : (
             <SmallButton name="sign in" onClick={() => redirect("/login")} />
           )}

@@ -15,7 +15,9 @@ type ChildrenType = {
   children: React.ReactElement | React.ReactElement[];
 };
 
+// initial value for context
 const initCartList = {};
+const initCartValue = 0;
 const initNotificationList: NotificationType[] = [];
 const initCartPosition = {
   cartX: 0,
@@ -26,16 +28,15 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
   const queryClient = new QueryClient();
 
   const { favoriteList } = getLocalStorageValue({ key: "favorites" });
-  const [list, setList] = useState<ProductDetails[]>(
-    favoriteList === undefined ? [] : favoriteList
-  );
-
   const orderList = getLocalStorageValue({ key: "orders" });
+  const userData = getLocalStorageValue({ key: "key" });
+
+  const [list, setList] = useState<ProductDetails[]>(
+    !favoriteList ? [] : favoriteList
+  );
   const [orders, setOrders] = useState<OrderType[]>(
     !!Object.keys(orderList).length ? orderList : []
   );
-
-  const userData = getLocalStorageValue({ key: "key" });
   const [user, setUser] = useState<UserDataType>(
     !!Object.keys(userData).length ? userData : {}
   );
@@ -51,7 +52,7 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
             <FavoriteProvider favoriteList={list}>
               <CartProvider
                 cartList={initCartList}
-                cartValue={0}
+                cartValue={initCartValue}
                 cartPositions={initCartPosition}
               >
                 <FormProvider
