@@ -1,12 +1,17 @@
 import axios from "axios";
+import jwtDecode from "jwt-decode";
 import { useQuery } from "@tanstack/react-query";
 import {
   getLocalStorageValue,
   updateLocalStorageValue,
 } from "../utils/LocalStorage";
+import DecodeEmailFromJWT from "../utils/DecodeJWT";
+
+const BASE_URL_API = "http://localhost:3000/";
 
 export type UserDataType = {
-  accessToken: string;
+  email?: string;
+  accessToken?: string;
   refreshToken?: string;
 };
 
@@ -16,7 +21,7 @@ type LoginType = {
 };
 
 const authApi = axios.create({
-  baseURL: "http://localhost:3000/auth",
+  baseURL: BASE_URL_API,
 });
 
 const getUserData = (): UserDataType | null => {
@@ -25,27 +30,38 @@ const getUserData = (): UserDataType | null => {
     return null;
   }
 
-  return { accessToken: user.accessToken, refreshToken: user.refreshToken };
+  return {
+    accessToken: user.accessToken,
+    refreshToken: user.refreshToken,
+    email: user.email,
+  };
 };
 
 const refreshToken = async () => {
   try {
-    const { data } = await authApi.post("/refresh-token", {
+    const { data } = await authApi.post("/auth/refresh-token", {
+      email: getUserData()?.email,
       refreshToken: getUserData()?.refreshToken,
     });
-    updateLocalStorageValue({ key: "key", value: data });
+    updateLocalStorageValue({
+      key: "key",
+      value: { ...data, email: getUserData()?.email },
+    });
 
     return data.accessToken;
   } catch (error: any) {
     if (error.response?.status === 401) {
       localStorage.removeItem("key");
     }
+
     throw error;
   }
 };
 
 authApi.interceptors.request.use(
   (config) => {
+    if (config.url === "/auth/login") return config;
+
     const user = getUserData();
     if (user && user.accessToken) {
       config.headers.Authorization = `Bearer ${user.accessToken}`;
@@ -89,10 +105,11 @@ authApi.interceptors.response.use(
 );
 
 const login = (loginData: LoginType) => {
-  return authApi.post("/login", loginData).then((response) => {
+  return authApi.post("/auth/login", loginData).then((response) => {
     updateLocalStorageValue({
       key: "key",
       value: {
+        email: loginData.email,
         accessToken: response.data?.accessToken,
         refreshToken: response.data?.refreshToken,
       },
@@ -102,4 +119,16 @@ const login = (loginData: LoginType) => {
   });
 };
 
-export { authApi as api, login };
+const getUserInfo = ({ email }: { email: string }) => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["userInfo"],
+    queryFn: () =>
+      authApi.get(`users/${email}`).then((response) => {
+        return response.data;
+      }),
+  });
+
+  return { userInfo: data, error, isLoading };
+};
+
+export { authApi, login, getUserInfo };

@@ -4,6 +4,7 @@ import DotsLoading from "../components/Animation/DotsLoading";
 import { updateLocalStorageValue } from "../utils/LocalStorage";
 import { NotificationContext } from "../context/NotificationContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
+import DecodeEmailFromJWT from "../utils/DecodeJWT";
 
 const DELAY_WHILE_LOADING = 2000;
 
@@ -13,13 +14,24 @@ const GetToken = () => {
   const { redirect } = useNavigatePage();
 
   useEffect(() => {
-    token && updateLocalStorageValue({ key: "key", value: atob(token) });
+    if (token) {
+      const decodeBase64Token = atob(token);
+      updateLocalStorageValue({
+        key: "key",
+        value: {
+          accessToken: decodeBase64Token,
+          email: DecodeEmailFromJWT(decodeBase64Token),
+        },
+      });
+    }
+
     notify({
       content: `Redirecting...`,
       type: token ? "success" : "error",
       open: true,
       id: crypto.randomUUID(),
     });
+
     const timer = setTimeout(() => {
       token ? redirect("/") : redirect("/login");
     }, DELAY_WHILE_LOADING);

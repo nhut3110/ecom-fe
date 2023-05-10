@@ -73,12 +73,14 @@ const Modal = ({ open, onClose, onSubmit, title, children }: ModalType) => {
               <h2 className="mb-4 text-lg font-medium">{title}</h2>
               <div className="mb-4">{children}</div>
               <div className="flex justify-end">
-                <button
-                  className="mr-2 rounded-md bg-gray-200 px-4 py-2 text-gray-800"
-                  onClick={handleClose}
-                >
-                  Cancel
-                </button>
+                {onClose && (
+                  <button
+                    className="mr-2 rounded-md bg-gray-200 px-4 py-2 text-gray-800"
+                    onClick={handleClose}
+                  >
+                    Cancel
+                  </button>
+                )}
                 <button
                   className="rounded-md bg-black px-4 py-2 text-white"
                   onClick={handleSubmit}

@@ -79,7 +79,7 @@ export const carouselImages: Array<CarouselImageType> = [
     category: "women clothing",
   },
   {
-    url: "https://www.intelligencenode.com/blog/wp-content/uploads/2019/02/electronics.jpg",
+    url: "https://img.freepik.com/free-vector/shopping-time-banner-with-realistic-map-cart-gift-bags-vector-illustration_548887-120.jpg?w=2000&t=st=1682409168~exp=1682409768~hmac=76f38dd9de68734b8747b91ce52dce34f959949b298b34d48efdb42db67efe43",
     category: "electronics",
   },
 ];
