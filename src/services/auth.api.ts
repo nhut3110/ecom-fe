@@ -1,13 +1,12 @@
 import axios from "axios";
-import jwtDecode from "jwt-decode";
 import { useQuery } from "@tanstack/react-query";
 import {
   getLocalStorageValue,
   updateLocalStorageValue,
 } from "../utils/localStorage";
-import DecodeEmailFromJWT from "../utils/decodeJWT";
 
 const BASE_URL_API = "http://localhost:3000/";
+const publicApiRoutes: string[] = ["/auth/login", "/auth/facebook"];
 
 export type UserDataType = {
   email?: string;
@@ -43,14 +42,16 @@ const getUserData = (): UserDataType | null => {
 };
 
 const refreshToken = async () => {
+  const user = getUserData();
+
   try {
     const { data } = await authApi.post("/auth/refresh-token", {
-      email: getUserData()?.email,
-      refreshToken: getUserData()?.refreshToken,
+      email: user?.email,
+      refreshToken: user?.refreshToken,
     });
     updateLocalStorageValue({
       key: "key",
-      value: { ...data, email: getUserData()?.email },
+      value: { ...data, email: user?.email },
     });
 
     return data.accessToken;
@@ -63,17 +64,24 @@ const refreshToken = async () => {
   }
 };
 
+const checkPublicRoute = (route?: string): boolean => {
+  if (!route) return false;
+
+  return publicApiRoutes.includes(route);
+};
+
 authApi.interceptors.request.use(
   (config) => {
-    if (config.url === "/auth/login" || config.url === "/auth/facebook")
-      return config;
+    if (checkPublicRoute(config.url)) return config;
 
     const user = getUserData();
     if (user && user.accessToken) {
       config.headers.Authorization = `Bearer ${user.accessToken}`;
+
+      return config;
     }
 
-    return config;
+    throw new Error("Invalid authorization");
   },
 
   (error) => {
@@ -89,11 +97,7 @@ authApi.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (
-      originalRequest.url === "/auth/login" ||
-      originalRequest.url === "/auth/facebook"
-    )
-      return Promise.reject(error);
+    if (checkPublicRoute(originalRequest.url)) return Promise.reject(error);
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
