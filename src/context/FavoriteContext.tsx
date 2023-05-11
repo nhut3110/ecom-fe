@@ -1,6 +1,6 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
 import { ProductDetails } from "../constants/data";
-import { updateLocalStorageValue } from "../utils/LocalStorage";
+import { updateLocalStorageValue } from "../utils/localStorage";
 
 export type FavoriteStateType = {
   favoriteList: ProductDetails[];

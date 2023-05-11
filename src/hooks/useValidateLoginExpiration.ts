@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from "react";
 import { getUserInfo } from "../services/auth.api";
-import { getLocalStorageValue } from "../utils/LocalStorage";
-import DecodeEmailFromJWT from "../utils/DecodeJWT";
+import { getLocalStorageValue } from "../utils/localStorage";
+import DecodeEmailFromJWT from "../utils/decodeJWT";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
 
