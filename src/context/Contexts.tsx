@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { OrderType, ProductDetails } from "../constants/data";
-import { getLocalStorageValue } from "../utils/LocalStorage";
+import { getLocalStorageValue } from "../utils/localStorage";
 import { CartProvider } from "./CartContext";
 import { FavoriteProvider } from "./FavoriteContext";
 import { defaultForm, FormProvider } from "./FormContext";

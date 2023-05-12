@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import DotsLoading from "../components/Animation/DotsLoading";
-import { updateLocalStorageValue } from "../utils/LocalStorage";
+import { updateLocalStorageValue } from "../utils/localStorage";
 import { NotificationContext } from "../context/NotificationContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
-import DecodeEmailFromJWT from "../utils/DecodeJWT";
+import DecodeEmailFromJWT from "../utils/decodeJWT";
 import { useMutation } from "@tanstack/react-query";
 import { loginFacebook } from "../services/auth.api";
 import { AuthContext } from "../context/AuthContext";

@@ -15,8 +15,8 @@ import { login } from "../services/auth.api";
 import { NotificationContext } from "../context/NotificationContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
 import { AuthContext } from "../context/AuthContext";
-import { getLocalStorageValue } from "../utils/LocalStorage";
-import DecodeEmailFromJWT from "../utils/DecodeJWT";
+import { getLocalStorageValue } from "../utils/localStorage";
+import DecodeEmailFromJWT from "../utils/decodeJWT";
 
 const DELAY_BEFORE_REDIRECT = 1500;
 

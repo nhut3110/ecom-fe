@@ -2,7 +2,7 @@ import { createContext, ReactElement, useCallback, useReducer } from "react";
 import {
   removeLocalStorageValue,
   updateLocalStorageValue,
-} from "../utils/LocalStorage";
+} from "../utils/localStorage";
 
 type AuthStateType = {
   email?: string;

@@ -14,7 +14,7 @@ import { FlyingImageWrapper } from "./FlyingImage";
 import { ProductDetails } from "../constants/data";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { CartContext } from "../context/CartContext";
-import { getLocalStorageValue } from "../utils/LocalStorage";
+import { getLocalStorageValue } from "../utils/localStorage";
 import { NotificationContext } from "../context/NotificationContext";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart

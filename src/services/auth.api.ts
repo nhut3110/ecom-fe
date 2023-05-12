@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getLocalStorageValue,
   updateLocalStorageValue,
-} from "../utils/LocalStorage";
-import DecodeEmailFromJWT from "../utils/DecodeJWT";
+} from "../utils/localStorage";
+import DecodeEmailFromJWT from "../utils/decodeJWT";
 
 const BASE_URL_API = "http://localhost:3000/";
 

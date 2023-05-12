@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useSortAndFilterProduct } from "../hooks/useSortAndFilterProduct";
 import ProductCard from "../components/ProductCard";
-import { selectSortMenu } from "../utils/SelectSortMenu";
+import { selectSortMenu } from "../utils/selectSortMenu";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 import { ProductDetails } from "../constants/data";
 import { FavoriteContext } from "../context/FavoriteContext";
