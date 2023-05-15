@@ -1,13 +1,8 @@
 import jwtDecode from "jwt-decode";
 import React from "react";
+import { JWTDecodeType } from "../constants/data";
 
-export type JWTDecodeType = {
-  email?: string;
-  iat?: any;
-  exp?: any;
-};
-
-const DecodeEmailFromJWT = (token?: string) => {
+const decodeEmailFromJWT = (token?: string) => {
   if (!token) return undefined;
 
   const decodedJWT: JWTDecodeType = jwtDecode(token);
@@ -15,4 +10,4 @@ const DecodeEmailFromJWT = (token?: string) => {
   return email;
 };
 
-export default DecodeEmailFromJWT;
+export default decodeEmailFromJWT;

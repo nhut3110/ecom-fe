@@ -2,11 +2,16 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import {
   getLocalStorageValue,
   updateLocalStorageValue,
-} from "../utils/LocalStorage";
+} from "../utils/localStorage";
 import { UserDataType } from "./auth.api";
+import { checkIsTokenExpired } from "../utils/checkIsTokenExpired";
 
 const BASE_URL_API = "http://localhost:3000/";
-const publicApiRoutes: string[] = ["/auth/login", "/auth/facebook"];
+const publicApiRoutes: string[] = [
+  "/auth/login",
+  "/auth/facebook",
+  "/auth/refresh-token",
+];
 
 export const api = axios.create({
   baseURL: BASE_URL_API,
@@ -30,7 +35,6 @@ const refreshToken = async () => {
 
   try {
     const { data } = await api.post("/auth/refresh-token", {
-      email: user?.email,
       refreshToken: user?.refreshToken,
     });
     updateLocalStorageValue({
@@ -38,7 +42,7 @@ const refreshToken = async () => {
       value: { ...data, email: user?.email },
     });
 
-    return data.accessToken;
+    return data;
   } catch (error: any) {
     if (error.response?.status === 401) {
       localStorage.removeItem("key");
@@ -54,17 +58,17 @@ const checkPublicRoute = (route?: string): boolean => {
   return publicApiRoutes.includes(route);
 };
 
-let isRefreshing = false;
-let requestsQueue: ((token: string) => void)[] = [];
-
-const processQueue = (token: string) => {
-  requestsQueue.forEach((callback) => callback(token));
-  requestsQueue = [];
-};
+let refreshTokenFn: any = null;
 
 api.interceptors.request.use(
   async (config) => {
     if (checkPublicRoute(config.url)) return config;
+
+    if (checkIsTokenExpired(getUserData()?.accessToken)) {
+      refreshTokenFn = refreshTokenFn ?? refreshToken();
+      await refreshTokenFn;
+      refreshTokenFn = null;
+    }
 
     const user = getUserData();
     if (user && user.accessToken) {
@@ -80,6 +84,14 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+let isRefreshing = false;
+let requestsQueue: ((token: string) => void)[] = [];
+
+const processQueue = (token: string) => {
+  requestsQueue.forEach((callback) => callback(token));
+  requestsQueue = [];
+};
 
 api.interceptors.response.use(
   (response) => {
@@ -105,13 +117,13 @@ api.interceptors.response.use(
 
       try {
         isRefreshing = true;
-        const accessToken = await refreshToken();
-        if (accessToken) {
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        const tokens = await refreshToken();
+        if (tokens.accessToken) {
+          originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
 
           const originalResponse = await api(originalRequest);
 
-          processQueue(accessToken);
+          processQueue(tokens.accessToken);
 
           return originalResponse;
         }

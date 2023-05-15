@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
 import DotsLoading from "../components/Animation/DotsLoading";
 import { updateLocalStorageValue } from "../utils/localStorage";
 import { NotificationContext } from "../context/NotificationContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
-import DecodeEmailFromJWT from "../utils/decodeJWT";
-import { useMutation } from "@tanstack/react-query";
+import decodeEmailFromJWT from "../utils/decodeEmailFromJWT";
 import { loginFacebook } from "../services/auth.api";
 import { AuthContext } from "../context/AuthContext";
 import { facebookConstants } from "../constants/data";
@@ -28,7 +28,7 @@ const GetToken = () => {
       });
 
       updateUserData({
-        email: DecodeEmailFromJWT(response?.accessToken),
+        email: decodeEmailFromJWT(response?.accessToken),
         accessToken: response?.accessToken,
         refreshToken: response?.refreshToken,
       });

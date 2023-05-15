@@ -16,7 +16,7 @@ import { NotificationContext } from "../context/NotificationContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
 import { AuthContext } from "../context/AuthContext";
 import { getLocalStorageValue } from "../utils/localStorage";
-import DecodeEmailFromJWT from "../utils/decodeJWT";
+import decodeEmailFromJWT from "../utils/decodeEmailFromJWT";
 
 const DELAY_BEFORE_REDIRECT = 1500;
 
@@ -48,7 +48,7 @@ const Login = (): React.ReactElement => {
       });
 
       updateUserData({
-        email: DecodeEmailFromJWT(response?.accessToken),
+        email: decodeEmailFromJWT(response?.accessToken),
         accessToken: response?.accessToken,
         refreshToken: response?.refreshToken,
       });
@@ -56,14 +56,14 @@ const Login = (): React.ReactElement => {
         redirect("/");
       }, DELAY_BEFORE_REDIRECT);
     },
-    onError: () => {
-      notify({
-        content: `Wrong credentials`,
-        type: "error",
-        open: true,
-        id: crypto.randomUUID(),
-      });
-    },
+    // onError: () => {
+    //   notify({
+    //     content: `Wrong credentials`,
+    //     type: "error",
+    //     open: true,
+    //     id: crypto.randomUUID(),
+    //   });
+    // },
   });
 
   const containerVariants = useMemo(() => {
