@@ -24,9 +24,8 @@ const authReducer = (state: AuthStateType, action: ReducerAction) => {
   switch (action.type) {
     case REDUCER_ACTION_TYPE.UPDATE_USER: {
       updateLocalStorageValue({
-        key: "key",
+        key: "tokens",
         value: {
-          email: action.payload?.email,
           accessToken: action.payload!.accessToken,
           refreshToken: action.payload?.refreshToken,
         },
@@ -41,7 +40,7 @@ const authReducer = (state: AuthStateType, action: ReducerAction) => {
     }
 
     case REDUCER_ACTION_TYPE.REMOVE_USER: {
-      removeLocalStorageValue({ key: "key" });
+      removeLocalStorageValue({ key: "tokens" });
       return {};
     }
 

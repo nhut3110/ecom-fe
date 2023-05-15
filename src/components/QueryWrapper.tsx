@@ -26,7 +26,7 @@ const QueryWrapper = ({ children }: ChildrenType) => {
       }
       case 401: {
         const accessToken = getLocalStorageValue({
-          key: "key",
+          key: "tokens",
         }).accessToken;
 
         if (!accessToken) {

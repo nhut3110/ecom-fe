@@ -56,14 +56,6 @@ const Login = (): React.ReactElement => {
         redirect("/");
       }, DELAY_BEFORE_REDIRECT);
     },
-    // onError: () => {
-    //   notify({
-    //     content: `Wrong credentials`,
-    //     type: "error",
-    //     open: true,
-    //     id: crypto.randomUUID(),
-    //   });
-    // },
   });
 
   const containerVariants = useMemo(() => {
@@ -104,7 +96,8 @@ const Login = (): React.ReactElement => {
 
   useEffect(() => {
     const isLogin = !!Object.keys(authState).length;
-    const localStg = !!Object.keys(getLocalStorageValue({ key: "key" })).length;
+    const localStg = !!Object.keys(getLocalStorageValue({ key: "tokens" }))
+      .length;
 
     if (isLogin && localStg) redirect("/");
   }, []);

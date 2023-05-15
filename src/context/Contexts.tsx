@@ -37,7 +37,7 @@ const initCartPosition = {
 const Contexts = ({ children }: ChildrenType): React.ReactElement => {
   const { favoriteList } = getLocalStorageValue({ key: "favorites" });
   const orderList = getLocalStorageValue({ key: "orders" });
-  const userData = getLocalStorageValue({ key: "key" });
+  const userData = getLocalStorageValue({ key: "tokens" });
 
   const [list, setList] = useState<ProductDetails[]>(
     !favoriteList ? [] : favoriteList

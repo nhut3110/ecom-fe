@@ -11,17 +11,17 @@ export const useValidateLoginExpiration = () => {
   const { redirect } = useNavigatePage();
 
   const isLogin = useMemo(() => {
-    return !!Object.keys(getLocalStorageValue({ key: "key" })).length;
+    return !!Object.keys(getLocalStorageValue({ key: "tokens" })).length;
   }, [authState]);
 
   const userEmail =
-    getLocalStorageValue({ key: "key" }).email ||
-    decodeEmailFromJWT(getLocalStorageValue({ key: "key" })?.accessToken);
-  const { userInfo, isLoading } = getUserInfo({ email: userEmail });
+    authState.email ||
+    decodeEmailFromJWT(getLocalStorageValue({ key: "tokens" })?.accessToken);
+  const { userInfo, isLoading } = getUserInfo({ email: userEmail! });
 
   const handleLogout = () => {
     removeUserData();
-    localStorage.removeItem("key");
+    localStorage.removeItem("tokens");
     redirect("/login");
   };
 
