@@ -1,9 +1,4 @@
-import {
-  MutationCache,
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useContext } from "react";
 import { NotificationContext } from "../context/NotificationContext";
 import { getLocalStorageValue } from "../utils/localStorage";
@@ -65,12 +60,14 @@ const QueryWrapper = ({ children }: ChildrenType) => {
 
   const { notify } = useContext(NotificationContext);
   const queryClient = new QueryClient({
-    queryCache: new QueryCache({
-      onError: handleError,
-    }),
-    mutationCache: new MutationCache({
-      onError: handleError,
-    }),
+    defaultOptions: {
+      queries: {
+        onError: handleError,
+      },
+      mutations: {
+        onError: handleError,
+      },
+    },
   });
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
