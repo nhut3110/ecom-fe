@@ -1,9 +1,9 @@
 import React, { useContext, useMemo } from "react";
 import { getUserInfo } from "../services/auth.api";
 import { getLocalStorageValue } from "../utils/localStorage";
-import decodeEmailFromJWT from "../utils/decodeEmailFromJWT";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
+import decodeIdFromJWT from "../utils/decodeIdFromJWT";
 
 export const useValidateLoginExpiration = () => {
   const { authState, removeUserData } = useContext(AuthContext);
@@ -14,10 +14,10 @@ export const useValidateLoginExpiration = () => {
     return !!Object.keys(getLocalStorageValue({ key: "tokens" })).length;
   }, [authState]);
 
-  const userEmail =
-    authState.email ||
-    decodeEmailFromJWT(getLocalStorageValue({ key: "tokens" })?.accessToken);
-  const { userInfo, isLoading } = getUserInfo({ email: userEmail! });
+  const userId =
+    authState.id ||
+    decodeIdFromJWT(getLocalStorageValue({ key: "tokens" })?.accessToken);
+  const { userInfo, isLoading } = getUserInfo({ id: userId! });
 
   const handleLogout = () => {
     removeUserData();

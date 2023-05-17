@@ -5,10 +5,10 @@ import DotsLoading from "../components/Animation/DotsLoading";
 import { updateLocalStorageValue } from "../utils/localStorage";
 import { NotificationContext } from "../context/NotificationContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
-import decodeEmailFromJWT from "../utils/decodeEmailFromJWT";
 import { loginFacebook } from "../services/auth.api";
 import { AuthContext } from "../context/AuthContext";
 import { facebookConstants } from "../constants/data";
+import decodeIdFromJWT from "../utils/decodeIdFromJWT";
 
 const DELAY_WHILE_LOADING = 2000;
 
@@ -28,7 +28,7 @@ const GetToken = () => {
       });
 
       updateUserData({
-        email: decodeEmailFromJWT(response?.accessToken),
+        id: decodeIdFromJWT(response?.accessToken),
         accessToken: response?.accessToken,
         refreshToken: response?.refreshToken,
       });

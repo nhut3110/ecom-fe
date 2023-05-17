@@ -5,7 +5,7 @@ import {
 } from "../utils/localStorage";
 
 type AuthStateType = {
-  email?: string;
+  id?: string;
   accessToken?: string;
   refreshToken?: string;
 };
@@ -33,7 +33,7 @@ const authReducer = (state: AuthStateType, action: ReducerAction) => {
 
       return {
         ...state,
-        email: action.payload?.email,
+        id: action.payload?.id,
         accessToken: action.payload!.accessToken,
         refreshToken: action.payload?.refreshToken,
       };

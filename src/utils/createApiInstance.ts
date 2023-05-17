@@ -10,11 +10,7 @@ const BASE_URL_API = "http://localhost:3000/";
 let refreshTokenFn: any = null;
 
 export function createApiInstance({ isPublic, baseURL }: ApiInstanceType) {
-  let instance: any;
-
-  if (instance) return instance;
-
-  instance = axios.create({
+  const instance = axios.create({
     baseURL: baseURL ?? BASE_URL_API,
   });
 

@@ -16,7 +16,7 @@ import { NotificationContext } from "../context/NotificationContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
 import { AuthContext } from "../context/AuthContext";
 import { getLocalStorageValue } from "../utils/localStorage";
-import decodeEmailFromJWT from "../utils/decodeEmailFromJWT";
+import decodeIdFromJWT from "../utils/decodeIdFromJWT";
 
 const DELAY_BEFORE_REDIRECT = 1500;
 
@@ -48,7 +48,7 @@ const Login = (): React.ReactElement => {
       });
 
       updateUserData({
-        email: decodeEmailFromJWT(response?.accessToken),
+        id: decodeIdFromJWT(response?.accessToken),
         accessToken: response?.accessToken,
         refreshToken: response?.refreshToken,
       });

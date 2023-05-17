@@ -39,19 +39,19 @@ const login = async (loginData: LoginType) => {
   return response.data;
 };
 
-const getUserByEmail = async (email: string) => {
-  const response = await authApi.get(`users/${email}`);
+const getUserById = async (id: string) => {
+  const response = await authApi.get(`users/me/${id}`);
 
   return response.data;
 };
 
-const getUserInfo = ({ email }: { email: string }) => {
+const getUserInfo = ({ id }: { id: string }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["userInfo"],
-    queryFn: () => getUserByEmail(email),
+    queryFn: () => getUserById(id),
   });
 
-  return { userInfo: data, error, isLoading };
+  return { userInfo: data?.dataValues, error, isLoading };
 };
 
 export { login, getUserInfo, loginFacebook, getNewTokens };

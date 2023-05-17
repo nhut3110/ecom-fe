@@ -28,7 +28,7 @@ type Routes = {
 };
 
 export type JWTDecodeType = {
-  email?: string;
+  id?: string;
   iat?: any;
   exp?: any;
 };
