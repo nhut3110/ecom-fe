@@ -77,9 +77,9 @@ const NavBar = (): React.ReactElement => {
 
   const handleScroll = () => {
     const navPositions = navRef.current?.getBoundingClientRect().top;
-    if (!navPositions) return;
-
-    navPositions < window.scrollY ? setSticky(true) : setSticky(false);
+    const scrollPositions = window.scrollY;
+    if (navPositions !== undefined)
+      navPositions < scrollPositions ? setSticky(true) : setSticky(false);
   };
 
   useEffect(() => {

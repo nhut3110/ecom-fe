@@ -5,7 +5,7 @@ import {
 } from "../utils/localStorage";
 
 type AuthStateType = {
-  email?: string;
+  id?: string;
   accessToken?: string;
   refreshToken?: string;
 };
@@ -24,9 +24,8 @@ const authReducer = (state: AuthStateType, action: ReducerAction) => {
   switch (action.type) {
     case REDUCER_ACTION_TYPE.UPDATE_USER: {
       updateLocalStorageValue({
-        key: "key",
+        key: "tokens",
         value: {
-          email: action.payload?.email,
           accessToken: action.payload!.accessToken,
           refreshToken: action.payload?.refreshToken,
         },
@@ -34,14 +33,14 @@ const authReducer = (state: AuthStateType, action: ReducerAction) => {
 
       return {
         ...state,
-        email: action.payload?.email,
+        id: action.payload?.id,
         accessToken: action.payload!.accessToken,
         refreshToken: action.payload?.refreshToken,
       };
     }
 
     case REDUCER_ACTION_TYPE.REMOVE_USER: {
-      removeLocalStorageValue({ key: "key" });
+      removeLocalStorageValue({ key: "tokens" });
       return {};
     }
 

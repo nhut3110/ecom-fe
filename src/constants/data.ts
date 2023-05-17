@@ -27,6 +27,12 @@ type Routes = {
   layout?: React.ElementType;
 };
 
+export type JWTDecodeType = {
+  id?: string;
+  iat?: any;
+  exp?: any;
+};
+
 export type FooterContentType = {
   name: string;
   content: string[];

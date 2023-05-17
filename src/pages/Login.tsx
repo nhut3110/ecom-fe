@@ -16,7 +16,7 @@ import { NotificationContext } from "../context/NotificationContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
 import { AuthContext } from "../context/AuthContext";
 import { getLocalStorageValue } from "../utils/localStorage";
-import DecodeEmailFromJWT from "../utils/decodeJWT";
+import decodeIdFromJWT from "../utils/decodeIdFromJWT";
 
 const DELAY_BEFORE_REDIRECT = 1500;
 
@@ -48,21 +48,13 @@ const Login = (): React.ReactElement => {
       });
 
       updateUserData({
-        email: DecodeEmailFromJWT(response?.accessToken),
+        id: decodeIdFromJWT(response?.accessToken),
         accessToken: response?.accessToken,
         refreshToken: response?.refreshToken,
       });
       setTimeout(() => {
         redirect("/");
       }, DELAY_BEFORE_REDIRECT);
-    },
-    onError: () => {
-      notify({
-        content: `Wrong credentials`,
-        type: "error",
-        open: true,
-        id: crypto.randomUUID(),
-      });
     },
   });
 
@@ -104,7 +96,8 @@ const Login = (): React.ReactElement => {
 
   useEffect(() => {
     const isLogin = !!Object.keys(authState).length;
-    const localStg = !!Object.keys(getLocalStorageValue({ key: "key" })).length;
+    const localStg = !!Object.keys(getLocalStorageValue({ key: "tokens" }))
+      .length;
 
     if (isLogin && localStg) redirect("/");
   }, []);

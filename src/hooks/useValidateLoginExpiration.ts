@@ -1,9 +1,9 @@
 import React, { useContext, useMemo } from "react";
 import { getUserInfo } from "../services/auth.api";
 import { getLocalStorageValue } from "../utils/localStorage";
-import DecodeEmailFromJWT from "../utils/decodeJWT";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigatePage } from "../hooks/useNavigatePage";
+import decodeIdFromJWT from "../utils/decodeIdFromJWT";
 
 export const useValidateLoginExpiration = () => {
   const { authState, removeUserData } = useContext(AuthContext);
@@ -11,17 +11,17 @@ export const useValidateLoginExpiration = () => {
   const { redirect } = useNavigatePage();
 
   const isLogin = useMemo(() => {
-    return !!Object.keys(getLocalStorageValue({ key: "key" })).length;
+    return !!Object.keys(getLocalStorageValue({ key: "tokens" })).length;
   }, [authState]);
 
-  const userEmail =
-    getLocalStorageValue({ key: "key" }).email ||
-    DecodeEmailFromJWT(getLocalStorageValue({ key: "key" })?.accessToken);
-  const { userInfo, isLoading } = getUserInfo({ email: userEmail });
+  const userId =
+    authState.id ||
+    decodeIdFromJWT(getLocalStorageValue({ key: "tokens" })?.accessToken);
+  const { userInfo, isLoading } = getUserInfo({ id: userId! });
 
   const handleLogout = () => {
     removeUserData();
-    localStorage.removeItem("key");
+    localStorage.removeItem("tokens");
     redirect("/login");
   };
 
