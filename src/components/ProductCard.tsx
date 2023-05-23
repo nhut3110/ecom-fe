@@ -130,8 +130,8 @@ const ProductCard = (props: {
         </div>
 
         <div className="flex items-center gap-1 self-start px-1">
-          <RatingStar rating={product.rating.rate} />
-          <p className="text-sm text-gray-500">({product.rating.count})</p>
+          <RatingStar rating={product.rate} />
+          <p className="text-sm text-gray-500">({product.count})</p>
         </div>
 
         <div className="mt-2 w-auto self-start">

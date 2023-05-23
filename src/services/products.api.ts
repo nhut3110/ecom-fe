@@ -1,21 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { publicApi } from "./api";
 
-const api = axios.create({
-  baseURL: "https://fakestoreapi.com/",
-});
+const getProductList = async () => {
+  return await publicApi.get("/products").then((response) => {
+    return response.data;
+  });
+};
 
-api.interceptors.response.use((response) => {
-  return response;
-});
+const getProductDetails = async (productId: string) => {
+  return await publicApi.get(`/products/${productId}`).then((response) => {
+    return response.data;
+  });
+};
 
 const fetchProducts = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["products"],
-    queryFn: () =>
-      api.get("/products").then((response) => {
-        return response.data;
-      }),
+    queryFn: () => getProductList(),
   });
 
   return { products: data, error, isLoading };
@@ -24,10 +25,7 @@ const fetchProducts = () => {
 const fetchProductDetails = ({ productId }: { productId: string }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["products", productId],
-    queryFn: () =>
-      api.get(`/products/${productId}`).then((response) => {
-        return response.data;
-      }),
+    queryFn: () => getProductDetails(productId),
   });
 
   return { data, error, isLoading };

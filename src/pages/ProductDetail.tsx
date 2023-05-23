@@ -44,7 +44,6 @@ const ProductDetail = (): React.ReactElement => {
       open: true,
       id: crypto.randomUUID(),
     });
-    // addCartAnimation({ id: crypto.randomUUID(), image: data.image });
   };
 
   return (
@@ -77,8 +76,8 @@ const ProductDetail = (): React.ReactElement => {
               </p>
 
               <div className="flex items-center gap-1 px-1">
-                <RatingStar rating={data.rating.rate} />
-                <p className="text-sm text-gray-500">({data.rating.count})</p>
+                <RatingStar rating={data.rate} />
+                <p className="text-sm text-gray-500">({data.count})</p>
               </div>
 
               <div className="md:w-3/4">
