@@ -9,15 +9,17 @@ import { NavSideMenu } from "./Animation/NavSideMenu";
 import HamburgerButton from "./Animation/HamburgerButton";
 import { LogoTransparent } from "../assets/images";
 import { navList } from "../constants/data";
+import { UserDataContext } from "../context/UserDataContext";
 
 const NavBar = (): React.ReactElement => {
   const [openUserBox, setOpenUserBox] = useState<boolean>(false);
   const [sticky, setSticky] = useState<boolean>(false);
   const [openMobileNav, setOpenMobileNav] = useState<boolean>(false);
 
+  const { userDataState } = useContext(UserDataContext);
+
   const { redirect } = useNavigatePage();
-  const { isLogin, isLoading, userInfo, handleLogout } =
-    useValidateLoginExpiration();
+  const { isLogin, isLoading, handleLogout } = useValidateLoginExpiration();
   const scope = useMenuAnimation(openMobileNav);
 
   const navRef = useRef<HTMLDivElement>(null);
@@ -80,6 +82,11 @@ const NavBar = (): React.ReactElement => {
     const scrollPositions = window.scrollY;
     if (navPositions !== undefined)
       navPositions < scrollPositions ? setSticky(true) : setSticky(false);
+  };
+
+  const handleOpenProfile = () => {
+    setOpenUserBox(!openUserBox);
+    redirect("/profile");
   };
 
   useEffect(() => {
@@ -174,12 +181,12 @@ const NavBar = (): React.ReactElement => {
             <div>
               {!isLoading && (
                 <motion.div className="relative">
-                  {userInfo ? (
+                  {userDataState ? (
                     <motion.img
                       variants={avatarVariants}
                       initial="initial"
                       animate="visible"
-                      src={userInfo?.picture}
+                      src={userDataState?.picture}
                       alt="user-avatar"
                       className="object-fit aspect-square h-8 rounded-full border border-purple-500 shadow-lg"
                       onClick={() => setOpenUserBox(!openUserBox)}
@@ -189,12 +196,19 @@ const NavBar = (): React.ReactElement => {
                   )}
 
                   <motion.div
-                    className="absolute right-3 -bottom-12 z-50 min-w-max rounded-md border-2 bg-white shadow-2xl"
+                    className="absolute right-[100%] top-[100%] z-50 flex min-w-max flex-col rounded-md border-2 bg-white shadow-2xl"
                     variants={avatarMenuVariants}
                     initial="closed"
                     animate={openUserBox ? "open" : "closed"}
                     style={{ pointerEvents: openUserBox ? "auto" : "none" }}
                   >
+                    <motion.div
+                      className="w-full cursor-pointer rounded-md py-2 px-5 text-gray-900 hover:bg-gray-100"
+                      variants={itemVariants}
+                      onClick={handleOpenProfile}
+                    >
+                      <p>Profile</p>
+                    </motion.div>
                     <motion.div
                       className="w-full cursor-pointer rounded-md py-2 px-5 text-gray-900 hover:bg-gray-100"
                       variants={itemVariants}

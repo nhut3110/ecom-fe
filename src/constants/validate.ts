@@ -5,6 +5,13 @@ import {
   PaymentType,
 } from "../context/FormContext";
 import { LoginFormType } from "../pages/Login";
+import { EditProfileFormType } from "../pages/EditProfile";
+
+const passwordValidation = yup
+  .string()
+  .required("Password is required")
+  .min(8, "Password must be at least 8 characters")
+  .max(64, "Password must be at most 64 characters");
 
 export type ConditionalSchema<T> = T extends string
   ? yup.StringSchema
@@ -29,6 +36,7 @@ export const validationInformationSchema = yup
 
     phone: yup
       .string()
+      .min(9)
       .required("Phone is required")
       .matches(/^[0-9+]+$/, "Phone number must contain only numbers and +"),
 
@@ -75,9 +83,33 @@ export const validationLoginSchema = yup.object<Shape<LoginFormType>>().shape({
     .required("Email is required")
     .min(6, "Email must be at least 6 characters")
     .max(64, "Email must be at most 64 characters"),
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .max(64, "Password must be at most 64 characters"),
+  password: passwordValidation,
 });
+
+export const validationEditProfileSchema = yup
+  .object<Shape<EditProfileFormType>>()
+  .shape({
+    name: yup.string(),
+    phoneNumber: yup
+      .string()
+      .test(
+        "phoneNumber",
+        "Phone number must contain only numbers and +",
+        (value) => {
+          if (value && value.length > 0) {
+            return /^[0-9+]+$/.test(value);
+          }
+          return true;
+        }
+      ),
+  });
+export const validationChangePasswordSchema = yup
+  .object<Shape<EditProfileFormType>>()
+  .shape({
+    oldPassword: passwordValidation,
+    newPassword: passwordValidation,
+    confirmPassword: yup
+      .string()
+      .required("Confirm password is required")
+      .oneOf([yup.ref("newPassword")], "Passwords must match"),
+  });

@@ -1,7 +1,7 @@
-import { UserDataType } from "../services/auth.api";
+import { TokensType } from "../services/types.api";
 import { getLocalStorageValue } from "./localStorage";
 
-export const getTokensFromLocalStorage = (): UserDataType | null => {
+export const getTokensFromLocalStorage = (): TokensType | null => {
   const user = getLocalStorageValue({ key: "tokens" });
   if (!user) {
     return null;

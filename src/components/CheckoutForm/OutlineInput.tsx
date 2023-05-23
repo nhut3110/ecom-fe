@@ -8,7 +8,9 @@ interface OutlineInputType {
   name: Path<any>;
   error?: any;
   type?: HTMLInputTypeAttribute;
-  register: UseFormRegister<any>;
+  register?: UseFormRegister<any>;
+  isDisabled?: boolean;
+  placeholder?: string;
 }
 
 const OutlineInput = ({
@@ -17,6 +19,8 @@ const OutlineInput = ({
   error,
   register,
   type = "text",
+  isDisabled = false,
+  placeholder,
 }: OutlineInputType): React.ReactElement => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -29,11 +33,17 @@ const OutlineInput = ({
       <label htmlFor={name} className="font-semibold first-letter:capitalize">
         {label}
       </label>
-      <div className="relative w-full rounded-lg border-2 border-transparent bg-gray-50 p-3 focus-within:border-black">
+      <div
+        className={`relative w-full rounded-lg border-2 border-transparent ${
+          isDisabled ? "bg-transparent p-1" : "bg-gray-50 p-3"
+        } focus-within:border-black`}
+      >
         <input
+          placeholder={placeholder}
+          disabled={isDisabled}
           type={showPassword ? "text" : type}
           id={name}
-          {...register(name)}
+          {...register?.(name)}
           className={`min-h-[1.5rem] ${
             type === "password" ? "w-[90%]" : "w-full"
           } bg-transparent focus:outline-none`}

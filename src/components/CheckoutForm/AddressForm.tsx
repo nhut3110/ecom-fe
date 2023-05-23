@@ -22,13 +22,6 @@ const AddressForm = (): React.ReactElement => {
     handleSubmit,
     formState: { errors },
   } = useForm<AddressType>({
-    defaultValues: {
-      number: formData.number,
-      street: formData.street,
-      ward: formData.ward,
-      city: formData.city,
-      country: formData.country,
-    },
     resolver: yupResolver(validationAddressSchema),
   });
 

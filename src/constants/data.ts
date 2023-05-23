@@ -6,7 +6,9 @@ import {
 } from "../context/FormContext";
 import Layout from "../layout/Layout";
 import Cart from "../pages/Cart";
+import ChangePassword from "../pages/ChangePassword";
 import Checkout from "../pages/Checkout";
+import EditProfile from "../pages/EditProfile";
 import Favorite from "../pages/Favorite";
 import GetToken from "../pages/GetToken";
 import Home from "../pages/Home";
@@ -14,6 +16,7 @@ import Login from "../pages/Login";
 import Order from "../pages/Order";
 import Product from "../pages/Product";
 import ProductDetail from "../pages/ProductDetail";
+import Profile from "../pages/Profile";
 import Register from "../pages/Register";
 
 type CarouselImageType = {
@@ -75,6 +78,11 @@ export const navList: NavItemType[] = [
   NavItemType.FAVORITES,
   NavItemType.ORDERS,
 ];
+
+export const enum AccountType {
+  FACEBOOK = "facebook",
+  LOCAL = "local",
+}
 
 export const carouselImages: Array<CarouselImageType> = [
   {
@@ -158,6 +166,21 @@ export const publicRoutes: Routes[] = [
   {
     path: "/orders",
     component: Order,
+    layout: Layout,
+  },
+  {
+    path: "/profile",
+    component: Profile,
+    layout: Layout,
+  },
+  {
+    path: "/profile/edit",
+    component: EditProfile,
+    layout: Layout,
+  },
+  {
+    path: "/profile/password",
+    component: ChangePassword,
     layout: Layout,
   },
   {
