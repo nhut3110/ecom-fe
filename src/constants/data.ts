@@ -54,7 +54,7 @@ export interface ProductDetails {
   title: string;
   price: number;
   description: string;
-  category: string;
+  category_id: string;
   image: string;
   rate: number;
   count: number;

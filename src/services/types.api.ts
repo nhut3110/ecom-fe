@@ -24,3 +24,8 @@ export type UserData = {
   createAt?: string;
   updateAt?: string;
 };
+
+export type CategoryType = {
+  name: string;
+  id: string;
+};

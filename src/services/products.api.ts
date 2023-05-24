@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { publicApi } from "./api";
+import { CategoryType } from "./types.api";
 
 const getProductList = async () => {
   return await publicApi.get("/products").then((response) => {
@@ -10,6 +11,18 @@ const getProductList = async () => {
 const getProductDetails = async (productId: string) => {
   return await publicApi.get(`/products/${productId}`).then((response) => {
     return response.data;
+  });
+};
+
+const getCategoryList = async () => {
+  return await publicApi.get("/categories").then((response) => {
+    return response.data as CategoryType[];
+  });
+};
+
+const getCategoryById = async (categoryId: string) => {
+  return await publicApi.get(`/categories/${categoryId}`).then((response) => {
+    return response.data as CategoryType;
   });
 };
 
@@ -31,4 +44,31 @@ const fetchProductDetails = ({ productId }: { productId: string }) => {
   return { data, error, isLoading };
 };
 
-export { fetchProducts, fetchProductDetails };
+const fetchCategoryList = () => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategoryList(),
+  });
+
+  return { categories: data, error, isLoading };
+};
+
+const fetchCategoryById = ({ categoryId }: { categoryId: string }) => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["categories", categoryId],
+    queryFn: () => getCategoryById(categoryId),
+  });
+
+  return { data, error, isLoading };
+};
+
+export {
+  fetchProducts,
+  fetchProductDetails,
+  fetchCategoryList,
+  fetchCategoryById,
+  getProductList,
+  getProductDetails,
+  getCategoryList,
+  getCategoryById,
+};

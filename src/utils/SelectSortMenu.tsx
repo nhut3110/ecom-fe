@@ -1,11 +1,18 @@
 import { motion } from "framer-motion";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SelectMenu from "../components/SelectMenu";
 import Tooltip from "../components/Tooltip";
+import { CategoryType } from "../services/types.api";
+import { FilterValue } from "./filterProducts";
+import { getCategoryList } from "../services/products.api";
 
 type SortOptionType = {
   name: string;
   options: string[];
+};
+type FilterOptionType = {
+  name: string;
+  options: CategoryType[];
 };
 
 const iconVariants = {
@@ -54,26 +61,31 @@ export const selectSortMenu = () => {
   const handleSortChange = (selectedOption: string, index: number) => {
     setSelectedSort(selectedOption);
 
-    // just in case for the review, if the value is not -1, it mean that some menu have change value
     if (lastChangedIndex.current !== -1) {
-      // if the change value is the same as the current value, set it to -1 to mean that we don't need to reset anything, otherwise set it to the new value that is the index of changed menu
       const resetIndex =
         lastChangedIndex.current !== index ? lastChangedIndex.current : -1;
-      // after that, set value to the ref
       lastChangedIndex.current = index;
-      // if the change value i not -1, it means that other menu have change value so we need to reset the rest
       setIsReset(resetIndex !== -1);
-      // just return
+
       return resetIndex;
     }
-    // if the index is -1 and not pass the condition above, we set it to the index of the menu to compare later when something changes
     lastChangedIndex.current = index;
-    // just return
+
     return -1;
   };
 
-  const handleFilterChange = (selectedOption: string) => {
-    setSelectedFilter(selectedOption);
+  // this function is just a temporary function, will be replaced by sort and filter api in the next phase, same as above
+  const handleFilterChange = async (selectedOption: string) => {
+    const categories = await getCategoryList();
+    if (categories) {
+      const temp = categories.find(
+        (category) => category.name === selectedOption.toLowerCase()
+      );
+      if (!temp) return setSelectedFilter(FilterValue.DEFAULT);
+
+      return setSelectedFilter(temp.id);
+    }
+    return setSelectedFilter(FilterValue.DEFAULT);
   };
 
   const handleResetMenu = () => {
@@ -91,7 +103,6 @@ export const selectSortMenu = () => {
                 focusable="false"
                 aria-hidden="true"
                 viewBox="0 0 24 24"
-                data-testid="InfoOutlinedIcon"
               >
                 <motion.path
                   variants={iconVariants}
