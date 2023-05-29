@@ -9,7 +9,7 @@ interface OutlineInputType {
   error?: any;
   type?: HTMLInputTypeAttribute;
   register?: UseFormRegister<any>;
-  isDisabled?: boolean;
+  disabled?: boolean;
   placeholder?: string;
 }
 
@@ -19,14 +19,10 @@ const OutlineInput = ({
   error,
   register,
   type = "text",
-  isDisabled = false,
+  disabled = false,
   placeholder,
 }: OutlineInputType): React.ReactElement => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
 
   return (
     <div className="flex w-full flex-col gap-2 pb-2">
@@ -35,12 +31,12 @@ const OutlineInput = ({
       </label>
       <div
         className={`relative w-full rounded-lg border-2 border-transparent ${
-          isDisabled ? "bg-transparent p-1" : "bg-gray-50 p-3"
+          disabled ? "bg-transparent p-1" : "bg-gray-50 p-3"
         } focus-within:border-black`}
       >
         <input
           placeholder={placeholder}
-          disabled={isDisabled}
+          disabled={disabled}
           type={showPassword ? "text" : type}
           id={name}
           {...register?.(name)}
@@ -51,7 +47,7 @@ const OutlineInput = ({
         {type === "password" && (
           <EyeButton
             isEyeClosed={showPassword}
-            onClick={toggleShowPassword}
+            onClick={() => setShowPassword(!showPassword)}
             className="absolute top-1/2 right-3 aspect-square w-5 -translate-y-1/2 transform"
           />
         )}

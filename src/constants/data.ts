@@ -82,6 +82,8 @@ export const enum AccountType {
   LOCAL = "local",
 }
 
+export const ADD_PRODUCT_DELAY = 1500; // 1.5s to prevent user from click continuously will change later when apply api
+
 export const carouselImages: Array<CarouselImageType> = [
   {
     url: "https://idjewelry.com/media/wysiwyg/rose-gold/rose_gold_jewelry.jpg",

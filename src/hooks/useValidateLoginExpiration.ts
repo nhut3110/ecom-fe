@@ -1,8 +1,8 @@
 import React, { useContext, useMemo, useEffect } from "react";
+import { useNavigatePage } from "../hooks/useNavigatePage";
 import { getUserInfo } from "../services/auth.api";
 import { getLocalStorageValue } from "../utils/localStorage";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigatePage } from "../hooks/useNavigatePage";
 import { UserDataContext } from "../context/UserDataContext";
 
 export const useValidateLoginExpiration = () => {

@@ -2,11 +2,13 @@ import { motion } from "framer-motion";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useState, useEffect, useMemo } from "react";
 import { carouselImages } from "../constants/data";
+import DotsLoading from "./Animation/DotsLoading";
 
 const CHANGE_SLIDE_TIME = 5000; // time in milliseconds to change the slide
 
 const Carousel = (): React.ReactElement => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const buttonVariants = useMemo(() => {
     return {
@@ -42,6 +44,11 @@ const Carousel = (): React.ReactElement => {
 
   return (
     <div className="relative m-3 h-36 md:h-72">
+      {loading && (
+        <div className="z-50 flex h-full w-full items-center justify-center">
+          <DotsLoading />
+        </div>
+      )}
       <motion.button
         className="absolute left-0 top-1/2 z-10 -translate-y-1/2 transform text-gray-400 focus:outline-none hover:text-gray-900"
         onClick={handlePrevious}
@@ -69,11 +76,13 @@ const Carousel = (): React.ReactElement => {
           key={index}
           src={image.url}
           alt={image.category}
+          loading="lazy"
           initial={{ opacity: 0 }}
           animate={{
             opacity: index === currentSlide ? 1 : 0,
             transition: { duration: 1, ease: "easeInOut" },
           }}
+          onLoad={() => setLoading(false)}
           className="object-fit absolute top-0 left-0 h-full w-full rounded-xl object-top md:object-fill"
         />
       ))}

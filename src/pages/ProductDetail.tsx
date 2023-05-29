@@ -8,10 +8,12 @@ import QuantityButton from "../components/QuantityButton";
 import RatingStar from "../components/RatingStar";
 import SmallButton from "../components/SmallButton";
 import { FlyingImageWrapper } from "../components/FlyingImage";
+import GifLoading from "../components/GifLoading";
 import { fetchProductDetails } from "../services/products.api";
 import { GoodsIcon, TruckIcon } from "../assets/icons";
 import { NotificationContext } from "../context/NotificationContext";
 import { CartContext } from "../context/CartContext";
+import { ADD_PRODUCT_DELAY } from "../constants/data";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 when click
 
@@ -22,6 +24,7 @@ const ProductDetail = (): React.ReactElement => {
   const { notify } = useContext(NotificationContext);
   const { addToCart, calculateCartValue } = useContext(CartContext);
   const [quantity, setQuantity] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleIncrement = () => {
     setQuantity((quantity) => quantity + DEFAULT_QUANTITY_CHANGE);
@@ -38,16 +41,22 @@ const ProductDetail = (): React.ReactElement => {
   const handleAddToCart = () => {
     addToCart(quantity, data, crypto.randomUUID());
     calculateCartValue(quantity, data);
+    setLoading(true);
     notify({
       content: `Successfully add ${data.title} to cart`,
       type: "success",
       open: true,
       id: crypto.randomUUID(),
     });
+
+    setTimeout(() => {
+      setLoading(false);
+    }, ADD_PRODUCT_DELAY);
   };
 
   return (
     <>
+      {loading && <GifLoading />}
       {isLoading ? (
         <AnimatePresence>
           <SlideDownDisappearWrapper>

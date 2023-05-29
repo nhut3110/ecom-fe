@@ -35,15 +35,15 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
   const [orders, setOrders] = useState<OrderType[]>(
     !!Object.keys(orderList).length ? orderList : []
   );
-  const [user, setUser] = useState<TokensType>(
+  const [tokens, setTokens] = useState<TokensType>(
     !!Object.keys(userData).length ? userData : {}
   );
 
   return (
     <NotificationProvider notificationList={initNotificationList}>
       <AuthProvider
-        accessToken={user?.accessToken}
-        refreshToken={user?.refreshToken}
+        accessToken={tokens?.accessToken}
+        refreshToken={tokens?.refreshToken}
       >
         <UserDataProvider>
           <OrderProvider orderList={orders}>

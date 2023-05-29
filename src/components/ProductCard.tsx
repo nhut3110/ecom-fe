@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import React, {
   useCallback,
   useContext,
@@ -5,17 +7,16 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import HeartButton from "./HeartButton";
 import RatingStar from "./RatingStar";
 import SmallButton from "./SmallButton";
 import { FlyingImageWrapper } from "./FlyingImage";
-import { ProductDetails } from "../constants/data";
+import GifLoading from "./GifLoading";
+import { ADD_PRODUCT_DELAY, ProductDetails } from "../constants/data";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { CartContext } from "../context/CartContext";
-import { getLocalStorageValue } from "../utils/localStorage";
 import { NotificationContext } from "../context/NotificationContext";
+import { getLocalStorageValue } from "../utils/localStorage";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
@@ -42,6 +43,7 @@ const ProductCard = (props: {
 
   const [love, setLove] = useState(isFavorite);
   const [animation, setAnimation] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleFavorites = useCallback(() => {
     love ? removeFavorite(product) : addFavorite(product);
@@ -64,12 +66,17 @@ const ProductCard = (props: {
   const handleAddToCart = useCallback(() => {
     addToCart(DEFAULT_QUANTITY, product, crypto.randomUUID());
     calculateCartValue(DEFAULT_QUANTITY, product);
+    setLoading(true);
     notify({
       id: crypto.randomUUID(),
       content: "Add to cart successfully",
       open: true,
       type: "success",
     });
+
+    setTimeout(() => {
+      setLoading(false);
+    }, ADD_PRODUCT_DELAY);
   }, [product]);
 
   useEffect(() => {
@@ -81,6 +88,7 @@ const ProductCard = (props: {
 
   return (
     <>
+      {loading && <GifLoading />}
       <motion.div
         whileHover={{
           scale: 1.1,

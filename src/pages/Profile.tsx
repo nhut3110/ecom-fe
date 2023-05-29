@@ -1,26 +1,26 @@
+import { AnimatePresence } from "framer-motion";
+import { useMutation } from "@tanstack/react-query";
 import { MdEdit, MdCached } from "react-icons/md";
 import { BiImageAdd, BiTrash } from "react-icons/bi";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useValidateLoginExpiration } from "../hooks/useValidateLoginExpiration";
-import DotsLoading from "../components/Animation/DotsLoading";
+import { useNavigatePage } from "../hooks/useNavigatePage";
 import MemberBadge from "../components/MemberBadge";
+import GifLoading from "../components/GifLoading";
+import OrderChart from "../components/OrderChart";
+import Modal from "../components/Modal";
+import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { OrderContext } from "../context/OrderContext";
 import {
   determineCurrentBadge,
   determineNextBadge,
 } from "../utils/determineBadge";
-import { UserBanner } from "../assets/images";
 import { convertTimestampToDate } from "../utils/covertTimeStamp";
-import { formatDate } from "../utils/formatDate";
-import OrderChart from "../components/OrderChart";
-import { AnimatePresence } from "framer-motion";
-import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
-import { useNavigatePage } from "../hooks/useNavigatePage";
+import { formatToDateMonthYearType } from "../utils/formatDate";
 import { AccountType } from "../constants/data";
-import Modal from "../components/Modal";
 import { UploadIcon } from "../assets/icons";
-import { useMutation } from "@tanstack/react-query";
+import { UserBanner } from "../assets/images";
 import { editAvatar } from "../services/auth.api";
 import { UserDataContext } from "../context/UserDataContext";
 
@@ -46,13 +46,11 @@ const Profile = () => {
   const nextRank = determineNextBadge(userDataState?.shippingPoint ?? 0);
   const recentOrderList = orderState.orderList.slice(0, 5); // TODO: just dummy data for ui only, replace after when have api for orders
 
-  const handleCloseModal = () => setOpenModal(false);
-
   const handleSubmitModal = () => {
     if (selectedImage) {
       mutate(selectedImage);
     }
-    handleCloseModal();
+    setOpenModal(false);
   };
 
   const handleFileInputChange = (
@@ -82,10 +80,6 @@ const Profile = () => {
     }
   };
 
-  const handleClearImage = () => {
-    setSelectedImage(null);
-  };
-
   useEffect(() => {
     if (!isLogin) redirect("/login");
   });
@@ -102,7 +96,7 @@ const Profile = () => {
         <AnimatePresence>
           <SlideDownDisappearWrapper>
             <div className="flex h-screen w-full items-center justify-center">
-              <DotsLoading />
+              <GifLoading />
             </div>
           </SlideDownDisappearWrapper>
         </AnimatePresence>
@@ -119,14 +113,16 @@ const Profile = () => {
             <div className="mb-8 flex flex-col items-center justify-between gap-3 md:flex-row">
               {/* Avatar and Info */}
               <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
-                <div className="group relative flex rounded-full">
+                <div className="group relative flex rounded-full bg-white">
                   <img
                     src={userDataState?.picture}
                     alt="avatar"
                     className="aspect-square w-32 rounded-full border border-black shadow-lg"
                   />
                   <div className="absolute -bottom-2 flex w-full justify-center">
-                    <MemberBadge shippingPoint={userDataState?.shippingPoint} />
+                    <MemberBadge
+                      shippingPoint={userDataState?.shippingPoint ?? 0}
+                    />
                   </div>
                   <button
                     className="absolute top-0 left-0 right-0 flex h-full w-full items-center justify-center gap-2 rounded-full border border-black bg-gray-300 bg-opacity-50 p-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -152,6 +148,7 @@ const Profile = () => {
                   <p className="font-bold">Edit Profile</p>
                   <MdEdit />
                 </button>
+
                 {userDataState?.provider === AccountType.LOCAL && (
                   <button
                     className="flex h-fit items-center justify-center gap-2 rounded-lg border border-black p-1"
@@ -188,7 +185,7 @@ const Profile = () => {
                       <p className="font-medium">Created Date:</p>
                       <p>
                         {userDataState?.createAt &&
-                          formatDate(userDataState?.createAt)}
+                          formatToDateMonthYearType(userDataState?.createAt)}
                       </p>
                     </div>
                   </div>
@@ -280,7 +277,7 @@ const Profile = () => {
           <Modal
             open={openModal}
             title="Edit avatar"
-            onClose={handleCloseModal}
+            onClose={() => setOpenModal(false)}
             onSubmit={handleSubmitModal}
           >
             <div
@@ -305,7 +302,7 @@ const Profile = () => {
                     />
                     <button
                       className="absolute -top-3 -right-3 rounded-full bg-white p-1 text-sm text-red-500 underline"
-                      onClick={handleClearImage}
+                      onClick={() => setSelectedImage(null)}
                     >
                       <BiTrash size={20} />
                     </button>

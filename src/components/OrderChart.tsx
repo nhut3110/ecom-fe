@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo, useCallback } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,7 +11,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import { OrderContext } from "../context/OrderContext";
 
-const NUMBER_OF_MONTHS = 3;
+const NUMBER_OF_MONTHS = 3; // number of months from now back to past
 
 ChartJS.register(
   CategoryScale,
@@ -34,35 +34,35 @@ export const options = {
   },
 };
 
-const OrderChart = () => {
+const OrderChart = (): React.ReactElement => {
   const { orderState } = useContext(OrderContext);
-  const orderDates = orderState.orderList.map((order) => order.date);
-  // comments just for review, will be removed later
-  const countOrdersByMonth = () => {
-    // this function is to count the number of orders in the recent 3 months from now
+
+  const orderDates = useMemo(() => {
+    return orderState.orderList.map((order) => order.date);
+  }, [orderState.orderList]);
+
+  const countOrdersByMonth = useCallback(() => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
-    const months = []; // Array to store month names
-    const orderCounts = []; // Array to store order counts
+    const months = [];
+    const orderCounts = [];
 
-    // Loop for three months starting from the current month
     for (let i = 0; i < NUMBER_OF_MONTHS; i++) {
-      const monthIndex = (currentMonth - i + 12) % 12; // Calculate the month index with proper wrapping (12 equal to 12 months)
+      const monthIndex = (currentMonth - i + 12) % 12;
       const monthName = new Intl.DateTimeFormat("en-US", {
         month: "long",
       }).format(new Date(currentDate.getFullYear(), monthIndex));
-      months.unshift(monthName); // Add the month name to the beginning of the array
+      months.unshift(monthName);
 
-      // Filter orders based on month and count the number of orders
       const count = orderDates.filter((date) => {
         const orderMonth = new Date(date).getMonth();
         return orderMonth === monthIndex;
       }).length;
-      orderCounts.unshift(count); // Add the order count to the beginning of the array
+      orderCounts.unshift(count);
     }
 
     return { months: months, counts: orderCounts };
-  };
+  }, [orderDates]);
 
   const { months, counts } = countOrdersByMonth();
 
@@ -72,7 +72,7 @@ const OrderChart = () => {
       {
         label: "Number of Orders",
         data: counts,
-        backgroundColor: "rgba(75,192,192,0.6)",
+        backgroundColor: "rgba(106, 90, 205, 0.6)",
       },
     ],
   };

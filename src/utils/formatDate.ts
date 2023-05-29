@@ -1,4 +1,4 @@
-export const formatDate = (dateString?: string) => {
+export const formatToDateMonthYearType = (dateString?: string) => {
   if (!dateString) return new Date().toString();
 
   const date = new Date(dateString);

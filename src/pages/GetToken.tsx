@@ -9,6 +9,7 @@ import { loginFacebook } from "../services/auth.api";
 import { AuthContext } from "../context/AuthContext";
 import { facebookConstants } from "../constants/data";
 import decodeIdFromJWT from "../utils/decodeIdFromJWT";
+import GifLoading from "../components/GifLoading";
 
 const DELAY_WHILE_LOADING = 2000;
 
@@ -58,11 +59,7 @@ const GetToken = () => {
     }
   }, []);
 
-  return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <DotsLoading />
-    </div>
-  );
+  return <GifLoading />;
 };
 
 export default GetToken;

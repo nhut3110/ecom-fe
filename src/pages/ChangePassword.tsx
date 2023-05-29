@@ -1,12 +1,12 @@
 import { Path, useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useContext, useState } from "react";
+import { useNavigatePage } from "../hooks/useNavigatePage";
 import OutlineInput from "../components/CheckoutForm/OutlineInput";
 import Modal from "../components/Modal";
-import { validationChangePasswordSchema } from "../constants/validate";
 import SmallButton from "../components/SmallButton";
-import { useNavigatePage } from "../hooks/useNavigatePage";
-import { useMutation } from "@tanstack/react-query";
+import { validationChangePasswordSchema } from "../constants/validate";
 import { changePassword } from "../services/auth.api";
 import { NotificationContext } from "../context/NotificationContext";
 

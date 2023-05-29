@@ -77,16 +77,16 @@ const NavBar = (): React.ReactElement => {
     };
   }, []);
 
+  const handleOpenProfile = () => {
+    setOpenUserBox(!openUserBox);
+    redirect("/profile");
+  };
+
   const handleScroll = () => {
     const navPositions = navRef.current?.getBoundingClientRect().top;
     const scrollPositions = window.scrollY;
     if (navPositions !== undefined)
       navPositions < scrollPositions ? setSticky(true) : setSticky(false);
-  };
-
-  const handleOpenProfile = () => {
-    setOpenUserBox(!openUserBox);
-    redirect("/profile");
   };
 
   useEffect(() => {

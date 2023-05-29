@@ -1,22 +1,22 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { determineCurrentBadge } from "../utils/determineBadge";
+import React, { useEffect, useState } from "react";
 import Tooltip from "./Tooltip";
+import { determineCurrentBadge } from "../utils/determineBadge";
 
 type MemberBadgeType = {
-  shippingPoint?: number;
+  shippingPoint: number;
 };
 
-const MemberBadge = ({ shippingPoint = 0 }: MemberBadgeType) => {
+const MemberBadge = ({
+  shippingPoint = 0,
+}: MemberBadgeType): React.ReactElement => {
   const [badge, setBadge] = useState<string>("");
-  const [rank, setRank] = useState<string>("");
 
   useEffect(() => {
     const result = determineCurrentBadge(shippingPoint);
     if (result) {
       setBadge(result.badge);
-      setRank(result.rank);
     }
-  }, []);
+  }, [shippingPoint]);
 
   return (
     <div className="z-30 rounded-full bg-transparent">

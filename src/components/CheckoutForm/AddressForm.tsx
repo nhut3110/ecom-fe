@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useContext, useState } from "react";
 import { useGetOrderFormFields } from "../../hooks/useGetOrderFormFields";
 import SmallButton from "../SmallButton";
-import { AddressType, FormContext } from "../../context/FormContext";
 import OutlineInput from "./OutlineInput";
+import { AddressType, FormContext } from "../../context/FormContext";
 import { validationAddressSchema } from "../../constants/validate";
 
 const AddressForm = (): React.ReactElement => {
@@ -22,6 +22,13 @@ const AddressForm = (): React.ReactElement => {
     handleSubmit,
     formState: { errors },
   } = useForm<AddressType>({
+    defaultValues: {
+      number: formData.number,
+      street: formData.street,
+      ward: formData.ward,
+      city: formData.city,
+      country: formData.country,
+    },
     resolver: yupResolver(validationAddressSchema),
   });
 

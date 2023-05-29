@@ -1,15 +1,15 @@
 import { Path, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useState } from "react";
+import { useNavigatePage } from "../hooks/useNavigatePage";
 import OutlineInput from "../components/CheckoutForm/OutlineInput";
 import Modal from "../components/Modal";
-import { validationEditProfileSchema } from "../constants/validate";
 import SmallButton from "../components/SmallButton";
-import { useNavigatePage } from "../hooks/useNavigatePage";
-import { useMutation } from "@tanstack/react-query";
+import { validationEditProfileSchema } from "../constants/validate";
 import { editProfile } from "../services/auth.api";
-import { deleteEmptyKeys } from "../utils/deleteEmptyKeys";
 import { NotificationContext } from "../context/NotificationContext";
+import { deleteEmptyStringKeys } from "../utils";
 
 export type EditProfileFormType = {
   name?: string;
@@ -38,7 +38,7 @@ const EditProfile = () => {
   const { redirect } = useNavigatePage();
   const { notify } = useContext(NotificationContext);
   const { mutate } = useMutation(editProfile, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       notify({
         content: `Edited successfully`,
         type: "success",
@@ -58,16 +58,14 @@ const EditProfile = () => {
   });
 
   const onSubmit = (data: EditProfileFormType) => {
-    const temp = deleteEmptyKeys(data);
+    const temp = deleteEmptyStringKeys(data);
     setNewData(temp);
     setOpenModal(true);
   };
 
-  const handleCloseModal = () => setOpenModal(false);
-
   const handleSubmitEditProfile = () => {
     if (newData) mutate(newData);
-    handleCloseModal();
+    setOpenModal(false);
   };
 
   return (
@@ -94,7 +92,7 @@ const EditProfile = () => {
       <Modal
         open={openModal}
         title="Edit Profile"
-        onClose={handleCloseModal}
+        onClose={() => setOpenModal(false)}
         onSubmit={handleSubmitEditProfile}
       >
         <p>Are you sure to edit?</p>
