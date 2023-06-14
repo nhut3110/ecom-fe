@@ -11,6 +11,7 @@ export type LoginType = {
 export type FacebookLoginType = {
   code: string;
   callbackUrl: string;
+  password?: string;
 };
 
 export type UserData = {
@@ -21,11 +22,17 @@ export type UserData = {
   phoneNumber?: string;
   provider?: string;
   shippingPoint?: number;
-  createAt?: string;
-  updateAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type CategoryType = {
   name: string;
   id: string;
+};
+
+export type ErrorResponseType = {
+  statusCode?: number;
+  message?: string;
+  error?: string;
 };

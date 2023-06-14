@@ -1,15 +1,17 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useValidateLoginExpiration } from "../hooks/useValidateLoginExpiration";
-import { useNavigatePage } from "../hooks/useNavigatePage";
-import { useMenuAnimation } from "../hooks/useMenuAnimation";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import {
+  useMenuAnimation,
+  useNavigatePage,
+  useValidateLoginExpiration,
+} from "../hooks";
 import SmallButton from "./SmallButton";
 import { NavSideMenu } from "./Animation/NavSideMenu";
 import HamburgerButton from "./Animation/HamburgerButton";
 import { LogoTransparent } from "../assets/images";
-import { navList } from "../constants/data";
 import { UserDataContext } from "../context/UserDataContext";
+import { navList } from "../constants";
 
 const NavBar = (): React.ReactElement => {
   const [openUserBox, setOpenUserBox] = useState<boolean>(false);
@@ -18,64 +20,58 @@ const NavBar = (): React.ReactElement => {
 
   const { userDataState } = useContext(UserDataContext);
 
-  const { redirect } = useNavigatePage();
-  const { isLogin, isLoading, handleLogout } = useValidateLoginExpiration();
-  const scope = useMenuAnimation(openMobileNav);
-
   const navRef = useRef<HTMLDivElement>(null);
   const navMobileMenuRef = useRef<HTMLUListElement>(null);
   const navHamburgerButtonRef = useRef<HTMLDivElement>(null);
 
-  const avatarVariants = useMemo(() => {
-    return {
-      initial: {
-        opacity: 0,
-        y: -20,
-      },
-      visible: {
-        opacity: 1,
-        y: 0,
-      },
-    };
-  }, []);
+  const { redirect } = useNavigatePage();
+  const { isLogin, isLoading, handleLogout } = useValidateLoginExpiration();
+  const scope = useMenuAnimation(openMobileNav);
 
-  const avatarMenuVariants = useMemo(() => {
-    return {
-      open: {
-        clipPath: "inset(0% 0% 0% 0%)",
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 24,
-          bounce: 0,
-          duration: 0.7,
-          delayChildren: 0.3,
-          staggerChildren: 0.05,
-        },
-      },
-      closed: {
-        clipPath: "inset(0% 0% 100% 100%)",
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 24,
-          bounce: 0,
-          duration: 0.3,
-        },
-      },
-    };
-  }, []);
+  const avatarVariants = {
+    initial: {
+      opacity: 0,
+      y: -20,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+    },
+  };
 
-  const itemVariants = useMemo(() => {
-    return {
-      open: {
-        opacity: 1,
-        y: 0,
-        transition: { type: "spring", stiffness: 300, damping: 24 },
+  const avatarMenuVariants = {
+    open: {
+      clipPath: "inset(0% 0% 0% 0%)",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+        bounce: 0,
+        duration: 0.7,
+        delayChildren: 0.3,
+        staggerChildren: 0.05,
       },
-      closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
-    };
-  }, []);
+    },
+    closed: {
+      clipPath: "inset(0% 0% 100% 100%)",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+        bounce: 0,
+        duration: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    open: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", stiffness: 300, damping: 24 },
+    },
+    closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
+  };
 
   const handleOpenProfile = () => {
     setOpenUserBox(!openUserBox);
@@ -84,9 +80,8 @@ const NavBar = (): React.ReactElement => {
 
   const handleScroll = () => {
     const navPositions = navRef.current?.getBoundingClientRect().top;
-    const scrollPositions = window.scrollY;
     if (navPositions !== undefined)
-      navPositions < scrollPositions ? setSticky(true) : setSticky(false);
+      navPositions < window.scrollY ? setSticky(true) : setSticky(false);
   };
 
   useEffect(() => {
@@ -221,7 +216,7 @@ const NavBar = (): React.ReactElement => {
               )}
             </div>
           ) : (
-            <SmallButton name="sign in" onClick={() => redirect("/login")} />
+            <SmallButton content="sign in" onClick={() => redirect("/login")} />
           )}
         </div>
       </nav>

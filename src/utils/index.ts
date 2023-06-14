@@ -4,7 +4,6 @@ export * from "./selectSortMenu";
 export * from "./capitalizeFirstLetter";
 export * from "./checkIsTokenExpired";
 export * from "./covertTimeStamp";
-export * from "./createApiInstance";
 export * from "./decodeIdFromJWT";
 export * from "./deleteEmptyKeys";
 export * from "./determineBadge";

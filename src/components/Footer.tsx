@@ -1,11 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  footerContact,
-  footerContents,
-  FooterContentType,
-} from "../constants/data";
 import { LogoTransparent } from "../assets/images";
+import { FooterContentType, footerContact, footerContents } from "../constants";
 
 const Footer = (): React.ReactElement => {
   return (

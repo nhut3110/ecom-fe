@@ -2,19 +2,15 @@ import { Path, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useState } from "react";
-import { useNavigatePage } from "../hooks/useNavigatePage";
+import { useNavigatePage } from "../hooks";
 import OutlineInput from "../components/CheckoutForm/OutlineInput";
 import Modal from "../components/Modal";
 import SmallButton from "../components/SmallButton";
-import { validationEditProfileSchema } from "../constants/validate";
 import { editProfile } from "../services/auth.api";
 import { NotificationContext } from "../context/NotificationContext";
 import { deleteEmptyStringKeys } from "../utils";
-
-export type EditProfileFormType = {
-  name?: string;
-  phoneNumber?: string;
-};
+import { UserDataContext } from "../context/UserDataContext";
+import { EditProfileFormType, validationEditProfileSchema } from "../constants";
 
 type EditProfileFormField = {
   label: string;
@@ -37,6 +33,7 @@ const EditProfile = () => {
   const [newData, setNewData] = useState<EditProfileFormType>();
   const { redirect } = useNavigatePage();
   const { notify } = useContext(NotificationContext);
+  const { userDataState } = useContext(UserDataContext);
   const { mutate } = useMutation(editProfile, {
     onSuccess: () => {
       notify({
@@ -55,6 +52,10 @@ const EditProfile = () => {
     formState: { errors },
   } = useForm<EditProfileFormType>({
     resolver: yupResolver(validationEditProfileSchema),
+    defaultValues: {
+      name: userDataState.name,
+      phoneNumber: userDataState.phoneNumber,
+    },
   });
 
   const onSubmit = (data: EditProfileFormType) => {
@@ -85,8 +86,8 @@ const EditProfile = () => {
           ))}
         </form>
         <div className="flex self-end">
-          <SmallButton name="Back" onClick={() => redirect("/profile")} />
-          <SmallButton name="Edit" onClick={handleSubmit(onSubmit)} />
+          <SmallButton content="Back" onClick={() => redirect("/profile")} />
+          <SmallButton content="Edit" onClick={handleSubmit(onSubmit)} />
         </div>
       </div>
       <Modal

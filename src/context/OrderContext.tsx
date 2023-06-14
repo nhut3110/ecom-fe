@@ -1,6 +1,6 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import { OrderType } from "../constants/data";
-import { updateLocalStorageValue } from "../utils/localStorage";
+import { updateLocalStorageValue } from "../utils";
+import { OrderType } from "../constants";
 
 export type OrderStateType = {
   orderList: OrderType[];

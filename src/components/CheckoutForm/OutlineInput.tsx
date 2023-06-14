@@ -35,11 +35,11 @@ const OutlineInput = ({
         } focus-within:border-black`}
       >
         <input
+          {...register?.(name)}
           placeholder={placeholder}
           disabled={disabled}
           type={showPassword ? "text" : type}
           id={name}
-          {...register?.(name)}
           className={`min-h-[1.5rem] ${
             type === "password" ? "w-[90%]" : "w-full"
           } bg-transparent focus:outline-none`}

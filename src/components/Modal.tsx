@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PortalWrapper from "./PortalWrapper";
 
 type ModalType = {
@@ -27,22 +27,20 @@ const modalVariants = {
 
 const Modal = ({ open, onClose, onSubmit, title, children }: ModalType) => {
   const [visibility, setVisibility] = useState<boolean>(open);
-  const modalVariants = useMemo(() => {
-    return {
-      hidden: {
-        y: "100vh",
-        opacity: 0,
+  const modalVariants = {
+    hidden: {
+      y: "100vh",
+      opacity: 0,
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 50,
       },
-      visible: {
-        y: 0,
-        opacity: 1,
-        transition: {
-          type: "spring",
-          stiffness: 50,
-        },
-      },
-    };
-  }, []);
+    },
+  };
 
   const handleSubmit = () => {
     setVisibility(false);

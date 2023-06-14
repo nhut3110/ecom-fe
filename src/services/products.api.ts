@@ -3,27 +3,27 @@ import { publicApi } from "./api";
 import { CategoryType } from "./types.api";
 
 const getProductList = async () => {
-  return await publicApi.get("/products").then((response) => {
-    return response.data;
-  });
+  const { data } = await publicApi.get("/products");
+
+  return data;
 };
 
 const getProductDetails = async (productId: string) => {
-  return await publicApi.get(`/products/${productId}`).then((response) => {
-    return response.data;
-  });
+  const { data } = await publicApi.get(`/products/${productId}`);
+
+  return data;
 };
 
 const getCategoryList = async () => {
-  return await publicApi.get("/categories").then((response) => {
-    return response.data as CategoryType[];
-  });
+  const { data } = await publicApi.get("/categories");
+
+  return data;
 };
 
 const getCategoryById = async (categoryId: string) => {
-  return await publicApi.get(`/categories/${categoryId}`).then((response) => {
-    return response.data as CategoryType;
-  });
+  const { data } = await publicApi.get(`/categories/${categoryId}`);
+
+  return data;
 };
 
 const fetchProducts = () => {

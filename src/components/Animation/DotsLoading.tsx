@@ -1,35 +1,31 @@
 import { motion } from "framer-motion";
 import times from "lodash/times";
-import React, { useMemo } from "react";
+import React from "react";
 
 const NUMBER_OF_DOTS = 3; // 3 dots in loading screen
 
 const DotsLoading = (): React.ReactElement => {
-  const containerVariants = useMemo(() => {
-    return {
-      initial: {
-        transition: {
-          staggerChildren: 0.2,
-        },
+  const containerVariants = {
+    initial: {
+      transition: {
+        staggerChildren: 0.2,
       },
-      animate: {
-        transition: {
-          staggerChildren: 0.2,
-        },
+    },
+    animate: {
+      transition: {
+        staggerChildren: 0.2,
       },
-    };
-  }, []);
+    },
+  };
 
-  const dotVariants = useMemo(() => {
-    return {
-      initial: {
-        y: "0%",
-      },
-      animate: {
-        y: "100%",
-      },
-    };
-  }, []);
+  const dotVariants = {
+    initial: {
+      y: "0%",
+    },
+    animate: {
+      y: "100%",
+    },
+  };
 
   return (
     <motion.div

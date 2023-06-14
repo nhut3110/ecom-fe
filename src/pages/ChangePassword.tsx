@@ -1,14 +1,17 @@
 import { Path, useForm } from "react-hook-form";
+import { AxiosError } from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useContext, useState } from "react";
-import { useNavigatePage } from "../hooks/useNavigatePage";
+import { useGetChangePasswordFormFields, useNavigatePage } from "../hooks";
 import OutlineInput from "../components/CheckoutForm/OutlineInput";
 import Modal from "../components/Modal";
 import SmallButton from "../components/SmallButton";
-import { validationChangePasswordSchema } from "../constants/validate";
 import { changePassword } from "../services/auth.api";
 import { NotificationContext } from "../context/NotificationContext";
+import { ErrorResponseType } from "../services/types.api";
+import { UserDataContext } from "../context/UserDataContext";
+import { AccountType, validationChangePasswordSchema } from "../constants";
 
 export type ChangePasswordFormType = {
   oldPassword: string;
@@ -16,31 +19,20 @@ export type ChangePasswordFormType = {
   confirmPassword?: string;
 };
 
-type ChangePasswordFormField = {
+export type ChangePasswordFormField = {
   label: string;
   name: Path<any>;
 };
 
-const ChangePasswordFormFields: ChangePasswordFormField[] = [
-  {
-    label: "Old Password",
-    name: "oldPassword",
-  },
-  {
-    label: "New Password",
-    name: "newPassword",
-  },
-  {
-    label: "Confirm Password",
-    name: "confirmPassword",
-  },
-];
-
 const ChangePassword = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [newData, setNewData] = useState<ChangePasswordFormType>();
+
   const { redirect } = useNavigatePage();
+
   const { notify } = useContext(NotificationContext);
+
+  const ChangePasswordFormFields = useGetChangePasswordFormFields();
   const { mutate } = useMutation(changePassword, {
     onSuccess: () => {
       notify({
@@ -52,10 +44,11 @@ const ChangePassword = () => {
 
       redirect("/profile");
     },
-    onError: (axiosResponse: any) => {
-      const message = axiosResponse.response.data.message;
+    onError: (axiosResponse: AxiosError) => {
+      const { response } = axiosResponse;
+      const messageData = response?.data as ErrorResponseType;
       notify({
-        content: message,
+        content: messageData.message,
         type: "error",
         open: true,
         id: crypto.randomUUID(),
@@ -70,20 +63,19 @@ const ChangePassword = () => {
     resolver: yupResolver(validationChangePasswordSchema),
   });
 
-  const onSubmit = (data: ChangePasswordFormType) => {
+  const onSubmit = ({ oldPassword, newPassword }: ChangePasswordFormType) => {
     setOpenModal(true);
     setNewData({
-      oldPassword: data.oldPassword,
-      newPassword: data.newPassword,
+      oldPassword,
+      newPassword,
     });
   };
 
-  const handleCloseModal = () => setOpenModal(false);
-
   const handleSubmitEditProfile = () => {
     if (newData) mutate(newData);
-    handleCloseModal();
+    setOpenModal(false);
   };
+
   return (
     <div className="mx-auto my-5 w-4/5">
       <p className="text-xl font-bold">Change your password</p>
@@ -102,14 +94,14 @@ const ChangePassword = () => {
           ))}
         </form>
         <div className="flex self-end">
-          <SmallButton name="Back" onClick={() => redirect("/profile")} />
-          <SmallButton name="Edit" onClick={handleSubmit(onSubmit)} />
+          <SmallButton content="Back" onClick={() => redirect("/profile")} />
+          <SmallButton content="Edit" onClick={handleSubmit(onSubmit)} />
         </div>
       </div>
       <Modal
         open={openModal}
         title="Change password"
-        onClose={handleCloseModal}
+        onClose={() => setOpenModal(false)}
         onSubmit={handleSubmitEditProfile}
       >
         <p>Are you sure to change your password?</p>

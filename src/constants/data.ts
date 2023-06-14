@@ -32,8 +32,8 @@ type Routes = {
 
 export type JWTDecodeType = {
   id?: string;
-  iat?: any;
-  exp?: any;
+  iat?: string;
+  exp?: string;
 };
 
 export type FooterContentType = {
@@ -48,6 +48,11 @@ export type OrderType = CartStateType &
     uuid: string;
     date: number;
   };
+
+export type EditProfileFormType = {
+  name?: string;
+  phoneNumber?: string;
+};
 
 export interface ProductDetails {
   id: number;
@@ -102,6 +107,9 @@ export const carouselImages: Array<CarouselImageType> = [
     category: "electronics",
   },
 ];
+
+export const gifURLLoading =
+  "https://media.tenor.com/emHVRG7_-cgAAAAC/seseren.gif";
 
 export const footerContact: string[] = [
   "We provide the best experience.",

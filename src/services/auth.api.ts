@@ -1,11 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, publicApi } from "./api";
-import { FacebookLoginType, LoginType, UserData } from "./types.api";
-import { EditProfileFormType } from "../pages/EditProfile";
+import {
+  FacebookLoginType,
+  LoginType,
+  TokensType,
+  UserData,
+} from "./types.api";
 import { ChangePasswordFormType } from "../pages/ChangePassword";
+import { checkIsTokenExpired } from "../utils";
+import { EditProfileFormType } from "../constants";
 
-const getNewTokens = async (refreshToken?: string) => {
-  if (!refreshToken) return;
+const getNewTokens = async (
+  refreshToken?: string
+): Promise<TokensType | void> => {
+  if (checkIsTokenExpired(refreshToken))
+    return localStorage.removeItem("tokens");
 
   const { data } = await publicApi.post("/auth/refresh-token", {
     refreshToken: refreshToken,
@@ -15,35 +24,35 @@ const getNewTokens = async (refreshToken?: string) => {
 };
 
 const loginFacebook = async (loginData: FacebookLoginType) => {
-  const response = await publicApi.post("/auth/facebook", loginData);
+  const { data } = await publicApi.post("/auth/facebook", loginData);
 
-  return response.data;
+  return data;
 };
 
 const login = async (loginData: LoginType) => {
-  const response = await publicApi.post("/auth/login", loginData);
+  const { data } = await publicApi.post("/auth/login", loginData);
 
-  return response.data;
+  return data;
 };
 
 const editProfile = async (profileData: EditProfileFormType) => {
-  const response = await authApi.patch("/users/me", profileData);
+  const { data } = await authApi.patch("/users/me", profileData);
 
-  return response.data;
+  return data;
 };
 
 const changePassword = async (passwordData: ChangePasswordFormType) => {
-  const response = await authApi.patch("/auth/password", passwordData);
+  const { data } = await authApi.patch("/auth/password", passwordData);
 
-  return response.data;
+  return data;
 };
 
 const editAvatar = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
-  const response = await authApi.patch("/users/me/avatar", formData);
+  const { data } = await authApi.patch("/users/me/avatar", formData);
 
-  return response.data;
+  return data;
 };
 
 const getUserById = async () => {
@@ -56,7 +65,7 @@ const getUserById = async () => {
 const getUserInfo = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["userInfo"],
-    queryFn: () => getUserById(),
+    queryFn: getUserById,
   });
 
   return { userInfo: data, error, isLoading };

@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useContext } from "react";
 import { NotificationContext } from "../context/NotificationContext";
-import { getLocalStorageValue } from "../utils/localStorage";
+import { getLocalStorageValue } from "../utils";
 
 type ChildrenType = {
   children: React.ReactElement | React.ReactElement[];

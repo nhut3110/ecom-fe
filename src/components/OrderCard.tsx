@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
-import { OrderType } from "../constants/data";
-import { convertTimestampToDate } from "../utils/covertTimeStamp";
+import { convertTimestampToDate } from "../utils";
+import { OrderType } from "../constants";
 
 const OrderCard = ({ order }: { order: OrderType }): React.ReactElement => {
   const orderDate = useMemo(() => {

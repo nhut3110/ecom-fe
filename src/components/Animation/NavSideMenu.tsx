@@ -2,7 +2,6 @@ import { FiClipboard, FiHeart, FiShoppingCart } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import React from "react";
-import { navList } from "../../constants/data";
 
 type NavDataType = {
   image: React.ReactElement;

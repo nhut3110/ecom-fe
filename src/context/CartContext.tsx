@@ -1,5 +1,5 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import { ProductDetails } from "../constants/data";
+import { ProductDetails } from "../constants";
 
 export type CartStateType = {
   cartValue: number;
@@ -7,10 +7,12 @@ export type CartStateType = {
     [productID: string]: {
       quantity: number;
       product: ProductDetails;
-      cartAnimations: {
-        id: string;
-        product: ProductDetails;
-      }[];
+      cartAnimations:
+        | {
+            id: string;
+            product: ProductDetails;
+          }[]
+        | [];
     };
   };
   cartPositions: {

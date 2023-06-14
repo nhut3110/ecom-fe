@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { useState, useEffect, useMemo } from "react";
-import { carouselImages } from "../constants/data";
+import { useState, useEffect } from "react";
 import DotsLoading from "./Animation/DotsLoading";
+import { carouselImages } from "../constants";
 
 const CHANGE_SLIDE_TIME = 5000; // time in milliseconds to change the slide
 
@@ -10,13 +10,21 @@ const Carousel = (): React.ReactElement => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const buttonVariants = useMemo(() => {
-    return {
-      initial: { scale: 1 },
-      onTap: { scale: 0.8 },
-      onHover: { scale: 1.2 },
-    };
-  }, []);
+  const buttonVariants = {
+    initial: { scale: 1 },
+    onTap: { scale: 0.8 },
+    onHover: { scale: 1.2 },
+  };
+
+  const handlePrevious = () => {
+    setCurrentSlide((prevSlide) =>
+      prevSlide === 0 ? carouselImages.length - 1 : prevSlide - 1
+    );
+  };
+
+  const handleNext = () => {
+    setCurrentSlide((prevSlide) => ++prevSlide % carouselImages.length);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -27,20 +35,6 @@ const Carousel = (): React.ReactElement => {
 
     return () => clearInterval(interval);
   }, [carouselImages.length]);
-
-  const handlePrevious = () => {
-    setCurrentSlide((prevSlide) => {
-      const updatedPosition = --prevSlide;
-      return updatedPosition < 0 ? carouselImages.length - 1 : updatedPosition;
-    });
-  };
-
-  const handleNext = () => {
-    setCurrentSlide((prevSlide) => {
-      const updatedPosition = ++prevSlide;
-      return updatedPosition >= carouselImages.length ? 0 : updatedPosition;
-    });
-  };
 
   return (
     <div className="relative m-3 h-36 md:h-72">

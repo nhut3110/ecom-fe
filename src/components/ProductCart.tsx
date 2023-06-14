@@ -10,7 +10,7 @@ import QuantityButton from "./QuantityButton";
 import Modal from "./Modal";
 import { CartContext } from "../context/CartContext";
 import { TrashIcon } from "../assets/icons";
-import { ProductDetails } from "../constants/data";
+import { ProductDetails } from "../constants";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 unit in cart page
 

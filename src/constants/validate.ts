@@ -5,13 +5,19 @@ import {
   PaymentType,
 } from "../context/FormContext";
 import { LoginFormType } from "../pages/Login";
-import { EditProfileFormType } from "../pages/EditProfile";
+import { ChangePasswordFormType } from "../pages/ChangePassword";
+import { EditProfileFormType } from "./data";
 
 const passwordValidation = yup
   .string()
   .required("Password is required")
   .min(8, "Password must be at least 8 characters")
   .max(64, "Password must be at most 64 characters");
+
+const confirmPasswordValidation = yup
+  .string()
+  .required("Confirm password is required")
+  .oneOf([yup.ref("newPassword")], "Passwords must match");
 
 export type ConditionalSchema<T> = T extends string
   ? yup.StringSchema
@@ -103,13 +109,18 @@ export const validationEditProfileSchema = yup
         }
       ),
   });
+
+export const validationUpdatePasswordSchema = yup
+  .object<Shape<ChangePasswordFormType>>()
+  .shape({
+    newPassword: passwordValidation,
+    confirmPassword: confirmPasswordValidation,
+  });
+
 export const validationChangePasswordSchema = yup
-  .object<Shape<EditProfileFormType>>()
+  .object<Shape<ChangePasswordFormType>>()
   .shape({
     oldPassword: passwordValidation,
     newPassword: passwordValidation,
-    confirmPassword: yup
-      .string()
-      .required("Confirm password is required")
-      .oneOf([yup.ref("newPassword")], "Passwords must match"),
+    confirmPassword: confirmPasswordValidation,
   });

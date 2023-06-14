@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import OrderCard from "../components/OrderCard";
-import { OrderType } from "../constants/data";
 import { OrderContext } from "../context/OrderContext";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
+import { OrderType } from "../constants";
 
 const Order = (): React.ReactElement => {
   const { orderState } = useContext(OrderContext);

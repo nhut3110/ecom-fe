@@ -2,9 +2,14 @@ import { AnimatePresence } from "framer-motion";
 import { useMutation } from "@tanstack/react-query";
 import { MdEdit, MdCached } from "react-icons/md";
 import { BiImageAdd, BiTrash } from "react-icons/bi";
-import React, { Fragment, useContext, useEffect, useState } from "react";
-import { useValidateLoginExpiration } from "../hooks/useValidateLoginExpiration";
-import { useNavigatePage } from "../hooks/useNavigatePage";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useValidateLoginExpiration, useNavigatePage } from "../hooks";
 import MemberBadge from "../components/MemberBadge";
 import GifLoading from "../components/GifLoading";
 import OrderChart from "../components/OrderChart";
@@ -12,17 +17,15 @@ import Modal from "../components/Modal";
 import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { OrderContext } from "../context/OrderContext";
-import {
-  determineCurrentBadge,
-  determineNextBadge,
-} from "../utils/determineBadge";
-import { convertTimestampToDate } from "../utils/covertTimeStamp";
-import { formatToDateMonthYearType } from "../utils/formatDate";
-import { AccountType } from "../constants/data";
 import { UploadIcon } from "../assets/icons";
 import { UserBanner } from "../assets/images";
 import { editAvatar } from "../services/auth.api";
 import { UserDataContext } from "../context/UserDataContext";
+import {
+  convertTimestampToDate,
+  determineCurrentBadge,
+  determineNextBadge,
+} from "../utils";
 
 const Profile = () => {
   const { favoriteState } = useContext(FavoriteContext);
@@ -42,9 +45,15 @@ const Profile = () => {
     },
   });
 
-  const currentRank = determineCurrentBadge(userDataState?.shippingPoint ?? 0);
-  const nextRank = determineNextBadge(userDataState?.shippingPoint ?? 0);
-  const recentOrderList = orderState.orderList.slice(0, 5); // TODO: just dummy data for ui only, replace after when have api for orders
+  const currentRank = useMemo(() => {
+    return determineCurrentBadge(userDataState?.shippingPoint ?? 0);
+  }, [userDataState]);
+  const nextRank = useMemo(() => {
+    return determineNextBadge(userDataState?.shippingPoint ?? 0);
+  }, [userDataState]);
+  const recentOrderList = useMemo(() => {
+    return orderState.orderList.slice(0, 5);
+  }, [orderState.orderList]); // TODO: just dummy data for ui only, replace after when have api for orders
 
   const handleSubmitModal = () => {
     if (selectedImage) {
@@ -75,6 +84,7 @@ const Profile = () => {
     event.preventDefault();
     setIsDragging(false);
     const file = event.dataTransfer.files && event.dataTransfer.files[0];
+
     if (file) {
       setSelectedImage(file);
     }
@@ -88,10 +98,10 @@ const Profile = () => {
     if (!isLoading) {
       setPercentage(((currentRank.point || 0) / (nextRank.point || 1)) * 100);
     }
-  }, [isLoading]);
+  }, [isLoading, currentRank, nextRank]);
 
   return (
-    <Fragment>
+    <>
       {isLoading || isMutating ? (
         <AnimatePresence>
           <SlideDownDisappearWrapper>
@@ -119,11 +129,6 @@ const Profile = () => {
                     alt="avatar"
                     className="aspect-square w-32 rounded-full border border-black shadow-lg"
                   />
-                  <div className="absolute -bottom-2 flex w-full justify-center">
-                    <MemberBadge
-                      shippingPoint={userDataState?.shippingPoint ?? 0}
-                    />
-                  </div>
                   <button
                     className="absolute top-0 left-0 right-0 flex h-full w-full items-center justify-center gap-2 rounded-full border border-black bg-gray-300 bg-opacity-50 p-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                     onClick={() => setOpenModal(true)}
@@ -149,58 +154,60 @@ const Profile = () => {
                   <MdEdit />
                 </button>
 
-                {userDataState?.provider === AccountType.LOCAL && (
-                  <button
-                    className="flex h-fit items-center justify-center gap-2 rounded-lg border border-black p-1"
-                    onClick={() => redirect("/profile/password")}
-                  >
-                    <p className="font-bold">Change Password</p>
-                    <MdCached />
-                  </button>
-                )}
+                <button
+                  className="flex h-fit items-center justify-center gap-2 rounded-lg border border-black p-1"
+                  onClick={() => redirect("/profile/password")}
+                >
+                  <p className="font-bold">Change Password</p>
+                  <MdCached />
+                </button>
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center gap-5">
+            <div className="flex w-full flex-col items-center justify-between gap-5">
               <div className="flex w-full flex-col gap-10 md:flex-row">
                 {/* User data */}
-                <div className="h-60 w-full rounded-xl border-2 p-5 shadow-lg">
+                <div className="h-60 w-full rounded-xl border-2 p-5 shadow-lg md:w-1/2">
                   <p className="text-lg font-semibold">User Information</p>
                   <div className="h-full w-full items-center justify-center gap-1">
-                    <div className="flex justify-between p-2">
+                    <div className="flex flex-col p-2">
                       <p className="font-medium">Name:</p>
-                      <p>{userDataState?.name}</p>
+                      <p className="self-end">{userDataState?.name}</p>
                     </div>
-                    <div className="flex justify-between p-2">
+                    <div className="flex flex-col p-2">
                       <p className="font-medium">Phone Number:</p>
-                      <p>{userDataState?.phoneNumber ?? "N/A"}</p>
-                    </div>
-                    <div className="flex justify-between p-2">
-                      <p className="font-medium">Account Type:</p>
-                      <p className="first-letter:capitalize">
-                        {userDataState?.provider}
-                      </p>
-                    </div>
-                    <div className="flex justify-between p-2">
-                      <p className="font-medium">Created Date:</p>
-                      <p>
-                        {userDataState?.createAt &&
-                          formatToDateMonthYearType(userDataState?.createAt)}
+                      <p className="self-end">
+                        {userDataState?.phoneNumber ?? "N/A"}
                       </p>
                     </div>
                   </div>
                 </div>
+                {/* Badge */}
+                <div className="flex h-60 w-full flex-col gap-3 rounded-xl border-2 p-5 shadow-lg md:w-1/3">
+                  <p className="text-lg font-semibold">User Badge</p>
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="aspect-square h-28">
+                      <MemberBadge
+                        shippingPoint={userDataState?.shippingPoint ?? 0}
+                      />
+                    </div>
+
+                    <p className="text-lg font-semibold italic first-letter:capitalize">
+                      {currentRank.rank}
+                    </p>
+                  </div>
+                </div>
                 {/* Overall Data */}
-                <div className="grid h-60 w-full grid-cols-2 grid-rows-2 items-center justify-center rounded-xl border-2 p-5 shadow-lg md:w-80">
+                <div className="grid h-60 w-full grid-cols-2 grid-rows-2 items-center justify-center gap-1 rounded-xl border-2 p-5 shadow-lg md:w-1/3">
                   <div>
-                    <p className="text-lg font-semibold">Favorites</p>
+                    <p className="font-semibold lg:text-lg">Favorites</p>
                     <p className="text-4xl font-bold">
                       {favoriteState.favoriteList.length}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-lg font-semibold">Orders</p>
+                    <p className="font-semibold lg:text-lg">Orders</p>
                     <p className="text-4xl font-bold">
                       {orderState.orderList.length}
                     </p>
@@ -340,7 +347,7 @@ const Profile = () => {
           </Modal>
         </Fragment>
       )}
-    </Fragment>
+    </>
   );
 };
 

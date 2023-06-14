@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Tooltip from "./Tooltip";
-import { determineCurrentBadge } from "../utils/determineBadge";
+import { determineCurrentBadge } from "../utils";
 
 type MemberBadgeType = {
   shippingPoint: number;
@@ -19,9 +19,9 @@ const MemberBadge = ({
   }, [shippingPoint]);
 
   return (
-    <div className="z-30 rounded-full bg-transparent">
+    <div className="z-30 h-full w-full rounded-full bg-transparent">
       <Tooltip content="Rank based on your points (1$ = 1 point)">
-        <img src={badge} alt="badge" className="h-6 object-cover" />
+        <img src={badge} alt="badge" className="h-full w-full object-cover" />
       </Tooltip>
     </div>
   );

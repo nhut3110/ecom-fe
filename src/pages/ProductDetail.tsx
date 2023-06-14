@@ -13,7 +13,7 @@ import { fetchProductDetails } from "../services/products.api";
 import { GoodsIcon, TruckIcon } from "../assets/icons";
 import { NotificationContext } from "../context/NotificationContext";
 import { CartContext } from "../context/CartContext";
-import { ADD_PRODUCT_DELAY } from "../constants/data";
+import { ADD_PRODUCT_DELAY } from "../constants";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 when click
 
@@ -112,7 +112,7 @@ const ProductDetail = (): React.ReactElement => {
               </div>
 
               <div className="my-2 flex md:my-5">
-                <SmallButton name="Add to Cart" onClick={handleAddToCart} />
+                <SmallButton content="Add to Cart" onClick={handleAddToCart} />
               </div>
 
               <div>

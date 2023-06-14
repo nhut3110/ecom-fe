@@ -1,6 +1,5 @@
 import jwtDecode from "jwt-decode";
-import React from "react";
-import { JWTDecodeType } from "../constants/data";
+import { JWTDecodeType } from "../constants";
 
 export const checkIsTokenExpired = (token?: string): boolean => {
   if (!token) {
@@ -13,6 +12,6 @@ export const checkIsTokenExpired = (token?: string): boolean => {
     return false;
   }
 
-  const expirationTime = new Date(decodedToken.exp * 1000);
+  const expirationTime = new Date(parseInt(decodedToken.exp) * 1000);
   return expirationTime < new Date();
 };

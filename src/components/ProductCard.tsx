@@ -12,11 +12,11 @@ import RatingStar from "./RatingStar";
 import SmallButton from "./SmallButton";
 import { FlyingImageWrapper } from "./FlyingImage";
 import GifLoading from "./GifLoading";
-import { ADD_PRODUCT_DELAY, ProductDetails } from "../constants/data";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { CartContext } from "../context/CartContext";
 import { NotificationContext } from "../context/NotificationContext";
-import { getLocalStorageValue } from "../utils/localStorage";
+import { getLocalStorageValue } from "../utils";
+import { ADD_PRODUCT_DELAY, ProductDetails } from "../constants";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
@@ -143,7 +143,7 @@ const ProductCard = (props: {
         </div>
 
         <div className="mt-2 w-auto self-start">
-          <SmallButton name="Add to Cart" onClick={handleAddToCart} />
+          <SmallButton content="Add to Cart" onClick={handleAddToCart} />
         </div>
       </motion.div>
     </>

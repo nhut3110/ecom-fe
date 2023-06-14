@@ -44,24 +44,32 @@ const OrderChart = (): React.ReactElement => {
   const countOrdersByMonth = useCallback(() => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
-    const months = [];
-    const orderCounts = [];
+    const months: string[] = [];
+    const orderCounts: number[] = [];
 
-    for (let i = 0; i < NUMBER_OF_MONTHS; i++) {
-      const monthIndex = (currentMonth - i + 12) % 12;
-      const monthName = new Intl.DateTimeFormat("en-US", {
+    const getMonthName = (monthIndex: number): string => {
+      return new Intl.DateTimeFormat("en-US", {
         month: "long",
       }).format(new Date(currentDate.getFullYear(), monthIndex));
-      months.unshift(monthName);
+    };
 
-      const count = orderDates.filter((date) => {
+    const getOrdersCount = (monthIndex: number): number => {
+      return orderDates.filter((date) => {
         const orderMonth = new Date(date).getMonth();
         return orderMonth === monthIndex;
       }).length;
-      orderCounts.unshift(count);
-    }
+    };
 
-    return { months: months, counts: orderCounts };
+    Array.from({ length: NUMBER_OF_MONTHS }).forEach((_, i) => {
+      const monthIndex = (currentMonth - i + 12) % 12;
+      const monthName = getMonthName(monthIndex);
+      months.unshift(monthName);
+
+      const count = getOrdersCount(monthIndex);
+      orderCounts.unshift(count);
+    });
+
+    return { months, counts: orderCounts };
   }, [orderDates]);
 
   const { months, counts } = countOrdersByMonth();

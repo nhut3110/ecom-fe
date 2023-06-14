@@ -1,4 +1,4 @@
-import { ProductDetails } from "../constants/data";
+import { ProductDetails } from "../constants";
 import { capitalizeFirstLetter } from "./capitalizeFirstLetter";
 
 export enum FilterValue {

@@ -15,7 +15,7 @@ const getLocalStorageValue = (data: LocalStorageType) => {
 
 const updateLocalStorageValue = (data: LocalStorageType) => {
   const value = JSON.stringify(data.value);
-  localStorage.setItem(data.key, value);
+  localStorage.setItem(data.key, value ?? "{}");
 };
 
 const removeLocalStorageValue = (data: LocalStorageType) => {
