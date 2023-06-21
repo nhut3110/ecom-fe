@@ -1,3 +1,5 @@
+import { ProductDetails } from "../constants";
+
 export type TokensType = {
   accessToken?: string;
   refreshToken?: string;
@@ -46,4 +48,12 @@ export type FindProductType = {
   title?: string;
   cursor?: string | number;
   limit?: number;
+};
+
+export type PaginatedResponse = {
+  data: ProductDetails[];
+  pagination: {
+    total: number;
+    nextCursor?: string | number;
+  };
 };

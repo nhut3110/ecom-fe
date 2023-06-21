@@ -11,3 +11,4 @@ export * from "./formatDate";
 export * from "./getTokensFromLocalStorage";
 export * from "./localStorage";
 export * from "./refreshToken";
+export * from "./determineSortDirections";
