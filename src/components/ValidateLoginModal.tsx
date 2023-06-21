@@ -15,7 +15,7 @@ const ValidateLoginModal = () => {
   useEffect(() => {
     if (isLoading || !isLogin) return;
 
-    if (!userInfo) {
+    if (!userInfo && userInfo !== undefined) {
       setOpenModal(true);
     }
   }, [isLoading]);

@@ -1,17 +1,18 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigatePage } from "../hooks";
-import { getUserInfo } from "../services/auth.api";
+import { getUserById } from "../services/auth.api";
 import { UserDataContext } from "../context/UserDataContext";
 import { getLocalStorageValue } from "../utils";
+import { UserData } from "../services/types.api";
 
 export const useValidateLoginExpiration = () => {
   const { updateUserData } = useContext(UserDataContext);
-
   const { redirect } = useNavigatePage();
 
   const isLogin = !!Object.keys(getLocalStorageValue({ key: "tokens" })).length;
 
-  const { userInfo, isLoading } = getUserInfo();
+  const [userInfo, setUserInfo] = useState<UserData>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleLogout = () => {
     localStorage.removeItem("tokens");
@@ -19,8 +20,22 @@ export const useValidateLoginExpiration = () => {
   };
 
   useEffect(() => {
-    if (!isLoading && userInfo) updateUserData(userInfo);
-  }, [isLoading, userInfo]);
+    if (isLogin) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await getUserById();
+          setUserInfo(response);
+          setIsLoading(false);
+          if (response) {
+            updateUserData(response);
+          }
+        } catch (error) {}
+      };
 
-  return { isLogin, isLoading, userInfo, handleLogout };
+      fetchData();
+    }
+  }, [isLogin, updateUserData]);
+
+  return { isLogin, userInfo, isLoading, handleLogout };
 };

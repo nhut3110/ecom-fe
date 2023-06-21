@@ -54,6 +54,15 @@ export type EditProfileFormType = {
   phoneNumber?: string;
 };
 
+export type SortOptionType = {
+  sortBy: string;
+  sortDirection: string;
+};
+
+export type FilterOptionType = {
+  categoryId?: string;
+};
+
 export interface ProductDetails {
   id: number;
   title: string;
@@ -64,6 +73,8 @@ export interface ProductDetails {
   rate: number;
   count: number;
 }
+
+export const pageLimit = 10;
 
 export const facebookConstants = {
   clientID: "1213240936224087",

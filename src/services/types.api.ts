@@ -29,10 +29,21 @@ export type UserData = {
 export type CategoryType = {
   name: string;
   id: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type ErrorResponseType = {
   statusCode?: number;
   message?: string;
   error?: string;
+};
+
+export type FindProductType = {
+  sortBy?: string;
+  sortDirection?: string;
+  categoryId?: string;
+  title?: string;
+  cursor?: string | number;
+  limit?: number;
 };

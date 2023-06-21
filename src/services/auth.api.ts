@@ -79,4 +79,5 @@ export {
   editProfile,
   changePassword,
   editAvatar,
+  getUserById,
 };
