@@ -6,7 +6,9 @@ import {
 } from "../context/FormContext";
 import Layout from "../layout/Layout";
 import Cart from "../pages/Cart";
+import ChangePassword from "../pages/ChangePassword";
 import Checkout from "../pages/Checkout";
+import EditProfile from "../pages/EditProfile";
 import Favorite from "../pages/Favorite";
 import GetToken from "../pages/GetToken";
 import Home from "../pages/Home";
@@ -14,6 +16,7 @@ import Login from "../pages/Login";
 import Order from "../pages/Order";
 import Product from "../pages/Product";
 import ProductDetail from "../pages/ProductDetail";
+import Profile from "../pages/Profile";
 import Register from "../pages/Register";
 
 type CarouselImageType = {
@@ -29,8 +32,8 @@ type Routes = {
 
 export type JWTDecodeType = {
   id?: string;
-  iat?: any;
-  exp?: any;
+  iat?: string;
+  exp?: string;
 };
 
 export type FooterContentType = {
@@ -46,17 +49,20 @@ export type OrderType = CartStateType &
     date: number;
   };
 
+export type EditProfileFormType = {
+  name?: string;
+  phoneNumber?: string;
+};
+
 export interface ProductDetails {
   id: number;
   title: string;
   price: number;
   description: string;
-  category: string;
+  category_id: string;
   image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
+  rate: number;
+  count: number;
 }
 
 export const facebookConstants = {
@@ -76,6 +82,13 @@ export const navList: NavItemType[] = [
   NavItemType.ORDERS,
 ];
 
+export const enum AccountType {
+  FACEBOOK = "facebook",
+  LOCAL = "local",
+}
+
+export const ADD_PRODUCT_DELAY = 1500; // 1.5s to prevent user from click continuously will change later when apply api
+
 export const carouselImages: Array<CarouselImageType> = [
   {
     url: "https://idjewelry.com/media/wysiwyg/rose-gold/rose_gold_jewelry.jpg",
@@ -94,6 +107,9 @@ export const carouselImages: Array<CarouselImageType> = [
     category: "electronics",
   },
 ];
+
+export const gifURLLoading =
+  "https://media.tenor.com/emHVRG7_-cgAAAAC/seseren.gif";
 
 export const footerContact: string[] = [
   "We provide the best experience.",
@@ -158,6 +174,21 @@ export const publicRoutes: Routes[] = [
   {
     path: "/orders",
     component: Order,
+    layout: Layout,
+  },
+  {
+    path: "/profile",
+    component: Profile,
+    layout: Layout,
+  },
+  {
+    path: "/profile/edit",
+    component: EditProfile,
+    layout: Layout,
+  },
+  {
+    path: "/profile/password",
+    component: ChangePassword,
     layout: Layout,
   },
   {

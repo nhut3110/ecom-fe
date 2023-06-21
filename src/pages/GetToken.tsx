@@ -1,21 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
-import DotsLoading from "../components/Animation/DotsLoading";
-import { updateLocalStorageValue } from "../utils/localStorage";
+import { useNavigatePage } from "../hooks";
 import { NotificationContext } from "../context/NotificationContext";
-import { useNavigatePage } from "../hooks/useNavigatePage";
 import { loginFacebook } from "../services/auth.api";
-import { AuthContext } from "../context/AuthContext";
-import { facebookConstants } from "../constants/data";
-import decodeIdFromJWT from "../utils/decodeIdFromJWT";
+import GifLoading from "../components/GifLoading";
+import { updateLocalStorageValue } from "../utils";
+import { facebookConstants } from "../constants";
 
 const DELAY_WHILE_LOADING = 2000;
 
 const GetToken = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { notify } = useContext(NotificationContext);
-  const { updateUserData } = useContext(AuthContext);
   const { redirect } = useNavigatePage();
 
   const { mutate, isLoading } = useMutation(loginFacebook, {
@@ -27,10 +24,12 @@ const GetToken = () => {
         id: crypto.randomUUID(),
       });
 
-      updateUserData({
-        id: decodeIdFromJWT(response?.accessToken),
-        accessToken: response?.accessToken,
-        refreshToken: response?.refreshToken,
+      updateLocalStorageValue({
+        key: "tokens",
+        value: {
+          accessToken: response?.accessToken,
+          refreshToken: response?.refreshToken,
+        },
       });
     },
     onError: () => {
@@ -58,11 +57,7 @@ const GetToken = () => {
     }
   }, []);
 
-  return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <DotsLoading />
-    </div>
-  );
+  return <GifLoading />;
 };
 
 export default GetToken;

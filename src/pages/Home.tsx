@@ -1,5 +1,9 @@
 import React from "react";
+import { useNavigatePage } from "../hooks";
 import SmallButton from "../components/SmallButton";
+import LeftAppearWrapper from "../components/Animation/LeftAppearWrapper";
+import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
+import RightAppearWrapper from "../components/Animation/RightAppearWrapper";
 import { FourStarIcon, MoneyIcon, ShirtIcon, TruckIcon } from "../assets/icons";
 import {
   Headphone,
@@ -8,10 +12,6 @@ import {
   Watch,
   WomenSuit,
 } from "../assets/images";
-import LeftAppearWrapper from "../components/Animation/LeftAppearWrapper";
-import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
-import RightAppearWrapper from "../components/Animation/RightAppearWrapper";
-import { useNavigatePage } from "../hooks/useNavigatePage";
 
 const Home = (): React.ReactElement => {
   const { redirect } = useNavigatePage();
@@ -28,7 +28,10 @@ const Home = (): React.ReactElement => {
             We stands for beauty & style in your daily life. We have an
             impressive selection of products that you'll love.
           </p>
-          <SmallButton name="Shop now" onClick={() => redirect("/products")} />
+          <SmallButton
+            content="Shop now"
+            onClick={() => redirect("/products")}
+          />
           <div className="mt-2 flex gap-10 md:mt-10 lg:gap-24">
             <div>
               <p className="text-xl font-bold lg:text-3xl">3110</p>

@@ -1,29 +1,26 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect } from "react";
+import { useNavigatePage } from "../hooks";
 import { getUserInfo } from "../services/auth.api";
-import { getLocalStorageValue } from "../utils/localStorage";
-import { AuthContext } from "../context/AuthContext";
-import { useNavigatePage } from "../hooks/useNavigatePage";
-import decodeIdFromJWT from "../utils/decodeIdFromJWT";
+import { UserDataContext } from "../context/UserDataContext";
+import { getLocalStorageValue } from "../utils";
 
 export const useValidateLoginExpiration = () => {
-  const { authState, removeUserData } = useContext(AuthContext);
+  const { updateUserData } = useContext(UserDataContext);
 
   const { redirect } = useNavigatePage();
 
-  const isLogin = useMemo(() => {
-    return !!Object.keys(getLocalStorageValue({ key: "tokens" })).length;
-  }, [authState]);
+  const isLogin = !!Object.keys(getLocalStorageValue({ key: "tokens" })).length;
 
-  const userId =
-    authState.id ||
-    decodeIdFromJWT(getLocalStorageValue({ key: "tokens" })?.accessToken);
-  const { userInfo, isLoading } = getUserInfo({ id: userId! });
+  const { userInfo, isLoading } = getUserInfo();
 
   const handleLogout = () => {
-    removeUserData();
     localStorage.removeItem("tokens");
     redirect("/login");
   };
+
+  useEffect(() => {
+    if (!isLoading && userInfo) updateUserData(userInfo);
+  }, [isLoading, userInfo]);
 
   return { isLogin, isLoading, userInfo, handleLogout };
 };

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { CartContext } from "../context/CartContext";
-import { ProductDetails } from "../constants/data";
+import { ProductDetails } from "../constants";
 
 type FlyingImageType = {
   image: string;

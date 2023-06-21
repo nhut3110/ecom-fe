@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { useGetOrderFormFields } from "../../hooks/useGetOrderFormFields";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useGetOrderFormFields } from "../../hooks";
 import SmallButton from "../SmallButton";
 import OutlineInput from "./OutlineInput";
 import { FormContext, PaymentType } from "../../context/FormContext";
-import { validationPaymentSchema } from "../../constants/validate";
+import { validationPaymentSchema } from "../../constants";
 
 const PaymentForm = (): React.ReactElement => {
   const { formState, moveNextStep, movePreviousStep, setPayment } =
@@ -56,8 +56,8 @@ const PaymentForm = (): React.ReactElement => {
           </motion.div>
 
           <div className="mt-4 flex w-full justify-between">
-            <SmallButton name="Back" onClick={movePreviousStep} />
-            <SmallButton name="Next" onClick={handleSubmit(onSubmit)} />
+            <SmallButton content="Back" onClick={movePreviousStep} />
+            <SmallButton content="Next" onClick={handleSubmit(onSubmit)} />
           </div>
         </form>
       )}

@@ -11,6 +11,11 @@ import Watch from "./watch.png";
 import LoginBackground from "./login-background.jpg";
 import Logo from "./logo.png";
 import LogoTransparent from "./logo_transparent.png";
+import UserBanner from "./user-banner.jpg";
+import BronzeBadge from "./bronze-badge.png";
+import SilverBadge from "./silver-badge.png";
+import GoldBadge from "./gold-badge.png";
+import PlatinumBadge from "./platinum-badge.png";
 
 export {
   FakeLogo,
@@ -26,4 +31,9 @@ export {
   LoginBackground,
   Logo,
   LogoTransparent,
+  UserBanner,
+  BronzeBadge,
+  SilverBadge,
+  GoldBadge,
+  PlatinumBadge,
 };

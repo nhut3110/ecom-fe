@@ -1,12 +1,12 @@
-import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useGetOrderFormFields } from "../../hooks/useGetOrderFormFields";
+import React, { useContext, useState } from "react";
+import { useGetOrderFormFields } from "../../hooks";
 import SmallButton from "../SmallButton";
-import { AddressType, FormContext } from "../../context/FormContext";
 import OutlineInput from "./OutlineInput";
-import { validationAddressSchema } from "../../constants/validate";
+import { AddressType, FormContext } from "../../context/FormContext";
+import { validationAddressSchema } from "../../constants";
 
 const AddressForm = (): React.ReactElement => {
   const { formState, moveNextStep, movePreviousStep, setAddress } =
@@ -47,21 +47,21 @@ const AddressForm = (): React.ReactElement => {
             animate={{ x: 0, opacity: 1 }}
           >
             <div className="grid-cols-2 gap-5 md:grid">
-              {addressFormArray.map((field, index) => (
+              {addressFormArray.map((field) => (
                 <OutlineInput
                   label={field.label}
                   name={field.name}
                   register={register}
                   error={errors}
-                  key={index}
+                  key={field.name}
                 />
               ))}
             </div>
           </motion.div>
 
           <div className="mt-4 flex w-full justify-between">
-            <SmallButton name="Back" onClick={movePreviousStep} />
-            <SmallButton name="Next" onClick={handleSubmit(onSubmit)} />
+            <SmallButton content="Back" onClick={movePreviousStep} />
+            <SmallButton content="Next" onClick={handleSubmit(onSubmit)} />
           </div>
         </form>
       )}

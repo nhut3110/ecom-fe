@@ -1,21 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { publicApi } from "./api";
+import { CategoryType } from "./types.api";
 
-const api = axios.create({
-  baseURL: "https://fakestoreapi.com/",
-});
+const getProductList = async () => {
+  const { data } = await publicApi.get("/products");
 
-api.interceptors.response.use((response) => {
-  return response;
-});
+  return data;
+};
+
+const getProductDetails = async (productId: string) => {
+  const { data } = await publicApi.get(`/products/${productId}`);
+
+  return data;
+};
+
+const getCategoryList = async () => {
+  const { data } = await publicApi.get("/categories");
+
+  return data;
+};
+
+const getCategoryById = async (categoryId: string) => {
+  const { data } = await publicApi.get(`/categories/${categoryId}`);
+
+  return data;
+};
 
 const fetchProducts = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["products"],
-    queryFn: () =>
-      api.get("/products").then((response) => {
-        return response.data;
-      }),
+    queryFn: () => getProductList(),
   });
 
   return { products: data, error, isLoading };
@@ -24,13 +38,37 @@ const fetchProducts = () => {
 const fetchProductDetails = ({ productId }: { productId: string }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["products", productId],
-    queryFn: () =>
-      api.get(`/products/${productId}`).then((response) => {
-        return response.data;
-      }),
+    queryFn: () => getProductDetails(productId),
   });
 
   return { data, error, isLoading };
 };
 
-export { fetchProducts, fetchProductDetails };
+const fetchCategoryList = () => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategoryList(),
+  });
+
+  return { categories: data, error, isLoading };
+};
+
+const fetchCategoryById = ({ categoryId }: { categoryId: string }) => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["categories", categoryId],
+    queryFn: () => getCategoryById(categoryId),
+  });
+
+  return { data, error, isLoading };
+};
+
+export {
+  fetchProducts,
+  fetchProductDetails,
+  fetchCategoryList,
+  fetchCategoryById,
+  getProductList,
+  getProductDetails,
+  getCategoryList,
+  getCategoryById,
+};

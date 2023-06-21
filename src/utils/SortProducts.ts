@@ -1,4 +1,4 @@
-import { ProductDetails } from "../constants/data";
+import { ProductDetails } from "../constants";
 
 enum SortValue {
   AZ = "A to Z",

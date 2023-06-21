@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
-
-import { useValidateLoginExpiration } from "../hooks/useValidateLoginExpiration";
+import { useValidateLoginExpiration } from "../hooks";
 
 const ValidateLoginModal = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);

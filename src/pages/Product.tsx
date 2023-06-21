@@ -1,13 +1,13 @@
 import times from "lodash/times";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useContext, useEffect } from "react";
-import { useSortAndFilterProduct } from "../hooks/useSortAndFilterProduct";
+import { useSortAndFilterProduct } from "../hooks";
 import Carousel from "../components/Carousel";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 import ProductCard, { ProductCardSkeleton } from "../components/ProductCard";
-import { ProductDetails } from "../constants/data";
-import { selectSortMenu } from "../utils/selectSortMenu";
 import { fetchProducts } from "../services/products.api";
+import { selectSortMenu } from "../utils";
+import { ProductDetails } from "../constants";
 
 const DEFAULT_QUANTITY_PRODUCT_SKELETON = 20; // Number of products skeletons in the loading screen
 

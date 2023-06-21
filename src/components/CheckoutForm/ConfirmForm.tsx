@@ -1,13 +1,13 @@
 import { map } from "lodash";
 import React, { useContext } from "react";
 import { motion } from "framer-motion";
+import { useNavigatePage } from "../../hooks";
 import SmallButton from "../SmallButton";
-import { OrderType } from "../../constants/data";
 import { CartContext } from "../../context/CartContext";
 import { FormContext } from "../../context/FormContext";
 import { OrderContext } from "../../context/OrderContext";
-import { useNavigatePage } from "../../hooks/useNavigatePage";
 import { NotificationContext } from "../../context/NotificationContext";
+import { OrderType } from "../../constants";
 
 const DELAY_BEFORE_REDIRECT = 3000; // After 3s, user will be redirected to home page
 
@@ -91,8 +91,8 @@ const ConfirmForm = (): React.ReactElement => {
         </div>
       </div>
       <div className="my-2 flex w-full justify-between">
-        <SmallButton name="back" onClick={movePreviousStep} />
-        <SmallButton name="confirm" onClick={handleSubmit} />
+        <SmallButton content="back" onClick={movePreviousStep} />
+        <SmallButton content="confirm" onClick={handleSubmit} />
       </div>
     </motion.div>
   );

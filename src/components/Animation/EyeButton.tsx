@@ -8,7 +8,11 @@ type EyeButtonType = {
   className?: string;
 };
 
-const EyeButton = ({ isEyeClosed, onClick, className }: EyeButtonType) => {
+const EyeButton = ({
+  isEyeClosed,
+  onClick,
+  className,
+}: EyeButtonType): React.ReactElement => {
   return (
     <button onClick={onClick} className={className} type="button">
       {isEyeClosed ? <ClosedEye /> : <OpenedEye />}

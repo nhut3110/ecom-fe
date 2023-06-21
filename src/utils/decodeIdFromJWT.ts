@@ -1,6 +1,5 @@
 import jwtDecode from "jwt-decode";
-import React from "react";
-import { JWTDecodeType } from "../constants/data";
+import { JWTDecodeType } from "../constants";
 
 const decodeIdFromJWT = (token?: string) => {
   if (!token) return undefined;

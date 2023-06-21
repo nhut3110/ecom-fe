@@ -1,4 +1,4 @@
-import { ProductDetails } from "../constants/data";
+import { ProductDetails } from "../constants";
 import { filterProducts } from "../utils/filterProducts";
 import { sortProducts } from "../utils/sortProducts";
 

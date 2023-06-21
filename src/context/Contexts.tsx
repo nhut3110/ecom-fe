@@ -1,25 +1,14 @@
-import React, { useContext, useState } from "react";
-import {
-  MutationCache,
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { OrderType, ProductDetails } from "../constants/data";
-import { getLocalStorageValue } from "../utils/localStorage";
-import { CartProvider } from "./CartContext";
+import React, { useState } from "react";
 import { FavoriteProvider } from "./FavoriteContext";
-import { defaultForm, FormProvider } from "./FormContext";
+import { NotificationProvider } from "./NotificationContext";
+import { CartProvider } from "./CartContext";
 import { OrderProvider } from "./OrderContext";
-import {
-  NotificationContext,
-  NotificationProvider,
-} from "./NotificationContext";
+import { UserDataProvider } from "./UserDataContext";
+import { defaultForm, FormProvider } from "./FormContext";
 import { NotificationType } from "../components/Notification";
-import { UserDataType } from "../services/auth.api";
-import { AuthProvider } from "./AuthContext";
-import { checkIsTokenExpired } from "../utils/checkIsTokenExpired";
-import QueryWrapper from "../components/QueryWrapper";
+import { TokensType } from "../services/types.api";
+import { getLocalStorageValue } from "../utils";
+import { OrderType, ProductDetails } from "../constants";
 
 type ChildrenType = {
   children: React.ReactElement | React.ReactElement[];
@@ -45,16 +34,13 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
   const [orders, setOrders] = useState<OrderType[]>(
     !!Object.keys(orderList).length ? orderList : []
   );
-  const [user, setUser] = useState<UserDataType>(
+  const [tokens, setTokens] = useState<TokensType>(
     !!Object.keys(userData).length ? userData : {}
   );
 
   return (
     <NotificationProvider notificationList={initNotificationList}>
-      <AuthProvider
-        accessToken={user?.accessToken}
-        refreshToken={user?.refreshToken}
-      >
+      <UserDataProvider>
         <OrderProvider orderList={orders}>
           <FavoriteProvider favoriteList={list}>
             <CartProvider
@@ -74,7 +60,7 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
             </CartProvider>
           </FavoriteProvider>
         </OrderProvider>
-      </AuthProvider>
+      </UserDataProvider>
     </NotificationProvider>
   );
 };

@@ -3,12 +3,12 @@ import Contexts from "./context/Contexts";
 import NotificationWrapper from "./components/NotificationWrapper";
 import ScrollToTopWrapper from "./components/ScrollToTopWrapper";
 import QueryWrapper from "./components/QueryWrapper";
-import { publicRoutes } from "./constants/data";
+import { publicRoutes } from "./constants";
 
 function App() {
   return (
-    <Contexts>
-      <QueryWrapper>
+    <QueryWrapper>
+      <Contexts>
         <NotificationWrapper />
         <Router>
           <ScrollToTopWrapper>
@@ -31,8 +31,8 @@ function App() {
             </Routes>
           </ScrollToTopWrapper>
         </Router>
-      </QueryWrapper>
-    </Contexts>
+      </Contexts>
+    </QueryWrapper>
   );
 }
 

@@ -1,11 +1,8 @@
 import { motion } from "framer-motion";
-import { useNavigatePage } from "../../hooks/useNavigatePage";
 import { Link } from "react-router-dom";
-import { facebookConstants } from "../../constants/data";
+import { facebookConstants } from "../../constants";
 
 const FacebookButton = () => {
-  const { redirect } = useNavigatePage();
-
   const buttonVariants = {
     initial: { scale: 1 },
     hover: { scale: 1.1 },

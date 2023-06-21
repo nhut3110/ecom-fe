@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from "react";
-import { useNavigatePage } from "../hooks/useNavigatePage";
+import { useNavigatePage } from "../hooks";
 import Modal from "../components/Modal";
 import CartList from "../components/CartList";
 import OrderSummary from "../components/OrderSummary";
@@ -60,7 +60,7 @@ const Cart = (): React.ReactElement => {
       {/* Header */}
       <div className="mx-auto my-5 flex w-4/5 items-center justify-between">
         <p className="text-xl font-bold">Review your bag</p>
-        <SmallButton name="Delete all" onClick={handleOpenModal} />
+        <SmallButton content="Delete all" onClick={handleOpenModal} />
       </div>
 
       {/* Cart Content */}

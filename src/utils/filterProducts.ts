@@ -1,7 +1,7 @@
-import { ProductDetails } from "../constants/data";
+import { ProductDetails } from "../constants";
 import { capitalizeFirstLetter } from "./capitalizeFirstLetter";
 
-enum FilterValue {
+export enum FilterValue {
   DEFAULT = "Category",
 }
 
@@ -11,7 +11,5 @@ export const filterProducts = (
 ) => {
   if (filterOption === FilterValue.DEFAULT) return products;
 
-  return products.filter(
-    (product) => capitalizeFirstLetter(product.category) === filterOption
-  );
+  return products.filter((product) => product.category_id === filterOption);
 };
