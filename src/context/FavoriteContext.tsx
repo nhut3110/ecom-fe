@@ -13,7 +13,7 @@ const initFavoriteState: FavoriteStateType = {
 const enum REDUCER_ACTION_TYPE {
   ADD_FAVORITE,
   REMOVE_FAVORITE,
-  UPDATE_STORAGE,
+  CLEAR_FAVORITE,
 }
 
 type ReducerAction =
@@ -21,7 +21,7 @@ type ReducerAction =
       type: REDUCER_ACTION_TYPE;
       payload: ProductDetails;
     }
-  | { type: REDUCER_ACTION_TYPE.UPDATE_STORAGE };
+  | { type: REDUCER_ACTION_TYPE.CLEAR_FAVORITE };
 
 const favoriteReducer = (state: FavoriteStateType, action: ReducerAction) => {
   switch (action.type) {
@@ -35,8 +35,10 @@ const favoriteReducer = (state: FavoriteStateType, action: ReducerAction) => {
         ),
       };
 
-    case REDUCER_ACTION_TYPE.UPDATE_STORAGE: {
-      updateLocalStorageValue({ key: "favorites", value: state });
+    case REDUCER_ACTION_TYPE.CLEAR_FAVORITE: {
+      return {
+        favoriteList: [],
+      };
     }
 
     default:
@@ -59,15 +61,15 @@ const useFavoriteContext = (initState: FavoriteStateType) => {
     [dispatch]
   );
 
-  const storeFavorite = useCallback(
+  const clearFavorite = useCallback(
     () =>
       dispatch({
-        type: REDUCER_ACTION_TYPE.UPDATE_STORAGE,
+        type: REDUCER_ACTION_TYPE.CLEAR_FAVORITE,
       }),
     [dispatch]
   );
 
-  return { favoriteState, addFavorite, removeFavorite, storeFavorite };
+  return { favoriteState, addFavorite, removeFavorite, clearFavorite };
 };
 
 export type UseFavoriteContextType = ReturnType<typeof useFavoriteContext>;
@@ -76,7 +78,7 @@ const initContextState: UseFavoriteContextType = {
   favoriteState: { favoriteList: [] },
   addFavorite: (product: ProductDetails) => {},
   removeFavorite: (product: ProductDetails) => {},
-  storeFavorite: () => {},
+  clearFavorite: () => {},
 };
 
 export const FavoriteContext =

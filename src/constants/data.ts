@@ -64,7 +64,7 @@ export type FilterOptionType = {
 };
 
 export interface ProductDetails {
-  id: number;
+  id: string;
   title: string;
   price: number;
   description: string;
