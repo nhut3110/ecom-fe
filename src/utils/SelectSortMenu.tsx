@@ -2,8 +2,7 @@ import { motion } from "framer-motion";
 import React, { useState, useRef, useEffect } from "react";
 import SelectMenu from "../components/SelectMenu";
 import Tooltip from "../components/Tooltip";
-import { CategoryType } from "../services/types.api";
-import { getCategoryList } from "../services/products.api";
+import { getCategoryList, CategoryType } from "../services";
 import { SortOptionType } from "../constants";
 
 type SortListType = {
@@ -39,7 +38,7 @@ const DEFAULT_CATEGORY_FILTER = "Default";
 
 export const selectSortMenu = () => {
   const [selectedSort, setSelectedSort] = useState<SortOptionType>();
-  const [selectedFilter, setSelectedFilter] = useState<string>("");
+  const [selectedFilter, setSelectedFilter] = useState<string | undefined>("");
   const [isReset, setIsReset] = useState<boolean>(false);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [categoryNameList, setCategoryNameList] = useState<string[]>([]);
@@ -68,16 +67,18 @@ export const selectSortMenu = () => {
   const handleFilterChange = async (selectedOption: string) => {
     if (categories) {
       const temp = categories.find(
-        (category: any) => category.name === selectedOption.toLowerCase()
+        (category: CategoryType) =>
+          category.name === selectedOption.toLowerCase()
       );
-      if (!temp) return setSelectedFilter(DEFAULT_CATEGORY_FILTER);
+
+      if (!temp) return setSelectedFilter(undefined);
 
       return setSelectedFilter(temp.id);
     }
 
-    return setSelectedFilter(DEFAULT_CATEGORY_FILTER);
+    return setSelectedFilter(undefined);
   };
-
+  console.log(selectedFilter);
   const fetchCategoryList = async () => {
     const list: CategoryType[] = await getCategoryList();
     setCategories(list);

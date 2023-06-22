@@ -46,7 +46,7 @@ export type FindProductType = {
   sortDirection?: string;
   categoryId?: string;
   title?: string;
-  cursor?: string | number;
+  cursor?: string;
   limit?: number;
 };
 
@@ -54,6 +54,6 @@ export type PaginatedResponse = {
   data: ProductDetails[];
   pagination: {
     total: number;
-    nextCursor?: string | number;
+    nextCursor?: string;
   };
 };

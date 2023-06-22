@@ -6,7 +6,7 @@ import { useNavigatePage } from "../hooks";
 import OutlineInput from "../components/CheckoutForm/OutlineInput";
 import Modal from "../components/Modal";
 import SmallButton from "../components/SmallButton";
-import { editProfile } from "../services/auth.api";
+import { editProfile } from "../services";
 import { NotificationContext } from "../context/NotificationContext";
 import { deleteEmptyStringKeys } from "../utils";
 import { UserDataContext } from "../context/UserDataContext";

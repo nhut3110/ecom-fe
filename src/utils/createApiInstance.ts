@@ -1,7 +1,7 @@
 import { checkIsTokenExpired } from "./checkIsTokenExpired";
 import { getTokensFromLocalStorage } from "./getTokensFromLocalStorage";
 import { refreshToken } from "./refreshToken";
-import { TokensType } from "../services/types.api";
+import { TokensType } from "../services";
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 type ApiInstanceType = { isPublic?: boolean; baseURL?: string };

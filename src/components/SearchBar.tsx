@@ -1,10 +1,10 @@
-import debounce from "lodash.debounce";
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { motion } from "framer-motion";
-import { getProductList } from "../services/products.api";
-import { ProductDetails } from "../constants";
+import debounce from "lodash/debounce";
 import { Link } from "react-router-dom";
 import { BiSearch } from "react-icons/bi";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { motion } from "framer-motion";
+import { getProductList } from "../services";
+import { ProductDetails } from "../constants";
 
 const searchResultVariants = {
   hidden: { opacity: 0, y: -20 },

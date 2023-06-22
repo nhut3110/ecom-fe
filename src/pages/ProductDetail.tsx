@@ -9,7 +9,7 @@ import RatingStar from "../components/RatingStar";
 import SmallButton from "../components/SmallButton";
 import { FlyingImageWrapper } from "../components/FlyingImage";
 import GifLoading from "../components/GifLoading";
-import { fetchProductDetails } from "../services/products.api";
+import { fetchProductDetails } from "../services";
 import { GoodsIcon, TruckIcon } from "../assets/icons";
 import { NotificationContext } from "../context/NotificationContext";
 import { CartContext } from "../context/CartContext";

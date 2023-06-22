@@ -1,7 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { BiSearch } from "react-icons/bi";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   useMenuAnimation,
   useNavigatePage,
@@ -116,6 +122,66 @@ const NavBar = (): React.ReactElement => {
     };
   }, [setOpenMobileNav]);
 
+  const renderUserAvatar = useCallback(() => {
+    if (!userDataState)
+      return (
+        <div className="aspect-square h-8 rounded-full border border-purple-500 bg-gray-300 shadow-lg" />
+      );
+
+    return (
+      <motion.img
+        variants={avatarVariants}
+        initial="initial"
+        animate="visible"
+        src={userDataState?.picture}
+        alt="user-avatar"
+        className="object-fit aspect-square h-8 rounded-full border border-purple-500 shadow-lg"
+        onClick={() => setOpenUserBox(!openUserBox)}
+      />
+    );
+  }, [userDataState?.picture, openUserBox]);
+
+  const renderLoggedInContent = useCallback(() => {
+    return (
+      <div>
+        {!isLoading && (
+          <motion.div className="relative">
+            {renderUserAvatar()}
+
+            <motion.div
+              className="absolute right-[100%] top-[100%] z-50 flex min-w-max flex-col rounded-md border-2 bg-white shadow-2xl"
+              variants={avatarMenuVariants}
+              initial="closed"
+              animate={openUserBox ? "open" : "closed"}
+              style={{ pointerEvents: openUserBox ? "auto" : "none" }}
+            >
+              <motion.div
+                className="w-full cursor-pointer rounded-md py-2 px-5 text-gray-900 hover:bg-gray-100"
+                variants={itemVariants}
+                onClick={handleOpenProfile}
+              >
+                <p>Profile</p>
+              </motion.div>
+              <motion.div
+                className="w-full cursor-pointer rounded-md py-2 px-5 text-gray-900 hover:bg-gray-100"
+                variants={itemVariants}
+                onClick={handleLogout}
+              >
+                <p>Log out</p>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </div>
+    );
+  }, [isLoading, openUserBox]);
+
+  const renderContent = useCallback(() => {
+    if (isLogin) return renderLoggedInContent();
+
+    return <SmallButton content="sign in" onClick={() => redirect("/login")} />;
+  }, [isLogin, openUserBox, isLoading]);
+
   return (
     <div
       ref={navRef}
@@ -172,55 +238,7 @@ const NavBar = (): React.ReactElement => {
             <div className=" flex h-8 w-8 items-center justify-center rounded-full border border-black">
               <BiSearch size={20} onClick={() => setIsSearch(!isSearch)} />
             </div>
-            {isLogin ? (
-              <div>
-                {!isLoading && (
-                  <motion.div className="relative">
-                    {userDataState ? (
-                      <motion.img
-                        variants={avatarVariants}
-                        initial="initial"
-                        animate="visible"
-                        src={userDataState?.picture}
-                        alt="user-avatar"
-                        className="object-fit aspect-square h-8 rounded-full border border-purple-500 shadow-lg"
-                        onClick={() => setOpenUserBox(!openUserBox)}
-                      />
-                    ) : (
-                      <div className="aspect-square h-8 rounded-full border border-purple-500 bg-gray-300 shadow-lg" />
-                    )}
-
-                    <motion.div
-                      className="absolute right-[100%] top-[100%] z-50 flex min-w-max flex-col rounded-md border-2 bg-white shadow-2xl"
-                      variants={avatarMenuVariants}
-                      initial="closed"
-                      animate={openUserBox ? "open" : "closed"}
-                      style={{ pointerEvents: openUserBox ? "auto" : "none" }}
-                    >
-                      <motion.div
-                        className="w-full cursor-pointer rounded-md py-2 px-5 text-gray-900 hover:bg-gray-100"
-                        variants={itemVariants}
-                        onClick={handleOpenProfile}
-                      >
-                        <p>Profile</p>
-                      </motion.div>
-                      <motion.div
-                        className="w-full cursor-pointer rounded-md py-2 px-5 text-gray-900 hover:bg-gray-100"
-                        variants={itemVariants}
-                        onClick={handleLogout}
-                      >
-                        <p>Log out</p>
-                      </motion.div>
-                    </motion.div>
-                  </motion.div>
-                )}
-              </div>
-            ) : (
-              <SmallButton
-                content="sign in"
-                onClick={() => redirect("/login")}
-              />
-            )}
+            {renderContent()}
           </div>
         </div>
         <AnimatePresence>

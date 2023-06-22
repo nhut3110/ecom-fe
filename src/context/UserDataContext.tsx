@@ -1,5 +1,5 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import { UserData } from "../services/types.api";
+import { UserData } from "../services";
 
 type UserStateType = UserData;
 

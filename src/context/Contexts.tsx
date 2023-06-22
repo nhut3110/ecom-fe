@@ -6,7 +6,7 @@ import { OrderProvider } from "./OrderContext";
 import { UserDataProvider } from "./UserDataContext";
 import { defaultForm, FormProvider } from "./FormContext";
 import { NotificationType } from "../components/Notification";
-import { TokensType } from "../services/types.api";
+import { TokensType } from "../services";
 import { getLocalStorageValue } from "../utils";
 import { OrderType, ProductDetails } from "../constants";
 

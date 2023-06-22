@@ -15,10 +15,10 @@ const ValidateLoginModal = () => {
   useEffect(() => {
     if (isLoading || !isLogin) return;
 
-    if (!userInfo && userInfo !== undefined) {
+    if (!userInfo) {
       setOpenModal(true);
     }
-  }, [isLoading]);
+  }, [isLoading, userInfo]);
 
   return (
     <Modal open={openModal} title="Warning" onSubmit={handleSubmitModal}>

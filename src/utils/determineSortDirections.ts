@@ -12,11 +12,10 @@ export const determineSortDirections = (sortOption?: SortOptionType) => {
 
   const { sortBy, sortDirection } = sortOption;
 
-  if (sortBy == sortDirection) return undefined;
-
-  return {
-    sortBy,
-    sortDirection:
-      sortDirection === SORT_ASCENDING ? SortType.ASC : SortType.DESC,
-  };
+  if (sortBy !== sortDirection)
+    return {
+      sortBy,
+      sortDirection:
+        sortDirection === SORT_ASCENDING ? SortType.ASC : SortType.DESC,
+    };
 };
