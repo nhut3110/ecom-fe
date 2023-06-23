@@ -1,18 +1,23 @@
 import times from "lodash/times";
 import { AnimatePresence } from "framer-motion";
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect, useContext } from "react";
 import { useFetchProductList } from "../hooks/useFetchProductList";
 import Carousel from "../components/Carousel";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 import ProductCard, { ProductCardSkeleton } from "../components/ProductCard";
 import SmallButton from "../components/SmallButton";
-import { getProductList } from "../services";
+import { PaginatedResponse, getFavorites, getProductList } from "../services";
 import { determineSortDirections, selectSortMenu } from "../utils";
-import { ProductDetails } from "../constants";
+import { PAGE_LIMIT, PRODUCT_PREFIX, ProductDetails } from "../constants";
+import { FavoriteContext } from "../context/FavoriteContext";
 
 const DEFAULT_QUANTITY_PRODUCT_SKELETON = 20; // Number of products skeletons in the loading screen
 
 const Product = (): React.ReactElement => {
+  const [favorites, setFavorites] = useState<ProductDetails[]>([]);
+
+  const { favoriteState } = useContext(FavoriteContext);
+
   const { renderSelectSortMenu, selectedSort, selectedFilter } =
     selectSortMenu();
   const { products, isLoading, cursor, totalRecords, fetchList } =
@@ -20,6 +25,7 @@ const Product = (): React.ReactElement => {
       selectedSort,
       selectedFilter,
       queryFn: getProductList,
+      limit: PAGE_LIMIT,
     });
 
   const handleLoadMore = useCallback(() => {
@@ -42,12 +48,26 @@ const Product = (): React.ReactElement => {
     []
   );
 
+  const fetchFavorites = async () => {
+    const favoriteList: PaginatedResponse = await getFavorites({});
+
+    setFavorites(favoriteList.data);
+  };
+
+  const checkIsFavorite = (id: string) => {
+    return favorites.findIndex((product) => product.id === id) !== -1;
+  };
+
   const renderProductList = useCallback(
     () => (
       <div className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
         {products.map((product: ProductDetails) => (
           <OpacityMotionWrapper key={product.id}>
-            <ProductCard product={product} key={product.id} />
+            <ProductCard
+              product={product}
+              key={PRODUCT_PREFIX + product.id}
+              isFavorite={checkIsFavorite(product.id)}
+            />
           </OpacityMotionWrapper>
         ))}
       </div>
@@ -63,6 +83,10 @@ const Product = (): React.ReactElement => {
         </div>
       );
   }, [totalRecords, products.length]);
+
+  useEffect(() => {
+    fetchFavorites();
+  }, [favoriteState.favoriteList, products]);
 
   return (
     <div className="p-5">

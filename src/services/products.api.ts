@@ -34,14 +34,6 @@ const removeFavorite = async (productId: string) => {
   return await authApi.delete(`/my-favorites/${productId}`);
 };
 
-const checkFavorite = async (productId: string) => {
-  const { data } = await authApi.get("/my-favorites/check", {
-    params: { productId },
-  });
-
-  return data;
-};
-
 const getCategoryById = async (categoryId: string) => {
   const { data } = await publicApi.get(`/categories/${categoryId}`);
 
@@ -96,5 +88,4 @@ export {
   getFavorites,
   addFavorite,
   removeFavorite,
-  checkFavorite,
 };

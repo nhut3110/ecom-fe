@@ -1,17 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FilterOptionType,
   ProductDetails,
   SortOptionType,
-  pageLimit,
+  PAGE_LIMIT,
 } from "../constants";
 import { determineSortDirections } from "../utils";
 import { FindProductType, PaginatedResponse } from "../services";
-import { FavoriteContext } from "../context/FavoriteContext";
 
 type UseFetchProductListType = {
   selectedSort?: SortOptionType;
   selectedFilter?: string;
+  limit?: number;
   queryFn: (params: FindProductType) => Promise<PaginatedResponse>;
 };
 
@@ -19,13 +19,12 @@ export const useFetchProductList = ({
   selectedSort,
   selectedFilter,
   queryFn,
+  limit,
 }: UseFetchProductListType) => {
   const [products, setProducts] = useState<ProductDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [cursor, setCursor] = useState<string | undefined>();
   const [totalRecords, setTotalRecords] = useState<number>(0);
-
-  const { addFavorite, clearFavorite } = useContext(FavoriteContext);
 
   const fetchList = async (
     sortOptions?: SortOptionType,
@@ -33,21 +32,18 @@ export const useFetchProductList = ({
     cursor?: string
   ) => {
     setIsLoading(true);
-    clearFavorite();
 
     const productListData = await queryFn({
-      limit: pageLimit,
+      limit,
+      cursor,
       ...sortOptions,
       ...filterOptions,
-      cursor,
     });
 
     setIsLoading(false);
     setProducts((products) => [...products, ...productListData.data]);
     if (!cursor) setTotalRecords(productListData.pagination.total);
     setCursor(productListData.pagination.nextCursor);
-
-    productListData.data.map((product) => addFavorite(product));
   };
 
   useEffect(() => {

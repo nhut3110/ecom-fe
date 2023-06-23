@@ -15,42 +15,67 @@ import GifLoading from "./GifLoading";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { CartContext } from "../context/CartContext";
 import { NotificationContext } from "../context/NotificationContext";
-import { getLocalStorageValue } from "../utils";
-import { ADD_PRODUCT_DELAY, ProductDetails } from "../constants";
-import {
-  addFavorite,
-  checkFavorite,
-  removeFavorite,
-} from "../services/products.api";
+import { ADD_PRODUCT_DELAY, MAX_FAVORITES, ProductDetails } from "../constants";
+import { addFavorite, removeFavorite } from "../services/products.api";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
 const ProductCard = (props: {
   product: ProductDetails;
+  isFavorite: boolean;
 }): React.ReactElement => {
-  const { product } = props;
+  const { product, isFavorite } = props;
 
-  const [love, setLove] = useState(false);
+  const [love, setLove] = useState(isFavorite);
   const [animation, setAnimation] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const { notify } = useContext(NotificationContext);
-  const { addFavorite: addToContext, removeFavorite: removeFromContext } =
-    useContext(FavoriteContext);
+  const {
+    addFavorite: addToContext,
+    removeFavorite: removeFromContext,
+    favoriteState,
+  } = useContext(FavoriteContext);
   const { addToCart, calculateCartValue, cartState } = useContext(CartContext);
 
-  const handleFavorites = useCallback(async () => {
-    setLoading(true);
-    love ? await removeFavorite(product.id) : await addFavorite(product.id);
-    love ? removeFromContext(product) : addToContext(product);
+  const notifyFavoriteAction = () => {
     notify({
       content: `Successfully ${love ? "remove from" : "added to"} favorites`,
       type: "favorite",
       open: true,
       id: crypto.randomUUID(),
     });
+
     setLove(!love);
     setLoading(false);
+  };
+
+  const handleRemoveFavorite = async () => {
+    await removeFavorite(product.id);
+    removeFromContext(product);
+    notifyFavoriteAction();
+  };
+
+  const handleAddFavorite = async () => {
+    await addFavorite(product.id);
+    addToContext(product);
+    notifyFavoriteAction();
+  };
+
+  const handleFavorites = useCallback(async () => {
+    if (!love && favoriteState.favoriteList.length >= MAX_FAVORITES)
+      return notify({
+        content: `Reached maximum favorites`,
+        type: "warning",
+        open: true,
+        id: crypto.randomUUID(),
+      });
+
+    setLoading(true);
+
+    if (love) return handleRemoveFavorite();
+
+    return handleAddFavorite();
   }, [love]);
 
   const [integerPart, decimalPart] = useMemo(() => {
@@ -75,22 +100,12 @@ const ProductCard = (props: {
     }, ADD_PRODUCT_DELAY);
   }, [product]);
 
-  const checkIsFavorite = async () => {
-    const isLove = await checkFavorite(product.id);
-
-    setLove(isLove);
-  };
-
   useEffect(() => {
     const cartProduct = cartState.cartList[product.id];
     if (cartProduct) {
       setAnimation(!!cartProduct.cartAnimations.length);
     }
   }, [cartState.cartList[product.id]]);
-
-  useEffect(() => {
-    checkIsFavorite();
-  }, []);
 
   return (
     <>

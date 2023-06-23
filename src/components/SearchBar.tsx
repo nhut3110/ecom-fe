@@ -26,6 +26,7 @@ const SearchBar = ({ queryFn }: SearchBarType) => {
   const debounceSearch = useCallback(
     debounce(async (title) => {
       const search = await queryFn({ title: title });
+
       setSearchResults(search.data);
       setIsSearching(!!title);
     }, 500),
