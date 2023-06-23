@@ -15,6 +15,7 @@ import { login } from "../services";
 import { NotificationContext } from "../context/NotificationContext";
 import { getLocalStorageValue, updateLocalStorageValue } from "../utils";
 import { validationLoginSchema } from "../constants";
+import { Link } from "react-router-dom";
 
 const DELAY_BEFORE_REDIRECT = 1500;
 
@@ -176,12 +177,12 @@ const Login = (): React.ReactElement => {
 
         <p className=" mt-5 w-full text-center text-sm font-normal text-gray-400">
           Not have an account?
-          <a
-            href=""
-            className="mt-5 w-full text-center text-sm font-semibold text-gray-400"
+          <Link
+            to={"/register"}
+            className="mt-5 w-full text-center text-sm font-semibold text-gray-500"
           >
             Register
-          </a>
+          </Link>
         </p>
       </motion.div>
 

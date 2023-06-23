@@ -79,6 +79,29 @@ export const MAX_FAVORITES = 100;
 export const PRODUCT_PREFIX = "product:";
 export const FAVORITE_PREFIX = "favorite:";
 
+type RegisterFieldTypes = {
+  name: string;
+  type?: string;
+};
+
+export const registerFields: RegisterFieldTypes[] = [
+  {
+    name: "name",
+  },
+  {
+    name: "email",
+    type: "email",
+  },
+  {
+    name: "password",
+    type: "password",
+  },
+  {
+    name: "confirmPassword",
+    type: "password",
+  },
+];
+
 export const facebookConstants = {
   clientID: "1213240936224087",
   callbackUrl: "http://localhost:5173/auth/facebook/callback/",

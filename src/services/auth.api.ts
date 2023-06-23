@@ -3,6 +3,7 @@ import { authApi, publicApi } from "./api";
 import {
   FacebookLoginType,
   LoginType,
+  RegisterType,
   TokensType,
   UserData,
 } from "./types.api";
@@ -31,6 +32,12 @@ const loginFacebook = async (loginData: FacebookLoginType) => {
 
 const login = async (loginData: LoginType) => {
   const { data } = await publicApi.post("/auth/login", loginData);
+
+  return data;
+};
+
+const register = async (registerData: RegisterType) => {
+  const { data } = await publicApi.post("/auth/register", registerData);
 
   return data;
 };
@@ -80,4 +87,5 @@ export {
   changePassword,
   editAvatar,
   getUserById,
+  register,
 };

@@ -10,6 +10,13 @@ export type LoginType = {
   password: string;
 };
 
+export type RegisterType = {
+  name: string;
+  email: string;
+  password: string;
+  avatar?: string;
+};
+
 export type FacebookLoginType = {
   code: string;
   callbackUrl: string;
