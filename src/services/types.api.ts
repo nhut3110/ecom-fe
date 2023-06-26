@@ -1,3 +1,5 @@
+import { ProductDetails } from "../constants";
+
 export type TokensType = {
   accessToken?: string;
   refreshToken?: string;
@@ -29,10 +31,29 @@ export type UserData = {
 export type CategoryType = {
   name: string;
   id: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type ErrorResponseType = {
   statusCode?: number;
   message?: string;
   error?: string;
+};
+
+export type FindProductType = {
+  sortBy?: string;
+  sortDirection?: string;
+  categoryId?: string;
+  title?: string;
+  cursor?: string;
+  limit?: number;
+};
+
+export type PaginatedResponse = {
+  data: ProductDetails[];
+  pagination: {
+    total: number;
+    nextCursor?: string;
+  };
 };

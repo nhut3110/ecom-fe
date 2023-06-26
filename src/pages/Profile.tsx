@@ -19,7 +19,7 @@ import { FavoriteContext } from "../context/FavoriteContext";
 import { OrderContext } from "../context/OrderContext";
 import { UploadIcon } from "../assets/icons";
 import { UserBanner } from "../assets/images";
-import { editAvatar } from "../services/auth.api";
+import { editAvatar } from "../services";
 import { UserDataContext } from "../context/UserDataContext";
 import {
   convertTimestampToDate,

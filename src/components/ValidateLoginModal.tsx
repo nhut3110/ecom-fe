@@ -18,7 +18,7 @@ const ValidateLoginModal = () => {
     if (!userInfo) {
       setOpenModal(true);
     }
-  }, [isLoading]);
+  }, [isLoading, userInfo]);
 
   return (
     <Modal open={openModal} title="Warning" onSubmit={handleSubmitModal}>

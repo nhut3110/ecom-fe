@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
 import { useNavigatePage } from "../hooks";
 import { NotificationContext } from "../context/NotificationContext";
-import { loginFacebook } from "../services/auth.api";
+import { loginFacebook } from "../services";
 import GifLoading from "../components/GifLoading";
 import { updateLocalStorageValue } from "../utils";
 import { facebookConstants } from "../constants";

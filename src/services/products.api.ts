@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { publicApi } from "./api";
-import { CategoryType } from "./types.api";
+import { FindProductType } from "./types.api";
 
-const getProductList = async () => {
-  const { data } = await publicApi.get("/products");
+const getProductList = async (params: FindProductType) => {
+  const { data } = await publicApi.get("/products", { params });
 
   return data;
 };
@@ -26,10 +26,10 @@ const getCategoryById = async (categoryId: string) => {
   return data;
 };
 
-const fetchProducts = () => {
+const fetchProducts = (params: FindProductType) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["products"],
-    queryFn: () => getProductList(),
+    queryFn: () => getProductList(params),
   });
 
   return { products: data, error, isLoading };

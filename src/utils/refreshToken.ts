@@ -1,4 +1,4 @@
-import { getNewTokens } from "../services/auth.api";
+import { getNewTokens } from "../services";
 import { getTokensFromLocalStorage } from "./getTokensFromLocalStorage";
 import { updateLocalStorageValue } from "./localStorage";
 

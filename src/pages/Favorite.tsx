@@ -1,27 +1,22 @@
 import { Link } from "react-router-dom";
-import React, { useContext, useState } from "react";
-import { useSortAndFilterProduct } from "../hooks";
+import React, { useContext } from "react";
 import ProductCard from "../components/ProductCard";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { selectSortMenu } from "../utils";
 import { ProductDetails } from "../constants";
 
+// TODO: update in the next PR with new API
+
 const Favorite = (): React.ReactElement => {
   const { favoriteState } = useContext(FavoriteContext);
   const { renderSelectSortMenu, selectedSort, selectedFilter } =
     selectSortMenu();
 
-  const { filteredProducts } = useSortAndFilterProduct({
-    products: favoriteState.favoriteList,
-    selectedSort,
-    selectedFilter,
-  });
-
   const renderFavoriteList = () => {
     return (
       <div className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
-        {filteredProducts.map((product: ProductDetails) => (
+        {favoriteState.favoriteList.map((product: ProductDetails) => (
           <OpacityMotionWrapper key={product.id}>
             <ProductCard product={product} key={product.id} />
           </OpacityMotionWrapper>
@@ -39,7 +34,7 @@ const Favorite = (): React.ReactElement => {
 
       {/* Favorite List  */}
       <div className="min-h-[15rem] w-full">
-        {filteredProducts.length ? (
+        {favoriteState.favoriteList.length ? (
           renderFavoriteList()
         ) : (
           <div className="flex w-full flex-col items-center justify-center">

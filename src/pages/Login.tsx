@@ -11,7 +11,7 @@ import {
   LogoTransparent,
   ShoppingArt,
 } from "../assets/images";
-import { login } from "../services/auth.api";
+import { login } from "../services";
 import { NotificationContext } from "../context/NotificationContext";
 import { getLocalStorageValue, updateLocalStorageValue } from "../utils";
 import { validationLoginSchema } from "../constants";

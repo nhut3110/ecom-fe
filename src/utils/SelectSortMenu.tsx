@@ -2,17 +2,12 @@ import { motion } from "framer-motion";
 import React, { useState, useRef, useEffect } from "react";
 import SelectMenu from "../components/SelectMenu";
 import Tooltip from "../components/Tooltip";
-import { CategoryType } from "../services/types.api";
-import { FilterValue } from "./filterProducts";
-import { getCategoryList } from "../services/products.api";
+import { getCategoryList, CategoryType } from "../services";
+import { SortOptionType } from "../constants";
 
-type SortOptionType = {
+type SortListType = {
   name: string;
   options: string[];
-};
-type FilterOptionType = {
-  name: string;
-  options: CategoryType[];
 };
 
 const iconVariants = {
@@ -28,38 +23,33 @@ const iconVariants = {
   },
 };
 
-const sortOptions: SortOptionType[] = [
+const sortOptions: SortListType[] = [
   {
-    name: "Price",
-    options: ["Low to High", "High to Low", "Default"],
+    name: "price",
+    options: ["Ascending", "Descending", "Default"],
   },
   {
-    name: "Name",
-    options: ["A to Z", "Z to A", "Default"],
+    name: "rate",
+    options: ["Ascending", "Descending", "Default"],
   },
 ];
 
-const filterOptions: SortOptionType[] = [
-  {
-    name: "Category",
-    options: [
-      "Electronics",
-      "Jewelery",
-      "Men's clothing",
-      "Women's clothing",
-      "Default",
-    ],
-  },
-];
+const DEFAULT_CATEGORY_FILTER = "Default";
 
 export const selectSortMenu = () => {
-  const [selectedSort, setSelectedSort] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("");
-  const lastChangedIndex = useRef(-1); // default value when no changes
-  const [isReset, setIsReset] = useState(false);
+  const [selectedSort, setSelectedSort] = useState<SortOptionType>();
+  const [selectedFilter, setSelectedFilter] = useState<string | undefined>("");
+  const [isReset, setIsReset] = useState<boolean>(false);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [categoryNameList, setCategoryNameList] = useState<string[]>([]);
+  const lastChangedIndex = useRef(-1);
 
-  const handleSortChange = (selectedOption: string, index: number) => {
-    setSelectedSort(selectedOption);
+  const handleSortChange = (
+    optionName: string,
+    selectedOption: string,
+    index: number
+  ) => {
+    setSelectedSort({ sortBy: optionName, sortDirection: selectedOption });
 
     if (lastChangedIndex.current !== -1) {
       const resetIndex =
@@ -74,23 +64,36 @@ export const selectSortMenu = () => {
     return -1;
   };
 
-  // this function is just a temporary function, will be replaced by sort and filter api in the next phase, same as above
   const handleFilterChange = async (selectedOption: string) => {
-    const categories = await getCategoryList();
     if (categories) {
       const temp = categories.find(
-        (category) => category.name === selectedOption.toLowerCase()
+        (category: CategoryType) =>
+          category.name === selectedOption.toLowerCase()
       );
-      if (!temp) return setSelectedFilter(FilterValue.DEFAULT);
+
+      if (!temp) return setSelectedFilter(undefined);
 
       return setSelectedFilter(temp.id);
     }
-    return setSelectedFilter(FilterValue.DEFAULT);
+
+    return setSelectedFilter(undefined);
+  };
+  console.log(selectedFilter);
+  const fetchCategoryList = async () => {
+    const list: CategoryType[] = await getCategoryList();
+    setCategories(list);
+    const nameList = list.map((category) => category.name);
+
+    setCategoryNameList((prevNameList) => [
+      ...prevNameList,
+      ...nameList,
+      DEFAULT_CATEGORY_FILTER,
+    ]);
   };
 
-  const handleResetMenu = () => {
-    setIsReset(false);
-  };
+  useEffect(() => {
+    fetchCategoryList();
+  }, []);
 
   const renderSelectSortMenu = () => {
     return (
@@ -126,10 +129,10 @@ export const selectSortMenu = () => {
                 options={sortOption.options}
                 defaultOption={sortOption.name}
                 onSelectionChange={(selectedOption) =>
-                  handleSortChange(selectedOption, index)
+                  handleSortChange(sortOption.name, selectedOption, index)
                 }
                 isReset={isReset && lastChangedIndex.current !== index}
-                onReset={handleResetMenu}
+                onReset={() => setIsReset(false)}
                 key={index}
               />
             ))}
@@ -138,14 +141,11 @@ export const selectSortMenu = () => {
         <div>
           <p className="text-sm italic">Filtering options</p>
           <div>
-            {filterOptions.map((filterOption, index) => (
-              <SelectMenu
-                options={filterOption.options}
-                defaultOption={filterOption.name}
-                onSelectionChange={handleFilterChange}
-                key={index}
-              />
-            ))}
+            <SelectMenu
+              options={categoryNameList}
+              defaultOption={"Category"}
+              onSelectionChange={handleFilterChange}
+            />
           </div>
         </div>
       </div>

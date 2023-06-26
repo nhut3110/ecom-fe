@@ -1,4 +1,4 @@
-import { TokensType } from "../services/types.api";
+import { TokensType } from "../services";
 import { getLocalStorageValue } from "./localStorage";
 
 export const getTokensFromLocalStorage = (): TokensType | null => {
