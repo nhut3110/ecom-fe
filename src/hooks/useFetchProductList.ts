@@ -3,7 +3,7 @@ import {
   FilterOptionType,
   ProductDetails,
   SortOptionType,
-  pageLimit,
+  PAGE_LIMIT,
 } from "../constants";
 import { determineSortDirections } from "../utils";
 import { FindProductType, PaginatedResponse } from "../services";
@@ -11,6 +11,7 @@ import { FindProductType, PaginatedResponse } from "../services";
 type UseFetchProductListType = {
   selectedSort?: SortOptionType;
   selectedFilter?: string;
+  limit?: number;
   queryFn: (params: FindProductType) => Promise<PaginatedResponse>;
 };
 
@@ -18,6 +19,7 @@ export const useFetchProductList = ({
   selectedSort,
   selectedFilter,
   queryFn,
+  limit,
 }: UseFetchProductListType) => {
   const [products, setProducts] = useState<ProductDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -30,12 +32,14 @@ export const useFetchProductList = ({
     cursor?: string
   ) => {
     setIsLoading(true);
+
     const productListData = await queryFn({
-      limit: pageLimit,
+      limit,
+      cursor,
       ...sortOptions,
       ...filterOptions,
-      cursor,
     });
+
     setIsLoading(false);
     setProducts((products) => [...products, ...productListData.data]);
     if (!cursor) setTotalRecords(productListData.pagination.total);

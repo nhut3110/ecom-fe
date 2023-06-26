@@ -15,46 +15,67 @@ import GifLoading from "./GifLoading";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { CartContext } from "../context/CartContext";
 import { NotificationContext } from "../context/NotificationContext";
-import { getLocalStorageValue } from "../utils";
-import { ADD_PRODUCT_DELAY, ProductDetails } from "../constants";
+import { ADD_PRODUCT_DELAY, MAX_FAVORITES, ProductDetails } from "../constants";
+import { addFavorite, removeFavorite } from "../services/products.api";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
 const ProductCard = (props: {
   product: ProductDetails;
+  isFavorite: boolean;
 }): React.ReactElement => {
-  const { product } = props;
-
-  const { notify } = useContext(NotificationContext);
-  const { addFavorite, removeFavorite, storeFavorite } =
-    useContext(FavoriteContext);
-  const { addToCart, calculateCartValue, cartState } = useContext(CartContext);
-
-  const isFavorite = useMemo(() => {
-    const { favoriteList } = getLocalStorageValue({ key: "favorites" });
-    if (favoriteList === undefined) {
-      return false;
-    }
-
-    return favoriteList.find((item: ProductDetails) => {
-      return item.id == product.id;
-    });
-  }, []);
+  const { product, isFavorite } = props;
 
   const [love, setLove] = useState(isFavorite);
   const [animation, setAnimation] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleFavorites = useCallback(() => {
-    love ? removeFavorite(product) : addFavorite(product);
+  const { notify } = useContext(NotificationContext);
+  const {
+    addFavorite: addToContext,
+    removeFavorite: removeFromContext,
+    favoriteState,
+  } = useContext(FavoriteContext);
+  const { addToCart, calculateCartValue, cartState } = useContext(CartContext);
+
+  const notifyFavoriteAction = () => {
     notify({
       content: `Successfully ${love ? "remove from" : "added to"} favorites`,
       type: "favorite",
       open: true,
       id: crypto.randomUUID(),
     });
-    storeFavorite();
+
     setLove(!love);
+    setLoading(false);
+  };
+
+  const handleRemoveFavorite = async () => {
+    await removeFavorite(product.id);
+    removeFromContext(product);
+    notifyFavoriteAction();
+  };
+
+  const handleAddFavorite = async () => {
+    await addFavorite(product.id);
+    addToContext(product);
+    notifyFavoriteAction();
+  };
+
+  const handleFavorites = useCallback(async () => {
+    if (!love && favoriteState.favoriteList.length >= MAX_FAVORITES)
+      return notify({
+        content: `Reached maximum favorites`,
+        type: "warning",
+        open: true,
+        id: crypto.randomUUID(),
+      });
+
+    setLoading(true);
+
+    if (love) return handleRemoveFavorite();
+
+    return handleAddFavorite();
   }, [love]);
 
   const [integerPart, decimalPart] = useMemo(() => {

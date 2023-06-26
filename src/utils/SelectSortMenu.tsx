@@ -78,7 +78,7 @@ export const selectSortMenu = () => {
 
     return setSelectedFilter(undefined);
   };
-  console.log(selectedFilter);
+
   const fetchCategoryList = async () => {
     const list: CategoryType[] = await getCategoryList();
     setCategories(list);

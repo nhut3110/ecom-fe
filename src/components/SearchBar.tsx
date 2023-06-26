@@ -3,15 +3,19 @@ import { Link } from "react-router-dom";
 import { BiSearch } from "react-icons/bi";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { getProductList } from "../services";
 import { ProductDetails } from "../constants";
+import { FindProductType, PaginatedResponse } from "../services/types.api";
+
+type SearchBarType = {
+  queryFn: (params: FindProductType) => Promise<PaginatedResponse>;
+};
 
 const searchResultVariants = {
   hidden: { opacity: 0, y: -20 },
   visible: { opacity: 1, y: 0 },
 };
 
-const SearchBar = () => {
+const SearchBar = ({ queryFn }: SearchBarType) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<ProductDetails[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -21,7 +25,8 @@ const SearchBar = () => {
 
   const debounceSearch = useCallback(
     debounce(async (title) => {
-      const search = await getProductList({ title: title });
+      const search = await queryFn({ title: title });
+
       setSearchResults(search.data);
       setIsSearching(!!title);
     }, 500),

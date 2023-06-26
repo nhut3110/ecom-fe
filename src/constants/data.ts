@@ -64,7 +64,7 @@ export type FilterOptionType = {
 };
 
 export interface ProductDetails {
-  id: number;
+  id: string;
   title: string;
   price: number;
   description: string;
@@ -74,7 +74,10 @@ export interface ProductDetails {
   count: number;
 }
 
-export const pageLimit = 10;
+export const PAGE_LIMIT = 10;
+export const MAX_FAVORITES = 100;
+export const PRODUCT_PREFIX = "product:";
+export const FAVORITE_PREFIX = "favorite:";
 
 export const facebookConstants = {
   clientID: "1213240936224087",

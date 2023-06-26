@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { publicApi } from "./api";
+import { authApi, publicApi } from "./api";
 import { FindProductType } from "./types.api";
 
 const getProductList = async (params: FindProductType) => {
@@ -18,6 +18,20 @@ const getCategoryList = async () => {
   const { data } = await publicApi.get("/categories");
 
   return data;
+};
+
+const getFavorites = async (params: FindProductType) => {
+  const { data } = await authApi.get("/my-favorites", { params });
+
+  return data;
+};
+
+const addFavorite = async (productId: string) => {
+  return await authApi.post("/my-favorites", { productId });
+};
+
+const removeFavorite = async (productId: string) => {
+  return await authApi.delete(`/my-favorites/${productId}`);
 };
 
 const getCategoryById = async (categoryId: string) => {
@@ -71,4 +85,7 @@ export {
   getProductDetails,
   getCategoryList,
   getCategoryById,
+  getFavorites,
+  addFavorite,
+  removeFavorite,
 };

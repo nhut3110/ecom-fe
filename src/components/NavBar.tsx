@@ -20,6 +20,7 @@ import SearchBar from "./SearchBar";
 import { LogoTransparent } from "../assets/images";
 import { UserDataContext } from "../context/UserDataContext";
 import { navList } from "../constants";
+import { getProductList } from "../services/products.api";
 
 const NavBar = (): React.ReactElement => {
   const [openUserBox, setOpenUserBox] = useState<boolean>(false);
@@ -249,7 +250,7 @@ const NavBar = (): React.ReactElement => {
               exit={{ y: -50, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <SearchBar />
+              <SearchBar queryFn={getProductList} />
             </motion.div>
           )}
         </AnimatePresence>
