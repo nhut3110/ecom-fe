@@ -1,11 +1,23 @@
-import React, { useContext } from "react";
+import { PaymentInputsWrapper, usePaymentInputs } from "react-payment-inputs";
+import images, { CardImages } from "react-payment-inputs/images";
+import React, { useEffect } from "react";
 import OrderSummary from "../components/OrderSummary";
-import { FormContext } from "../context/FormContext";
+import {
+  AddressType,
+  fetchAddressList,
+  fetchCartList,
+  fetchPaymentList,
+} from "../services";
+import Select from "react-select";
+import AddressCard from "../components/AddressCard";
 
 const Checkout = (): React.ReactElement => {
-  const { formState } = useContext(FormContext);
+  const { cart, isLoading: isLoadingCart } = fetchCartList();
+  const { addresses, isLoading: isLoadingAddress } = fetchAddressList();
+  const { payment, isLoading: isLoadingPayment } = fetchPaymentList();
 
-  const CurrentForm = formState.forms[formState.step];
+  const { wrapperProps, getCardImageProps, getCardNumberProps } =
+    usePaymentInputs();
 
   return (
     <div className="mx-auto flex w-full flex-col items-center justify-around md:flex-row">
@@ -18,11 +30,33 @@ const Checkout = (): React.ReactElement => {
             Fill Shipping info ✏️
           </p>
         </div>
-        <CurrentForm />
+
+        <div>
+          <p className="text-xl font-semibold underline md:text-2xl">
+            Address Section
+          </p>
+          <Select
+            isSearchable={false}
+            options={addresses?.map((address: AddressType) => ({
+              value: address.id,
+              label: <AddressCard details={address} />,
+            }))}
+          />
+        </div>
       </div>
-      <OrderSummary />
+      <OrderSummary />z
     </div>
   );
 };
 
 export default Checkout;
+{
+  /* <PaymentInputsWrapper {...wrapperProps}>
+  <svg
+    {...getCardImageProps({
+      images: images as unknown as CardImages,
+    })}
+  />
+  <input {...getCardNumberProps()} className="w-full" />
+</PaymentInputsWrapper>; */
+}

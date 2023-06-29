@@ -30,7 +30,7 @@ const fetchPaymentList = () => {
     queryFn: () => getPaymentList(),
   });
 
-  return { addresses: data, error, isLoading };
+  return { payment: data, error, isLoading };
 };
 
 export {
