@@ -17,7 +17,7 @@ import { CartContext } from "../context/CartContext";
 import { NotificationContext } from "../context/NotificationContext";
 import { ADD_PRODUCT_DELAY, MAX_FAVORITES, ProductDetails } from "../constants";
 import { addFavorite, removeFavorite } from "../services/products.api";
-import { addToCart } from "../services/cart.api";
+import { addToCart } from "../services";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
