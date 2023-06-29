@@ -82,3 +82,25 @@ export type CartType = {
   quantity: number;
   product: CartProduct;
 };
+
+export type AddressType = {
+  id: string;
+  phoneNumber: string;
+  name: string;
+  email: string;
+  address: string;
+  lat?: number;
+  lng?: number;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type PaymentType = {
+  id: string;
+  cardNumber: string;
+  cardOwner: string;
+  cvc: string;
+  expiry: string;
+  createdAt?: string;
+  updatedAt?: string;
+};

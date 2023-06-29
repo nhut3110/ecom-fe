@@ -5,7 +5,7 @@ import { CartContext } from "../../context/CartContext";
 import CartAnimatedLogo from "./CartAnimatedLogo";
 import PortalWrapper from "../PortalWrapper";
 import Cart from "../../pages/Cart";
-import { getCart } from "../../services/cart.api";
+import { getCart } from "../../services";
 
 const miniCartContentVariants = {
   hidden: {
