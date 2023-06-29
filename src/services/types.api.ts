@@ -104,3 +104,9 @@ export type PaymentType = {
   createdAt?: string;
   updatedAt?: string;
 };
+
+export type AddOrderType = {
+  addressId: string;
+  paymentId: string;
+  productList: CartType[];
+};
