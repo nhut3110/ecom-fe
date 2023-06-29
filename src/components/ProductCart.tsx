@@ -10,12 +10,14 @@ import QuantityButton from "./QuantityButton";
 import Modal from "./Modal";
 import { CartContext } from "../context/CartContext";
 import { TrashIcon } from "../assets/icons";
-import { ProductDetails } from "../constants";
+import { CartProduct } from "../services";
+import { deleteProductFromCart, updateQuantity } from "../services/cart.api";
+import { NotificationContext } from "../context/NotificationContext";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 unit in cart page
 
 type ProductCartType = {
-  product: ProductDetails;
+  product: CartProduct;
   quantity: number;
 };
 
@@ -38,14 +40,26 @@ const ProductCart = ({
     removeFromCart,
     calculateCartValue,
   } = useContext(CartContext);
+  const { notify } = useContext(NotificationContext);
 
   const [quantities, setQuantities] = useState<number>(quantity);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const handleIncrement = useCallback(() => {
-    setQuantities((quantities) => quantities + DEFAULT_QUANTITY_CHANGE);
-    increaseQuantity(DEFAULT_QUANTITY_CHANGE, product);
-    calculateCartValue(DEFAULT_QUANTITY_CHANGE, product);
+  const handleIncrement = useCallback(async () => {
+    try {
+      await updateQuantity(product.id, 1); // Only increase or decrease 1 unit in cart page
+
+      setQuantities((quantities) => quantities + DEFAULT_QUANTITY_CHANGE);
+      increaseQuantity(DEFAULT_QUANTITY_CHANGE, product);
+      calculateCartValue(DEFAULT_QUANTITY_CHANGE, product);
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Failed",
+        open: true,
+        type: "error",
+      });
+    }
   }, [quantities, product]);
 
   const [totalPrice] = useMemo(() => {
@@ -54,24 +68,46 @@ const ProductCart = ({
     return [price];
   }, [quantities]);
 
-  const handleDecrement = useCallback(() => {
-    if (quantities - 1 === 0) {
-      removeFromCart(product);
-    } else {
-      setQuantities((quantities) => quantities - DEFAULT_QUANTITY_CHANGE);
-      decreaseQuantity(DEFAULT_QUANTITY_CHANGE, product);
-    }
+  const handleDecrement = useCallback(async () => {
+    try {
+      await updateQuantity(product.id, -1); // Only increase or decrease 1 unit in cart page
 
-    calculateCartValue(-DEFAULT_QUANTITY_CHANGE, product);
+      if (quantities - 1 === 0) {
+        removeFromCart(product);
+      } else {
+        setQuantities((quantities) => quantities - DEFAULT_QUANTITY_CHANGE);
+        decreaseQuantity(DEFAULT_QUANTITY_CHANGE, product);
+      }
+
+      calculateCartValue(-DEFAULT_QUANTITY_CHANGE, product);
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Failed",
+        open: true,
+        type: "error",
+      });
+    }
   }, [quantities]);
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
-  const handleRemove = useCallback(() => {
-    removeFromCart(product);
-    calculateCartValue(-quantities, product);
+  const handleRemove = useCallback(async () => {
+    try {
+      await deleteProductFromCart(product.id);
+
+      removeFromCart(product);
+      calculateCartValue(-quantities, product);
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Failed",
+        open: true,
+        type: "error",
+      });
+    }
   }, [product, quantities]);
 
   return (

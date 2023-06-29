@@ -1,18 +1,29 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useNavigatePage } from "../hooks";
 import Modal from "../components/Modal";
 import CartList from "../components/CartList";
 import OrderSummary from "../components/OrderSummary";
 import SmallButton from "../components/SmallButton";
 import { CartContext } from "../context/CartContext";
+import GifLoading from "../components/GifLoading";
 import { NotificationContext } from "../context/NotificationContext";
+import { clearCart, fetchCartList } from "../services/cart.api";
+import { transformCartResponse } from "../utils/transformCartResponse";
 
 const Cart = (): React.ReactElement => {
-  const { cartState, removeAllFromCart } = useContext(CartContext);
+  const { cartState, removeAllFromCart, importCart } = useContext(CartContext);
   const { notify } = useContext(NotificationContext);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const { redirect } = useNavigatePage();
+
+  const { cart, isLoading } = fetchCartList();
 
   const isEmptyCart = useMemo(() => {
     return !Object.keys(cartState.cartList).length;
@@ -45,13 +56,32 @@ const Cart = (): React.ReactElement => {
     []
   );
 
+  const handleClearCart = async () => {
+    try {
+      await clearCart();
+      removeAllFromCart();
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Failed",
+        open: true,
+        type: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoading) importCart(transformCartResponse(cart));
+  }, [isLoading, cart]);
+
   return (
     <div onClick={handleButtonClick}>
+      {isLoading && <GifLoading />}
       {/* Modal */}
       <Modal
         open={showModal}
         title="Warning"
-        onSubmit={removeAllFromCart}
+        onSubmit={handleClearCart}
         onClose={handleCloseModal}
       >
         <p>Do you want to delete all?</p>

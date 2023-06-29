@@ -14,6 +14,7 @@ import { GoodsIcon, TruckIcon } from "../assets/icons";
 import { NotificationContext } from "../context/NotificationContext";
 import { CartContext } from "../context/CartContext";
 import { ADD_PRODUCT_DELAY } from "../constants";
+import { addToCart } from "../services/cart.api";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 when click
 
@@ -22,7 +23,8 @@ const ProductDetail = (): React.ReactElement => {
   const { data, isLoading } = fetchProductDetails({ productId });
 
   const { notify } = useContext(NotificationContext);
-  const { addToCart, calculateCartValue } = useContext(CartContext);
+  const { addToCart: addToCartContext, calculateCartValue } =
+    useContext(CartContext);
   const [quantity, setQuantity] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -38,16 +40,28 @@ const ProductDetail = (): React.ReactElement => {
     });
   };
 
-  const handleAddToCart = () => {
-    addToCart(quantity, data, crypto.randomUUID());
-    calculateCartValue(quantity, data);
-    setLoading(true);
-    notify({
-      content: `Successfully add ${data.title} to cart`,
-      type: "success",
-      open: true,
-      id: crypto.randomUUID(),
-    });
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({ quantity: quantity, productId: data.id });
+
+      addToCartContext(quantity, data, crypto.randomUUID());
+      calculateCartValue(quantity, data);
+
+      setLoading(true);
+      notify({
+        content: `Successfully add ${data.title} to cart`,
+        type: "success",
+        open: true,
+        id: crypto.randomUUID(),
+      });
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Add to cart failed",
+        open: true,
+        type: "error",
+      });
+    }
 
     setTimeout(() => {
       setLoading(false);

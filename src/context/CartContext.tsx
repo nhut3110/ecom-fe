@@ -1,21 +1,21 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import { ProductDetails } from "../constants";
+import { CartProduct, CartType } from "../services";
 
 export type CartStateType = {
   cartValue: number;
   cartList: {
     [productID: string]: {
       quantity: number;
-      product: ProductDetails;
+      product: CartProduct;
       cartAnimations:
         | {
             id: string;
-            product: ProductDetails;
+            product: CartProduct;
           }[]
         | [];
     };
   };
-  cartPositions: {
+  cartPositions?: {
     cartX: number;
     cartY: number;
   };
@@ -30,6 +30,7 @@ const enum REDUCER_ACTION_TYPE {
   REMOVE_PRODUCT = "REMOVE_PRODUCT",
   REMOVE_ALL = "REMOVE_ALL",
   CALCULATE_VALUE = "CALCULATE_VALUE",
+  IMPORT_CART = "IMPORT_CART",
 }
 
 const enum ANIMATION_ACTION_TYPE {
@@ -40,10 +41,16 @@ const enum ANIMATION_ACTION_TYPE {
 
 type ReducerAction =
   | {
+      type: REDUCER_ACTION_TYPE.IMPORT_CART;
+      payload: {
+        cart: CartStateType;
+      };
+    }
+  | {
       type: REDUCER_ACTION_TYPE.ADD_TO_CART;
       payload: {
         quantity: number;
-        product: ProductDetails;
+        product: CartProduct;
         id: string;
       };
     }
@@ -56,7 +63,7 @@ type ReducerAction =
         | REDUCER_ACTION_TYPE.CALCULATE_VALUE;
       payload?: {
         quantity?: number;
-        product: ProductDetails;
+        product: CartProduct;
       };
     }
   | {
@@ -70,7 +77,7 @@ type ReducerAction =
       type: ANIMATION_ACTION_TYPE.REMOVE_CART_ANIMATION;
       payload: {
         id: string;
-        product: ProductDetails;
+        product: CartProduct;
       };
     };
 
@@ -201,6 +208,13 @@ const cartReducer = (state: CartStateType, action: ReducerAction) => {
       };
     }
 
+    case REDUCER_ACTION_TYPE.IMPORT_CART: {
+      return {
+        ...state,
+        ...action.payload.cart,
+      };
+    }
+
     default:
       return state;
   }
@@ -210,7 +224,7 @@ const useCartContext = (initState: CartStateType) => {
   const [cartState, dispatch] = useReducer(cartReducer, initState);
 
   const calculateCartValue = useCallback(
-    (quantity: number, product: ProductDetails) =>
+    (quantity: number, product: CartProduct) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.CALCULATE_VALUE,
         payload: { quantity, product },
@@ -219,7 +233,7 @@ const useCartContext = (initState: CartStateType) => {
   );
 
   const addToCart = useCallback(
-    (quantity: number, product: ProductDetails, id: string) =>
+    (quantity: number, product: CartProduct, id: string) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.ADD_TO_CART,
         payload: { quantity, product, id },
@@ -228,7 +242,7 @@ const useCartContext = (initState: CartStateType) => {
   );
 
   const increaseQuantity = useCallback(
-    (quantity: number, product: ProductDetails) =>
+    (quantity: number, product: CartProduct) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.INCREASE_QUANTITY,
         payload: { quantity, product },
@@ -237,7 +251,7 @@ const useCartContext = (initState: CartStateType) => {
   );
 
   const decreaseQuantity = useCallback(
-    (quantity: number, product: ProductDetails) =>
+    (quantity: number, product: CartProduct) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.DECREASE_QUANTITY,
         payload: { quantity, product },
@@ -246,7 +260,7 @@ const useCartContext = (initState: CartStateType) => {
   );
 
   const removeFromCart = useCallback(
-    (product: ProductDetails) =>
+    (product: CartProduct) =>
       dispatch({
         type: REDUCER_ACTION_TYPE.REMOVE_PRODUCT,
         payload: { product },
@@ -273,10 +287,19 @@ const useCartContext = (initState: CartStateType) => {
   );
 
   const removeCartAnimation = useCallback(
-    (animation: { id: string; product: ProductDetails }) =>
+    (animation: { id: string; product: CartProduct }) =>
       dispatch({
         type: ANIMATION_ACTION_TYPE.REMOVE_CART_ANIMATION,
         payload: animation,
+      }),
+    [dispatch]
+  );
+
+  const importCart = useCallback(
+    (cart: CartStateType) =>
+      dispatch({
+        type: REDUCER_ACTION_TYPE.IMPORT_CART,
+        payload: { cart },
       }),
     [dispatch]
   );
@@ -291,6 +314,7 @@ const useCartContext = (initState: CartStateType) => {
     removeAllFromCart,
     updateCartPositions,
     removeCartAnimation,
+    importCart,
   };
 };
 
@@ -302,15 +326,15 @@ const initContextState: UseCartContextType = {
     cartValue: DEFAULT_CART_VALUE,
     cartPositions: { cartX: 0, cartY: 0 },
   },
-  calculateCartValue: (quantity: number, product: ProductDetails) => {},
-  addToCart: (quantity: number, product: ProductDetails) => {},
-  increaseQuantity: (quantity: number, product: ProductDetails) => {},
-  decreaseQuantity: (quantity: number, product: ProductDetails) => {},
-  removeFromCart: (product: ProductDetails) => {},
+  calculateCartValue: (quantity: number, product: CartProduct) => {},
+  addToCart: (quantity: number, product: CartProduct) => {},
+  increaseQuantity: (quantity: number, product: CartProduct) => {},
+  decreaseQuantity: (quantity: number, product: CartProduct) => {},
+  removeFromCart: (product: CartProduct) => {},
   removeAllFromCart: () => {},
   updateCartPositions: (position: { cartX: number; cartY: number }) => {},
   removeCartAnimation: (animation: { id: string }) => {},
-  // addCartAnimation: (animation: { id: string; product: ProductDetails }) => {},
+  importCart: (cart: CartStateType) => {},
 };
 
 export const CartContext = createContext<UseCartContextType>(initContextState);
