@@ -1,31 +1,22 @@
 import { AnimatePresence } from "framer-motion";
-import { useMutation } from "@tanstack/react-query";
 import { MdEdit, MdCached } from "react-icons/md";
-import { BiImageAdd, BiTrash } from "react-icons/bi";
-import React, {
-  Fragment,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { BiImageAdd } from "react-icons/bi";
+import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import { useValidateLoginExpiration, useNavigatePage } from "../hooks";
 import MemberBadge from "../components/MemberBadge";
 import GifLoading from "../components/GifLoading";
 import OrderChart from "../components/OrderChart";
-import Modal from "../components/Modal";
 import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { OrderContext } from "../context/OrderContext";
-import { UploadIcon } from "../assets/icons";
-import { UserBanner } from "../assets/images";
-import { editAvatar } from "../services";
+import { Logo, UserBanner } from "../assets/images";
 import { UserDataContext } from "../context/UserDataContext";
 import {
   convertTimestampToDate,
   determineCurrentBadge,
   determineNextBadge,
 } from "../utils";
+import AvatarModal from "../components/AvatarModal";
 
 const Profile = () => {
   const { favoriteState } = useContext(FavoriteContext);
@@ -34,16 +25,9 @@ const Profile = () => {
 
   const [percentage, setPercentage] = useState<number>();
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const { isLogin, isLoading } = useValidateLoginExpiration();
   const { redirect } = useNavigatePage();
-  const { mutate, isLoading: isMutating } = useMutation(editAvatar, {
-    onSuccess: (response) => {
-      updateUserData({ picture: response.picture });
-    },
-  });
 
   const currentRank = useMemo(() => {
     return determineCurrentBadge(userDataState?.shippingPoint ?? 0);
@@ -54,41 +38,6 @@ const Profile = () => {
   const recentOrderList = useMemo(() => {
     return orderState.orderList.slice(0, 5);
   }, [orderState.orderList]); // TODO: just dummy data for ui only, replace after when have api for orders
-
-  const handleSubmitModal = () => {
-    if (selectedImage) {
-      mutate(selectedImage);
-    }
-    setOpenModal(false);
-  };
-
-  const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files && event.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-    }
-  };
-
-  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragging(false);
-    const file = event.dataTransfer.files && event.dataTransfer.files[0];
-
-    if (file) {
-      setSelectedImage(file);
-    }
-  };
 
   useEffect(() => {
     if (!isLogin) redirect("/login");
@@ -102,7 +51,7 @@ const Profile = () => {
 
   return (
     <>
-      {isLoading || isMutating ? (
+      {isLoading ? (
         <AnimatePresence>
           <SlideDownDisappearWrapper>
             <div className="flex h-screen w-full items-center justify-center">
@@ -125,7 +74,7 @@ const Profile = () => {
               <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
                 <div className="group relative flex rounded-full bg-white">
                   <img
-                    src={userDataState?.picture}
+                    src={userDataState?.picture ?? Logo}
                     alt="avatar"
                     className="aspect-square w-32 rounded-full border border-black shadow-lg"
                   />
@@ -281,70 +230,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <Modal
-            open={openModal}
-            title="Edit avatar"
-            onClose={() => setOpenModal(false)}
-            onSubmit={handleSubmitModal}
-          >
-            <div
-              className={`flex w-full min-w-[19rem] items-center justify-center ${
-                isDragging ? "bg-gray-200" : ""
-              }`}
-              onDragEnter={handleDragEnter}
-              onDragOver={handleDragEnter}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            >
-              <label
-                htmlFor="dropzone-file"
-                className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100"
-              >
-                {selectedImage ? (
-                  <div className="relative">
-                    <img
-                      src={URL.createObjectURL(selectedImage)}
-                      alt="uploaded"
-                      className="mb-3 h-32 w-32 rounded-full object-contain"
-                    />
-                    <button
-                      className="absolute -top-3 -right-3 rounded-full bg-white p-1 text-sm text-red-500 underline"
-                      onClick={() => setSelectedImage(null)}
-                    >
-                      <BiTrash size={20} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <img
-                      src={UploadIcon}
-                      alt="upload"
-                      className="mb-3 h-10 w-10 text-gray-400"
-                    />
-                    <p className="mb-2 text-sm text-gray-500">
-                      {isDragging ? (
-                        <span className="font-semibold">
-                          Drop the file here
-                        </span>
-                      ) : (
-                        <span className="font-semibold">Click to upload</span>
-                      )}{" "}
-                      or drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      SVG, PNG or JPG (MAX. 10MB)
-                    </p>
-                  </div>
-                )}
-                <input
-                  id="dropzone-file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileInputChange}
-                />
-              </label>
-            </div>
-          </Modal>
+          <AvatarModal open={openModal} onClose={() => setOpenModal(false)} />
         </Fragment>
       )}
     </>

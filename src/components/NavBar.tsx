@@ -17,7 +17,7 @@ import SmallButton from "./SmallButton";
 import { NavSideMenu } from "./Animation/NavSideMenu";
 import HamburgerButton from "./Animation/HamburgerButton";
 import SearchBar from "./SearchBar";
-import { LogoTransparent } from "../assets/images";
+import { Logo, LogoTransparent } from "../assets/images";
 import { UserDataContext } from "../context/UserDataContext";
 import { navList } from "../constants";
 import { getProductList } from "../services/products.api";

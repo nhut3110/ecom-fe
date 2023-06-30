@@ -10,21 +10,6 @@ type ModalType = {
   children: React.ReactElement | React.ReactElement[];
 };
 
-const modalVariants = {
-  hidden: {
-    y: "100vh",
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      type: "spring",
-      stiffness: 50,
-    },
-  },
-};
-
 const Modal = ({ open, onClose, onSubmit, title, children }: ModalType) => {
   const [visibility, setVisibility] = useState<boolean>(open);
   const modalVariants = {

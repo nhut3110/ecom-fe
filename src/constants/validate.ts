@@ -7,6 +7,7 @@ import {
 import { LoginFormType } from "../pages/Login";
 import { ChangePasswordFormType } from "../pages/ChangePassword";
 import { EditProfileFormType } from "./data";
+import { RegisterFormType } from "../pages/Register";
 
 const passwordValidation = yup
   .string()
@@ -14,10 +15,12 @@ const passwordValidation = yup
   .min(8, "Password must be at least 8 characters")
   .max(64, "Password must be at most 64 characters");
 
-const confirmPasswordValidation = yup
-  .string()
-  .required("Confirm password is required")
-  .oneOf([yup.ref("newPassword")], "Passwords must match");
+const confirmPasswordValidation = (ref: string) => {
+  return yup
+    .string()
+    .required("Confirm password is required")
+    .oneOf([yup.ref(ref)], "Passwords must match");
+};
 
 export type ConditionalSchema<T> = T extends string
   ? yup.StringSchema
@@ -92,6 +95,20 @@ export const validationLoginSchema = yup.object<Shape<LoginFormType>>().shape({
   password: passwordValidation,
 });
 
+export const validationRegisterSchema = yup
+  .object<Shape<RegisterFormType>>()
+  .shape({
+    name: yup.string().required("Full name is required"),
+    email: yup
+      .string()
+      .email("Invalid email")
+      .required("Email is required")
+      .min(6, "Email must be at least 6 characters")
+      .max(64, "Email must be at most 64 characters"),
+    password: passwordValidation,
+    confirmPassword: confirmPasswordValidation("password"),
+  });
+
 export const validationEditProfileSchema = yup
   .object<Shape<EditProfileFormType>>()
   .shape({
@@ -114,7 +131,7 @@ export const validationUpdatePasswordSchema = yup
   .object<Shape<ChangePasswordFormType>>()
   .shape({
     newPassword: passwordValidation,
-    confirmPassword: confirmPasswordValidation,
+    confirmPassword: confirmPasswordValidation("newPassword"),
   });
 
 export const validationChangePasswordSchema = yup
@@ -122,5 +139,5 @@ export const validationChangePasswordSchema = yup
   .shape({
     oldPassword: passwordValidation,
     newPassword: passwordValidation,
-    confirmPassword: confirmPasswordValidation,
+    confirmPassword: confirmPasswordValidation("newPassword"),
   });
