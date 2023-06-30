@@ -5,6 +5,7 @@ import { CartContext } from "../../context/CartContext";
 import CartAnimatedLogo from "./CartAnimatedLogo";
 import PortalWrapper from "../PortalWrapper";
 import Cart from "../../pages/Cart";
+import { getCart } from "../../services/cart.api";
 
 const miniCartContentVariants = {
   hidden: {
@@ -43,6 +44,7 @@ const miniCartContentVariants = {
 const CartButton = () => {
   const { cartState, updateCartPositions } = useContext(CartContext);
   const [openSmallCart, setOpenSmallCart] = useState<boolean>(false);
+  const [cartQuantity, setCartQuantity] = useState<number>(0);
   const ref = useRef<HTMLDivElement>(null);
 
   const numberOfProducts = useMemo(() => {
@@ -60,8 +62,12 @@ const CartButton = () => {
     }
   };
 
+  const fetchCart = async () => {
+    const data = await getCart();
+    setCartQuantity(data.length);
+  };
+
   useEffect(() => {
-    // handleResize(); // call once to update initial position
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -71,6 +77,7 @@ const CartButton = () => {
 
   useEffect(() => {
     handleResize();
+    fetchCart();
   }, []);
 
   return (
@@ -96,7 +103,10 @@ const CartButton = () => {
         </AnimatePresence>
       </PortalWrapper>
 
-      <NumberBadge value={numberOfProducts} color="bg-red-200" />
+      <NumberBadge
+        value={numberOfProducts ?? cartQuantity}
+        color="bg-red-200"
+      />
       <div className="w-10">
         <CartAnimatedLogo />
       </div>

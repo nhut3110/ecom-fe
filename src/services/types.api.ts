@@ -1,3 +1,4 @@
+import { string } from "yup";
 import { ProductDetails } from "../constants";
 
 export type TokensType = {
@@ -56,4 +57,21 @@ export type PaginatedResponse = {
     total: number;
     nextCursor?: string;
   };
+};
+
+export type CartItem = {
+  productId: string;
+  quantity: number;
+};
+
+export type CartProduct = {
+  id: string;
+  title: string;
+  image: string;
+  price: number;
+};
+
+export type CartType = {
+  quantity: number;
+  product: CartProduct;
 };

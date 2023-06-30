@@ -17,6 +17,7 @@ import { CartContext } from "../context/CartContext";
 import { NotificationContext } from "../context/NotificationContext";
 import { ADD_PRODUCT_DELAY, MAX_FAVORITES, ProductDetails } from "../constants";
 import { addFavorite, removeFavorite } from "../services/products.api";
+import { addToCart } from "../services/cart.api";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
@@ -36,7 +37,11 @@ const ProductCard = (props: {
     removeFavorite: removeFromContext,
     favoriteState,
   } = useContext(FavoriteContext);
-  const { addToCart, calculateCartValue, cartState } = useContext(CartContext);
+  const {
+    addToCart: addToCartContext,
+    calculateCartValue,
+    cartState,
+  } = useContext(CartContext);
 
   const notifyFavoriteAction = () => {
     notify({
@@ -84,16 +89,28 @@ const ProductCard = (props: {
     return [integer, decimal];
   }, [product.price]);
 
-  const handleAddToCart = useCallback(() => {
-    addToCart(DEFAULT_QUANTITY, product, crypto.randomUUID());
-    calculateCartValue(DEFAULT_QUANTITY, product);
-    setLoading(true);
-    notify({
-      id: crypto.randomUUID(),
-      content: "Add to cart successfully",
-      open: true,
-      type: "success",
-    });
+  const handleAddToCart = useCallback(async () => {
+    try {
+      await addToCart({ quantity: DEFAULT_QUANTITY, productId: product.id });
+
+      addToCartContext(DEFAULT_QUANTITY, product, crypto.randomUUID());
+      calculateCartValue(DEFAULT_QUANTITY, product);
+
+      setLoading(true);
+      notify({
+        id: crypto.randomUUID(),
+        content: "Add to cart successfully",
+        open: true,
+        type: "success",
+      });
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Add to cart failed",
+        open: true,
+        type: "error",
+      });
+    }
 
     setTimeout(() => {
       setLoading(false);

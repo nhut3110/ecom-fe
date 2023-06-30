@@ -27,8 +27,8 @@ const FlyingImage = ({ image, alt, timeout, id, product }: FlyingImageType) => {
       const positions = ref.current?.getBoundingClientRect();
       if (positions) {
         setDistance((distance) => ({
-          x: cartState.cartPositions.cartX - positions.x - CART_RADIUS,
-          y: cartState.cartPositions.cartY - positions.y - CART_RADIUS,
+          x: cartState.cartPositions!.cartX - positions.x - CART_RADIUS,
+          y: cartState.cartPositions!.cartY - positions.y - CART_RADIUS,
         }));
       }
     };
@@ -39,7 +39,7 @@ const FlyingImage = ({ image, alt, timeout, id, product }: FlyingImageType) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [cartState.cartPositions.cartX, cartState.cartPositions.cartY]);
+  }, [cartState.cartPositions!.cartX, cartState.cartPositions!.cartY]);
 
   const handleAnimationComplete = () => {
     setVisibility(false);
