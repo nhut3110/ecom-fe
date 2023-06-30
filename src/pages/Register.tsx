@@ -107,7 +107,6 @@ const Register = (): React.ReactElement => {
       password: registerData.password,
     });
     setUserAccount(registerData);
-    console.log(registerData);
   };
 
   const handleOpenModal = (

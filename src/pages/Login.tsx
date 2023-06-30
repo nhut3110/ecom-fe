@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import React, { useContext, useEffect } from "react";
 import { useNavigatePage } from "../hooks";
@@ -15,7 +16,6 @@ import { login } from "../services";
 import { NotificationContext } from "../context/NotificationContext";
 import { getLocalStorageValue, updateLocalStorageValue } from "../utils";
 import { validationLoginSchema } from "../constants";
-import { Link } from "react-router-dom";
 
 const DELAY_BEFORE_REDIRECT = 1500;
 

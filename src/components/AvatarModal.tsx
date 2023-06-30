@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import Modal from "./Modal";
-import { UserDataContext } from "../context/UserDataContext";
 import { useMutation } from "@tanstack/react-query";
-import { editAvatar } from "../services/auth.api";
 import { BiTrash } from "react-icons/bi";
-import { UploadIcon } from "../assets/icons";
 import { AnimatePresence } from "framer-motion";
-import SlideDownDisappearWrapper from "./Animation/SlideDownDisappearWrapper";
-import GifLoading from "./GifLoading";
+import React, { useContext, useEffect, useState } from "react";
 import { useValidateLoginExpiration } from "../hooks";
+import GifLoading from "./GifLoading";
+import Modal from "./Modal";
+import SlideDownDisappearWrapper from "./Animation/SlideDownDisappearWrapper";
+import { UserDataContext } from "../context/UserDataContext";
+import { editAvatar } from "../services/auth.api";
+import { UploadIcon } from "../assets/icons";
 
 type AvatarModalProps = {
   open: boolean;
@@ -32,9 +32,11 @@ const AvatarModal = ({ open, onSubmit, onClose }: AvatarModalProps) => {
 
   const handleSubmitModal = () => {
     onSubmit?.();
+
     if (selectedImage && isLogin) {
       mutate(selectedImage);
     }
+
     setOpenModal(false);
   };
 
@@ -50,10 +52,6 @@ const AvatarModal = ({ open, onSubmit, onClose }: AvatarModalProps) => {
   const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -104,7 +102,7 @@ const AvatarModal = ({ open, onSubmit, onClose }: AvatarModalProps) => {
           }`}
           onDragEnter={handleDragEnter}
           onDragOver={handleDragEnter}
-          onDragLeave={handleDragLeave}
+          onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
         >
           <label
