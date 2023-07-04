@@ -5,29 +5,37 @@ import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import { useValidateLoginExpiration, useNavigatePage } from "../hooks";
 import MemberBadge from "../components/MemberBadge";
 import GifLoading from "../components/GifLoading";
+import AvatarModal from "../components/AvatarModal";
 import OrderChart from "../components/OrderChart";
 import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
-import { FavoriteContext } from "../context/FavoriteContext";
 import { OrderContext } from "../context/OrderContext";
-import { Logo, UserBanner } from "../assets/images";
 import { UserDataContext } from "../context/UserDataContext";
+import { Logo, UserBanner } from "../assets/images";
 import {
   convertTimestampToDate,
   determineCurrentBadge,
   determineNextBadge,
+  transformCartResponse,
 } from "../utils";
-import AvatarModal from "../components/AvatarModal";
+import { Order, fetchFavoriteList, fetchOrderList } from "../services";
+import { OrderStatus } from "../constants";
+
+const NUMBER_OF_RECENT_ORDERS = 5;
 
 const Profile = () => {
-  const { favoriteState } = useContext(FavoriteContext);
-  const { orderState } = useContext(OrderContext);
-  const { userDataState, updateUserData } = useContext(UserDataContext);
+  const { importOrders } = useContext(OrderContext);
+  const { userDataState } = useContext(UserDataContext);
 
   const [percentage, setPercentage] = useState<number>();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [recentOrderList, setRecentOrderList] = useState<Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { isLogin, isLoading } = useValidateLoginExpiration();
   const { redirect } = useNavigatePage();
+
+  const { orders, isLoading: isLoadingOrder } = fetchOrderList();
+  const { favorites, isLoading: isLoadingFavorites } = fetchFavoriteList();
 
   const currentRank = useMemo(() => {
     return determineCurrentBadge(userDataState?.shippingPoint ?? 0);
@@ -35,9 +43,6 @@ const Profile = () => {
   const nextRank = useMemo(() => {
     return determineNextBadge(userDataState?.shippingPoint ?? 0);
   }, [userDataState]);
-  const recentOrderList = useMemo(() => {
-    return orderState.orderList.slice(0, 5);
-  }, [orderState.orderList]); // TODO: just dummy data for ui only, replace after when have api for orders
 
   useEffect(() => {
     if (!isLogin) redirect("/login");
@@ -49,9 +54,26 @@ const Profile = () => {
     }
   }, [isLoading, currentRank, nextRank]);
 
+  useEffect(() => {
+    setLoading(isLoading || isLoadingFavorites || isLoadingOrder);
+  }, [isLoading, isLoadingFavorites, isLoadingOrder]);
+
+  useEffect(() => {
+    if (!isLoadingOrder && orders) {
+      const sortedOrders = [...orders].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      const recentOrderList = sortedOrders.slice(0, NUMBER_OF_RECENT_ORDERS);
+      setRecentOrderList(recentOrderList);
+
+      importOrders(orders);
+    }
+  }, [isLoadingOrder, orders]);
+
   return (
     <>
-      {isLoading ? (
+      {loading ? (
         <AnimatePresence>
           <SlideDownDisappearWrapper>
             <div className="flex h-screen w-full items-center justify-center">
@@ -151,15 +173,13 @@ const Profile = () => {
                   <div>
                     <p className="font-semibold lg:text-lg">Favorites</p>
                     <p className="text-4xl font-bold">
-                      {favoriteState.favoriteList.length}
+                      {favorites?.data?.length}
                     </p>
                   </div>
 
                   <div>
                     <p className="font-semibold lg:text-lg">Orders</p>
-                    <p className="text-4xl font-bold">
-                      {orderState.orderList.length}
-                    </p>
+                    <p className="text-4xl font-bold">{orders?.length}</p>
                   </div>
 
                   <div className="col-span-2">
@@ -210,17 +230,31 @@ const Profile = () => {
                       >
                         <div>
                           <p className="text-xs font-semibold">
-                            {convertTimestampToDate(order.date)}
+                            {convertTimestampToDate(
+                              new Date(order.createdAt).getTime()
+                            )}
                           </p>
                           <p className="max-w-[50%] truncate font-mono text-[0.5rem] italic text-gray-300">
-                            {order.uuid}
+                            {order.id}
                           </p>
                         </div>
                         <div className="flex items-center justify-center gap-2">
                           <p className="text-sm font-semibold">
-                            ${order.cartValue}
+                            $
+                            {
+                              transformCartResponse(order.orderDetails)
+                                .cartValue
+                            }
                           </p>
-                          <p className="text-xs font-thin italic">Success</p>
+                          <p
+                            className={`text-xs font-medium italic first-letter:capitalize ${
+                              order.orderStatus === OrderStatus.CANCELED
+                                ? "text-red-300"
+                                : "text-green-300"
+                            }`}
+                          >
+                            {order.orderStatus}
+                          </p>
                         </div>
                       </div>
                     ))}

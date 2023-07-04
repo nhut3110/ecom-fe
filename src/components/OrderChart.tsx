@@ -38,7 +38,7 @@ const OrderChart = (): React.ReactElement => {
   const { orderState } = useContext(OrderContext);
 
   const orderDates = useMemo(() => {
-    return orderState.orderList.map((order) => order.date);
+    return orderState.orderList.map((order) => order.createdAt);
   }, [orderState.orderList]);
 
   const countOrdersByMonth = useCallback(() => {
