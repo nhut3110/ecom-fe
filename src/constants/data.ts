@@ -107,6 +107,11 @@ type RegisterFieldTypes = {
   type?: string;
 };
 
+export const defaultLocation = {
+  lat: 16.060957158551425,
+  lng: 108.21611451111367,
+};
+
 export const registerFields: RegisterFieldTypes[] = [
   {
     name: "name",

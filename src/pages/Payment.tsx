@@ -1,5 +1,5 @@
 import { times } from "lodash";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigatePage } from "../hooks";
 import SmallButton from "../components/SmallButton";
 import PaymentCard from "../components/PaymentCard";
@@ -23,28 +23,29 @@ const Payment = () => {
 
   const { redirect } = useNavigatePage();
 
-  const fetchPaymentList = async () => {
-    setLoading(true);
-    const data = await getPaymentList();
-
-    setLoading(false);
-    setPaymentList(data);
-  };
-
   useEffect(() => {
+    const fetchPaymentList = async () => {
+      setLoading(true);
+      const data = await getPaymentList();
+
+      setLoading(false);
+      setPaymentList(data);
+    };
+
     fetchPaymentList();
   }, [isRemove]);
 
-  const renderPaymentList = () => {
+  const renderPaymentList = useCallback(() => {
     if (isLoading)
       return times(NUMBER_OF_SKELETONS, (index) => (
         <PaymentCard key={index} details={emptyCreditCard} />
       ));
 
-    return paymentList.map((address) => (
-      <PaymentCard details={address} key={address.id} trigger={setIsRemove} />
+    return paymentList.map((payment) => (
+      <PaymentCard details={payment} key={payment.id} onTrigger={setIsRemove} />
     ));
-  };
+  }, [isLoading, paymentList]);
+
   return (
     <div className="mx-auto my-5 w-4/5">
       <div className="flex items-center justify-between">
@@ -52,7 +53,7 @@ const Payment = () => {
         <SmallButton content="Add" onClick={() => redirect("/payment/add")} />
       </div>
       <hr className="my-2 h-px border-0 bg-gray-200" />
-      <div className="mx-auto mt-5 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:w-4/5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
+      <div className="mx-auto mt-5 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:w-4/5 lg:grid-cols-2 xl:grid-cols-fluid">
         {renderPaymentList()}
       </div>
     </div>

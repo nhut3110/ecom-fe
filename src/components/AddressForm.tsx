@@ -20,7 +20,11 @@ import SmallButton from "./SmallButton";
 import Modal from "./Modal";
 import { AddressType, InformationType } from "../context/FormContext";
 import { NotificationContext } from "../context/NotificationContext";
-import { AddressCard, combinedInformationAndAddressSchema } from "../constants";
+import {
+  AddressCard,
+  combinedInformationAndAddressSchema,
+  defaultLocation,
+} from "../constants";
 import { addAddress, updateAddress } from "../services";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -39,10 +43,6 @@ const containerStyle = {
 };
 
 const DEBOUNCE_TIME = 500;
-const defaultLocation = {
-  lat: 16.060957158551425,
-  lng: 108.21611451111367,
-};
 
 const AddressForm = ({ details }: AddressModalProps) => {
   const center = {
@@ -122,17 +122,20 @@ const AddressForm = ({ details }: AddressModalProps) => {
     }
   };
 
-  const onSubmitForm = async (data: InformationType & AddressType) => {
-    setIsLoading(true);
-    details?.id ? update(details.id, data) : add(data);
+  const onSubmitForm = useCallback(
+    async (data: InformationType & AddressType) => {
+      setIsLoading(true);
+      details?.id ? update(details.id, data) : add(data);
 
-    notify({
-      id: crypto.randomUUID(),
-      content: isError ? "Failed" : "Successfully",
-      open: true,
-      type: isError ? "error" : "success",
-    });
-  };
+      notify({
+        id: crypto.randomUUID(),
+        content: isError ? "Failed" : "Successfully",
+        open: true,
+        type: isError ? "error" : "success",
+      });
+    },
+    [isError, details, location, selectedAddress]
+  );
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -169,14 +172,14 @@ const AddressForm = ({ details }: AddressModalProps) => {
       );
     });
 
-  const onLoad = useCallback(function callback(map: google.maps.Map) {
+  const onLoad = useCallback((map: google.maps.Map) => {
     mapRef.current = map;
     map.setZoom(10);
   }, []);
 
   useEffect(() => {
     if (details?.address) setValue(details.address);
-  }, [details]);
+  }, [details?.address]);
 
   return (
     <div className="h-full w-full">

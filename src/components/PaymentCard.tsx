@@ -8,18 +8,19 @@ import { TrashIcon } from "../assets/icons";
 
 type PaymentCardProps = {
   details: PaymentType;
-  trigger?: Cycle;
+  onTrigger?: Cycle;
 };
 
-const PaymentCard = ({ details, trigger }: PaymentCardProps) => {
+const PaymentCard = ({ details, onTrigger }: PaymentCardProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
 
   const removeCard = async () => {
     setIsLoading(true);
     await deletePayment(details.id);
+
     setIsLoading(false);
-    trigger?.();
+    onTrigger?.();
   };
 
   return (

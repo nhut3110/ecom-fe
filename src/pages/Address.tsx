@@ -1,5 +1,5 @@
 import { times } from "lodash";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigatePage } from "../hooks";
 import SmallButton from "../components/SmallButton";
 import AddressCard from "../components/AddressCard";
@@ -13,19 +13,19 @@ const Address = () => {
 
   const { redirect } = useNavigatePage();
 
-  const fetchAddresses = async () => {
-    setLoading(true);
-    const data = await getAddresses();
-
-    setLoading(false);
-    setAddresses(data);
-  };
-
   useEffect(() => {
+    const fetchAddresses = async () => {
+      setLoading(true);
+      const data = await getAddresses();
+
+      setLoading(false);
+      setAddresses(data);
+    };
+
     fetchAddresses();
   }, []);
 
-  const renderAddressList = () => {
+  const renderAddressList = useCallback(() => {
     if (isLoading)
       return times(NUMBER_OF_SKELETONS, (index) => (
         <AddressCard key={index} details={{}} />
@@ -38,7 +38,7 @@ const Address = () => {
         onClick={() => redirect(`/address/${address.id}`)}
       />
     ));
-  };
+  }, [isLoading, addresses]);
 
   return (
     <div className="mx-auto my-5 w-4/5">

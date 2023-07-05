@@ -20,16 +20,6 @@ const AddressDetail = () => {
 
   const { redirect } = useNavigatePage();
 
-  const fetchAddress = async () => {
-    setLoading(true);
-    if (!id) return setLoading(false);
-
-    const data = await getAddress(id);
-
-    setLoading(false);
-    setAddress(data);
-  };
-
   const removeAddress = async () => {
     if (id) {
       try {
@@ -41,7 +31,7 @@ const AddressDetail = () => {
       }
     }
 
-    return notify({
+    notify({
       id: crypto.randomUUID(),
       content: isError ? "Failed" : "Successfully",
       open: true,
@@ -50,6 +40,16 @@ const AddressDetail = () => {
   };
 
   useEffect(() => {
+    const fetchAddress = async () => {
+      setLoading(true);
+      if (!id) return setLoading(false);
+
+      const data = await getAddress(id);
+
+      setLoading(false);
+      setAddress(data);
+    };
+
     fetchAddress();
   }, []);
 

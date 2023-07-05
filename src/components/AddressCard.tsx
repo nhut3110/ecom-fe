@@ -39,11 +39,12 @@ const AddressCard = ({ details, onClick }: AddressCardProps) => {
           {phone || <Skeleton />}
         </p>
       </div>
+
       <p className="w-full truncate text-sm text-gray-500 md:text-base lg:w-1/2">
         {address || <Skeleton count={1} />}
       </p>
 
-      <p className="w-1/2 truncate text-sm text-gray-500 md:text-base lg:w-1/4">
+      <p className="w-full truncate text-sm text-gray-500 md:text-base lg:w-1/2">
         {city || <Skeleton count={1} />}
       </p>
     </div>
