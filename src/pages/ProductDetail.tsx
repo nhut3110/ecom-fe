@@ -9,12 +9,11 @@ import RatingStar from "../components/RatingStar";
 import SmallButton from "../components/SmallButton";
 import { FlyingImageWrapper } from "../components/FlyingImage";
 import GifLoading from "../components/GifLoading";
-import { fetchProductDetails } from "../services";
+import { fetchProductDetails, addToCart } from "../services";
 import { GoodsIcon, TruckIcon } from "../assets/icons";
 import { NotificationContext } from "../context/NotificationContext";
 import { CartContext } from "../context/CartContext";
 import { ADD_PRODUCT_DELAY } from "../constants";
-import { addToCart } from "../services/cart.api";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 when click
 

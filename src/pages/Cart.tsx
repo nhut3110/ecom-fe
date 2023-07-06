@@ -13,7 +13,7 @@ import SmallButton from "../components/SmallButton";
 import { CartContext } from "../context/CartContext";
 import GifLoading from "../components/GifLoading";
 import { NotificationContext } from "../context/NotificationContext";
-import { clearCart, fetchCartList } from "../services/cart.api";
+import { clearCart, fetchCartList } from "../services";
 import { transformCartResponse } from "../utils/transformCartResponse";
 
 const Cart = (): React.ReactElement => {
