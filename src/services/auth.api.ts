@@ -78,6 +78,16 @@ const getUserInfo = () => {
   return { userInfo: data, error, isLoading };
 };
 
+const getOtp = async (email: string) => {
+  return await publicApi.get(`otp/${email}`);
+};
+
+const validateOtp = async (email: string, otp: string) => {
+  const { data } = await publicApi.post(`otp/${email}`, { otp });
+
+  return !!data;
+};
+
 export {
   login,
   getUserInfo,
@@ -88,4 +98,6 @@ export {
   editAvatar,
   getUserById,
   register,
+  getOtp,
+  validateOtp,
 };

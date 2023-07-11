@@ -112,6 +112,10 @@ export const defaultLocation = {
   lng: 108.21611451111367,
 };
 
+export const OTP_LENGTH = 6;
+
+export const DELAY_OTP_TIME = 120000; // 2 minutes in milliseconds
+
 export const registerFields: RegisterFieldTypes[] = [
   {
     name: "name",
