@@ -1,21 +1,20 @@
 import { motion } from "framer-motion";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import QuantityButton from "./QuantityButton";
 import Modal from "./Modal";
 import { CartContext } from "../context/CartContext";
+import { NotificationContext } from "../context/NotificationContext";
 import { TrashIcon } from "../assets/icons";
-import { ProductDetails } from "../constants/data";
+import {
+  CartProduct,
+  deleteProductFromCart,
+  updateQuantity,
+} from "../services";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 unit in cart page
 
 type ProductCartType = {
-  product: ProductDetails;
+  product: CartProduct;
   quantity: number;
 };
 
@@ -37,15 +36,30 @@ const ProductCart = ({
     decreaseQuantity,
     removeFromCart,
     calculateCartValue,
+    cartState,
   } = useContext(CartContext);
+  const { notify } = useContext(NotificationContext);
 
   const [quantities, setQuantities] = useState<number>(quantity);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const handleIncrement = useCallback(() => {
-    setQuantities((quantities) => quantities + DEFAULT_QUANTITY_CHANGE);
-    increaseQuantity(DEFAULT_QUANTITY_CHANGE, product);
-    calculateCartValue(DEFAULT_QUANTITY_CHANGE, product);
+  const handleIncrement = useCallback(async () => {
+    try {
+      await updateQuantity(product.id, 1); // Only increase or decrease 1 unit in cart page
+
+      setQuantities((quantities) => quantities + DEFAULT_QUANTITY_CHANGE);
+      if (cartState.cartValue) {
+        increaseQuantity(DEFAULT_QUANTITY_CHANGE, product);
+        calculateCartValue(DEFAULT_QUANTITY_CHANGE, product);
+      }
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Failed",
+        open: true,
+        type: "error",
+      });
+    }
   }, [quantities, product]);
 
   const [totalPrice] = useMemo(() => {
@@ -54,24 +68,48 @@ const ProductCart = ({
     return [price];
   }, [quantities]);
 
-  const handleDecrement = useCallback(() => {
-    if (quantities - 1 === 0) {
-      removeFromCart(product);
-    } else {
-      setQuantities((quantities) => quantities - DEFAULT_QUANTITY_CHANGE);
-      decreaseQuantity(DEFAULT_QUANTITY_CHANGE, product);
-    }
+  const handleDecrement = useCallback(async () => {
+    try {
+      await updateQuantity(product.id, -1); // Only increase or decrease 1 unit in cart page
 
-    calculateCartValue(-DEFAULT_QUANTITY_CHANGE, product);
+      if (cartState.cartValue) {
+        if (quantities - 1 === 0) {
+          removeFromCart(product);
+        } else {
+          setQuantities((quantities) => quantities - DEFAULT_QUANTITY_CHANGE);
+          decreaseQuantity(DEFAULT_QUANTITY_CHANGE, product);
+        }
+
+        calculateCartValue(-DEFAULT_QUANTITY_CHANGE, product);
+      }
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Failed",
+        open: true,
+        type: "error",
+      });
+    }
   }, [quantities]);
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
-  const handleRemove = useCallback(() => {
-    removeFromCart(product);
-    calculateCartValue(-quantities, product);
+  const handleRemove = useCallback(async () => {
+    try {
+      await deleteProductFromCart(product.id);
+
+      removeFromCart(product);
+      calculateCartValue(-quantities, product);
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Failed",
+        open: true,
+        type: "error",
+      });
+    }
   }, [product, quantities]);
 
   return (
@@ -84,7 +122,7 @@ const ProductCart = ({
 
       <div className="flex w-full justify-between ">
         <div className="flex flex-col justify-around p-2">
-          <p className="text-xs font-semibold line-clamp-2 md:text-base lg:text-lg">
+          <p className="max-w-[5.5rem] text-xs font-semibold line-clamp-2 md:max-w-none md:text-base lg:text-lg">
             {product.title}
           </p>
           <p className="md:text-md text-xs font-semibold">${totalPrice}</p>

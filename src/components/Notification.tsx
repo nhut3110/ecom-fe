@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useContext, useEffect, useState } from "react";
 import { NotificationContext } from "../context/NotificationContext";
-import { determineNotificationType } from "../utils/DetermineNotificationType";
+import { determineNotificationType } from "../utils";
 
 export type NotificationType = {
   id?: string;
@@ -31,7 +31,7 @@ const Notification = ({
     determineNotificationType(type)
   );
   const { dismiss } = useContext(NotificationContext);
-  const [timerId, setTimerId] = useState<number | undefined>();
+  const [timerId, setTimerId] = useState<NodeJS.Timeout>();
 
   const handleHoverStart = () => {
     clearTimeout(timerId);

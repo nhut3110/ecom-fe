@@ -8,10 +8,12 @@ import QuantityButton from "../components/QuantityButton";
 import RatingStar from "../components/RatingStar";
 import SmallButton from "../components/SmallButton";
 import { FlyingImageWrapper } from "../components/FlyingImage";
-import { fetchProductDetails } from "../services/products.api";
+import GifLoading from "../components/GifLoading";
+import { fetchProductDetails, addToCart } from "../services";
 import { GoodsIcon, TruckIcon } from "../assets/icons";
 import { NotificationContext } from "../context/NotificationContext";
 import { CartContext } from "../context/CartContext";
+import { ADD_PRODUCT_DELAY } from "../constants";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 when click
 
@@ -20,8 +22,10 @@ const ProductDetail = (): React.ReactElement => {
   const { data, isLoading } = fetchProductDetails({ productId });
 
   const { notify } = useContext(NotificationContext);
-  const { addToCart, calculateCartValue } = useContext(CartContext);
+  const { addToCart: addToCartContext, calculateCartValue } =
+    useContext(CartContext);
   const [quantity, setQuantity] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleIncrement = () => {
     setQuantity((quantity) => quantity + DEFAULT_QUANTITY_CHANGE);
@@ -35,20 +39,37 @@ const ProductDetail = (): React.ReactElement => {
     });
   };
 
-  const handleAddToCart = () => {
-    addToCart(quantity, data, crypto.randomUUID());
-    calculateCartValue(quantity, data);
-    notify({
-      content: `Successfully add ${data.title} to cart`,
-      type: "success",
-      open: true,
-      id: crypto.randomUUID(),
-    });
-    // addCartAnimation({ id: crypto.randomUUID(), image: data.image });
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({ quantity: quantity, productId: data.id });
+
+      addToCartContext(quantity, data, crypto.randomUUID());
+      calculateCartValue(quantity, data);
+
+      setLoading(true);
+      notify({
+        content: `Successfully add ${data.title} to cart`,
+        type: "success",
+        open: true,
+        id: crypto.randomUUID(),
+      });
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Add to cart failed",
+        open: true,
+        type: "error",
+      });
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, ADD_PRODUCT_DELAY);
   };
 
   return (
     <>
+      {loading && <GifLoading />}
       {isLoading ? (
         <AnimatePresence>
           <SlideDownDisappearWrapper>
@@ -77,8 +98,8 @@ const ProductDetail = (): React.ReactElement => {
               </p>
 
               <div className="flex items-center gap-1 px-1">
-                <RatingStar rating={data.rating.rate} />
-                <p className="text-sm text-gray-500">({data.rating.count})</p>
+                <RatingStar rating={data.rate} />
+                <p className="text-sm text-gray-500">({data.count})</p>
               </div>
 
               <div className="md:w-3/4">
@@ -104,7 +125,7 @@ const ProductDetail = (): React.ReactElement => {
               </div>
 
               <div className="my-2 flex md:my-5">
-                <SmallButton name="Add to Cart" onClick={handleAddToCart} />
+                <SmallButton content="Add to Cart" onClick={handleAddToCart} />
               </div>
 
               <div>

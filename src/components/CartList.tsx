@@ -1,6 +1,6 @@
 import map from "lodash/map";
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useCallback, useContext, useMemo } from "react";
+import { AnimatePresence } from "framer-motion";
+import React, { useContext } from "react";
 import OpacityMotionWrapper from "./Animation/OpacityMotionWrapper";
 import SlideDownDisappearWrapper from "./Animation/SlideDownDisappearWrapper";
 import ProductCart from "./ProductCart";

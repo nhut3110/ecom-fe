@@ -1,9 +1,8 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import { OrderType } from "../constants/data";
-import { updateLocalStorageValue } from "../utils/LocalStorage";
+import { Order } from "../services";
 
 export type OrderStateType = {
-  orderList: OrderType[];
+  orderList: Order[];
 };
 
 const initOrderState: OrderStateType = {
@@ -14,14 +13,18 @@ const enum REDUCER_ACTION_TYPE {
   ADD_ORDER,
   REMOVE_ORDER,
   UPDATE_STORAGE,
+  IMPORT_ORDERS,
 }
 
 type ReducerAction =
   | {
       type: REDUCER_ACTION_TYPE;
-      payload: OrderType;
+      payload: Order;
     }
-  | { type: REDUCER_ACTION_TYPE.UPDATE_STORAGE };
+  | {
+      type: REDUCER_ACTION_TYPE.IMPORT_ORDERS;
+      payload: Order[];
+    };
 
 const orderReducer = (state: OrderStateType, action: ReducerAction) => {
   switch (action.type) {
@@ -31,12 +34,16 @@ const orderReducer = (state: OrderStateType, action: ReducerAction) => {
     case REDUCER_ACTION_TYPE.REMOVE_ORDER:
       return {
         orderList: state.orderList.filter(
-          (order) => order.uuid !== action.payload!.uuid
+          (order) => order.id !== action.payload!.id
         ),
       };
 
-    case REDUCER_ACTION_TYPE.UPDATE_STORAGE:
-      updateLocalStorageValue({ key: "orders", value: state.orderList });
+    case REDUCER_ACTION_TYPE.IMPORT_ORDERS:
+      return {
+        orderList: Array.isArray(action.payload)
+          ? [...action.payload]
+          : [action.payload],
+      };
 
     default:
       return state;
@@ -47,32 +54,33 @@ const useOrderContext = (initState: OrderStateType) => {
   const [orderState, dispatch] = useReducer(orderReducer, initState);
 
   const addOrder = useCallback(
-    (order: OrderType) =>
+    (order: Order) =>
       dispatch({ type: REDUCER_ACTION_TYPE.ADD_ORDER, payload: order }),
     [dispatch]
   );
 
   const removeOrder = useCallback(
-    (order: OrderType) =>
+    (order: Order) =>
       dispatch({ type: REDUCER_ACTION_TYPE.REMOVE_ORDER, payload: order }),
     [dispatch]
   );
 
-  const storeOrder = useCallback(
-    () => dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_STORAGE }),
+  const importOrders = useCallback(
+    (orders: Order[]) =>
+      dispatch({ type: REDUCER_ACTION_TYPE.IMPORT_ORDERS, payload: orders }),
     [dispatch]
   );
 
-  return { orderState, addOrder, removeOrder, storeOrder };
+  return { orderState, addOrder, removeOrder, importOrders };
 };
 
 export type UseOrderContextType = ReturnType<typeof useOrderContext>;
 
 const initContextState: UseOrderContextType = {
   orderState: { orderList: [] },
-  addOrder: (order: OrderType) => {},
-  removeOrder: (order: OrderType) => {},
-  storeOrder: () => {},
+  addOrder: (order: Order) => {},
+  removeOrder: (order: Order) => {},
+  importOrders: (orders: Order[]) => {},
 };
 
 export const OrderContext =

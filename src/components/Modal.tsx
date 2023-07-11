@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PortalWrapper from "./PortalWrapper";
 
 type ModalType = {
@@ -10,39 +10,22 @@ type ModalType = {
   children: React.ReactElement | React.ReactElement[];
 };
 
-const modalVariants = {
-  hidden: {
-    y: "100vh",
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      type: "spring",
-      stiffness: 50,
-    },
-  },
-};
-
 const Modal = ({ open, onClose, onSubmit, title, children }: ModalType) => {
   const [visibility, setVisibility] = useState<boolean>(open);
-  const modalVariants = useMemo(() => {
-    return {
-      hidden: {
-        y: "100vh",
-        opacity: 0,
+  const modalVariants = {
+    hidden: {
+      y: "100vh",
+      opacity: 0,
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 50,
       },
-      visible: {
-        y: 0,
-        opacity: 1,
-        transition: {
-          type: "spring",
-          stiffness: 50,
-        },
-      },
-    };
-  }, []);
+    },
+  };
 
   const handleSubmit = () => {
     setVisibility(false);
@@ -62,7 +45,7 @@ const Modal = ({ open, onClose, onSubmit, title, children }: ModalType) => {
     <PortalWrapper>
       <AnimatePresence>
         {visibility && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <motion.div
               className="mx-3 rounded-lg bg-white p-6 shadow-lg"
               variants={modalVariants}
@@ -71,7 +54,9 @@ const Modal = ({ open, onClose, onSubmit, title, children }: ModalType) => {
               exit="hidden"
             >
               <h2 className="mb-4 text-lg font-medium">{title}</h2>
-              <div className="mb-4">{children}</div>
+              <div className="mb-4 max-h-[30rem] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full">
+                {children}
+              </div>
               <div className="flex justify-end">
                 {onClose && (
                   <button

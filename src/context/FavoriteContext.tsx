@@ -1,6 +1,6 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import { ProductDetails } from "../constants/data";
-import { updateLocalStorageValue } from "../utils/LocalStorage";
+import { updateLocalStorageValue } from "../utils";
+import { ProductDetails } from "../constants";
 
 export type FavoriteStateType = {
   favoriteList: ProductDetails[];
@@ -11,17 +11,22 @@ const initFavoriteState: FavoriteStateType = {
 };
 
 const enum REDUCER_ACTION_TYPE {
+  IMPORT_FAVORITE,
   ADD_FAVORITE,
   REMOVE_FAVORITE,
-  UPDATE_STORAGE,
+  CLEAR_FAVORITE,
 }
 
 type ReducerAction =
   | {
+      type: REDUCER_ACTION_TYPE.IMPORT_FAVORITE;
+      payload: ProductDetails[];
+    }
+  | { type: REDUCER_ACTION_TYPE.CLEAR_FAVORITE }
+  | {
       type: REDUCER_ACTION_TYPE;
       payload: ProductDetails;
-    }
-  | { type: REDUCER_ACTION_TYPE.UPDATE_STORAGE };
+    };
 
 const favoriteReducer = (state: FavoriteStateType, action: ReducerAction) => {
   switch (action.type) {
@@ -35,8 +40,18 @@ const favoriteReducer = (state: FavoriteStateType, action: ReducerAction) => {
         ),
       };
 
-    case REDUCER_ACTION_TYPE.UPDATE_STORAGE: {
-      updateLocalStorageValue({ key: "favorites", value: state });
+    case REDUCER_ACTION_TYPE.CLEAR_FAVORITE: {
+      return {
+        favoriteList: [],
+      };
+    }
+
+    case REDUCER_ACTION_TYPE.IMPORT_FAVORITE: {
+      return {
+        favoriteList: Array.isArray(action.payload)
+          ? [...action.payload]
+          : [action.payload],
+      };
     }
 
     default:
@@ -59,15 +74,30 @@ const useFavoriteContext = (initState: FavoriteStateType) => {
     [dispatch]
   );
 
-  const storeFavorite = useCallback(
+  const clearFavorite = useCallback(
     () =>
       dispatch({
-        type: REDUCER_ACTION_TYPE.UPDATE_STORAGE,
+        type: REDUCER_ACTION_TYPE.CLEAR_FAVORITE,
       }),
     [dispatch]
   );
 
-  return { favoriteState, addFavorite, removeFavorite, storeFavorite };
+  const importFavorite = useCallback(
+    (products: ProductDetails[]) =>
+      dispatch({
+        type: REDUCER_ACTION_TYPE.IMPORT_FAVORITE,
+        payload: products,
+      }),
+    []
+  );
+
+  return {
+    favoriteState,
+    addFavorite,
+    removeFavorite,
+    clearFavorite,
+    importFavorite,
+  };
 };
 
 export type UseFavoriteContextType = ReturnType<typeof useFavoriteContext>;
@@ -76,7 +106,8 @@ const initContextState: UseFavoriteContextType = {
   favoriteState: { favoriteList: [] },
   addFavorite: (product: ProductDetails) => {},
   removeFavorite: (product: ProductDetails) => {},
-  storeFavorite: () => {},
+  clearFavorite: () => {},
+  importFavorite: (products: ProductDetails[]) => {},
 };
 
 export const FavoriteContext =

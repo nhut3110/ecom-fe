@@ -101,7 +101,9 @@ const SelectMenu = ({
         onClick={toggleMenu}
         whileTap={{ scale: 0.97 }}
       >
-        <div className="text-sm font-semibold">{selectedOption}</div>
+        <div className="text-sm font-semibold first-letter:capitalize">
+          {selectedOption}
+        </div>
         <motion.svg
           className="h-5 w-5"
           viewBox="0 0 20 20"

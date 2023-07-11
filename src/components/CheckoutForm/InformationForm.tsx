@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { motion } from "framer-motion";
+import { useGetOrderFormFields } from "../../hooks";
 import OutlineInput from "./OutlineInput";
 import SmallButton from "../SmallButton";
-import { useGetOrderFormFields } from "../../hooks/useGetOrderFormFields";
 import { FormContext, InformationType } from "../../context/FormContext";
-import { validationInformationSchema } from "../../constants/validate";
+import { validationInformationSchema } from "../../constants";
 
 const InformationForm = (): React.ReactElement => {
   const { formState, moveNextStep, setInformation } = useContext(FormContext);
@@ -54,7 +54,7 @@ const InformationForm = (): React.ReactElement => {
             ))}
           </motion.div>
           <div className="mt-4 flex w-full justify-end">
-            <SmallButton name="Next" />
+            <SmallButton content="Next" />
           </div>
         </form>
       )}

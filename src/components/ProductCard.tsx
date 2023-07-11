@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import React, {
   useCallback,
   useContext,
@@ -5,54 +7,80 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import HeartButton from "./HeartButton";
 import RatingStar from "./RatingStar";
 import SmallButton from "./SmallButton";
 import { FlyingImageWrapper } from "./FlyingImage";
-import { ProductDetails } from "../constants/data";
+import GifLoading from "./GifLoading";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { CartContext } from "../context/CartContext";
-import { getLocalStorageValue } from "../utils/LocalStorage";
 import { NotificationContext } from "../context/NotificationContext";
+import { ADD_PRODUCT_DELAY, MAX_FAVORITES, ProductDetails } from "../constants";
+import { addFavorite, removeFavorite } from "../services/products.api";
+import { addToCart } from "../services";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
 const ProductCard = (props: {
   product: ProductDetails;
+  isFavorite: boolean;
 }): React.ReactElement => {
-  const { product } = props;
-
-  const { notify } = useContext(NotificationContext);
-  const { addFavorite, removeFavorite, storeFavorite } =
-    useContext(FavoriteContext);
-  const { addToCart, calculateCartValue, cartState } = useContext(CartContext);
-
-  const isFavorite = useMemo(() => {
-    const { favoriteList } = getLocalStorageValue({ key: "favorites" });
-    if (favoriteList === undefined) {
-      return false;
-    }
-
-    return favoriteList.find((item: ProductDetails) => {
-      return item.id == product.id;
-    });
-  }, []);
+  const { product, isFavorite } = props;
 
   const [love, setLove] = useState(isFavorite);
   const [animation, setAnimation] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleFavorites = useCallback(() => {
-    love ? removeFavorite(product) : addFavorite(product);
+  const { notify } = useContext(NotificationContext);
+  const {
+    addFavorite: addToContext,
+    removeFavorite: removeFromContext,
+    favoriteState,
+  } = useContext(FavoriteContext);
+  const {
+    addToCart: addToCartContext,
+    calculateCartValue,
+    cartState,
+  } = useContext(CartContext);
+
+  const notifyFavoriteAction = () => {
     notify({
       content: `Successfully ${love ? "remove from" : "added to"} favorites`,
       type: "favorite",
       open: true,
       id: crypto.randomUUID(),
     });
-    storeFavorite();
+
     setLove(!love);
+    setLoading(false);
+  };
+
+  const handleRemoveFavorite = async () => {
+    await removeFavorite(product.id);
+    removeFromContext(product);
+    notifyFavoriteAction();
+  };
+
+  const handleAddFavorite = async () => {
+    await addFavorite(product.id);
+    addToContext(product);
+    notifyFavoriteAction();
+  };
+
+  const handleFavorites = useCallback(async () => {
+    if (!love && favoriteState.favoriteList.length >= MAX_FAVORITES)
+      return notify({
+        content: `Reached maximum favorites`,
+        type: "warning",
+        open: true,
+        id: crypto.randomUUID(),
+      });
+
+    setLoading(true);
+
+    if (love) return handleRemoveFavorite();
+
+    return handleAddFavorite();
   }, [love]);
 
   const [integerPart, decimalPart] = useMemo(() => {
@@ -61,15 +89,32 @@ const ProductCard = (props: {
     return [integer, decimal];
   }, [product.price]);
 
-  const handleAddToCart = useCallback(() => {
-    addToCart(DEFAULT_QUANTITY, product, crypto.randomUUID());
-    calculateCartValue(DEFAULT_QUANTITY, product);
-    notify({
-      id: crypto.randomUUID(),
-      content: "Add to cart successfully",
-      open: true,
-      type: "success",
-    });
+  const handleAddToCart = useCallback(async () => {
+    try {
+      await addToCart({ quantity: DEFAULT_QUANTITY, productId: product.id });
+
+      addToCartContext(DEFAULT_QUANTITY, product, crypto.randomUUID());
+      calculateCartValue(DEFAULT_QUANTITY, product);
+
+      setLoading(true);
+      notify({
+        id: crypto.randomUUID(),
+        content: "Add to cart successfully",
+        open: true,
+        type: "success",
+      });
+    } catch (error) {
+      notify({
+        id: crypto.randomUUID(),
+        content: "Add to cart failed",
+        open: true,
+        type: "error",
+      });
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, ADD_PRODUCT_DELAY);
   }, [product]);
 
   useEffect(() => {
@@ -81,6 +126,7 @@ const ProductCard = (props: {
 
   return (
     <>
+      {loading && <GifLoading />}
       <motion.div
         whileHover={{
           scale: 1.1,
@@ -130,12 +176,12 @@ const ProductCard = (props: {
         </div>
 
         <div className="flex items-center gap-1 self-start px-1">
-          <RatingStar rating={product.rating.rate} />
-          <p className="text-sm text-gray-500">({product.rating.count})</p>
+          <RatingStar rating={product.rate} />
+          <p className="text-sm text-gray-500">({product.count})</p>
         </div>
 
         <div className="mt-2 w-auto self-start">
-          <SmallButton name="Add to Cart" onClick={handleAddToCart} />
+          <SmallButton content="Add to Cart" onClick={handleAddToCart} />
         </div>
       </motion.div>
     </>

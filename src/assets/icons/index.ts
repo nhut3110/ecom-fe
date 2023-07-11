@@ -6,6 +6,7 @@ import ShirtIcon from "./shirt.svg";
 import MoneyIcon from "./money.svg";
 import GoodsIcon from "./goods.svg";
 import TrashIcon from "./trash.svg";
+import UploadIcon from "./upload.svg";
 
 export {
   GoodsIcon,
@@ -16,4 +17,5 @@ export {
   TruckIcon,
   ShirtIcon,
   MoneyIcon,
+  UploadIcon,
 };

@@ -1,29 +1,45 @@
-import React, { useContext, useMemo } from "react";
-import { getUserInfo } from "../services/auth.api";
-import { getLocalStorageValue } from "../utils/LocalStorage";
-import DecodeEmailFromJWT from "../utils/DecodeJWT";
-import { AuthContext } from "../context/AuthContext";
-import { useNavigatePage } from "../hooks/useNavigatePage";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigatePage } from "../hooks";
+import { UserDataContext } from "../context/UserDataContext";
+import { getLocalStorageValue } from "../utils";
+import { UserData, getUserById } from "../services";
 
 export const useValidateLoginExpiration = () => {
-  const { authState, removeUserData } = useContext(AuthContext);
-
+  const { updateUserData } = useContext(UserDataContext);
   const { redirect } = useNavigatePage();
 
-  const isLogin = useMemo(() => {
-    return !!Object.keys(getLocalStorageValue({ key: "key" })).length;
-  }, [authState]);
+  const isLogin = !!Object.keys(getLocalStorageValue({ key: "tokens" })).length;
 
-  const userEmail =
-    getLocalStorageValue({ key: "key" }).email ||
-    DecodeEmailFromJWT(getLocalStorageValue({ key: "key" })?.accessToken);
-  const { userInfo, isLoading } = getUserInfo({ email: userEmail });
+  const [userInfo, setUserInfo] = useState<UserData>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleLogout = () => {
-    removeUserData();
-    localStorage.removeItem("key");
+    localStorage.removeItem("tokens");
     redirect("/login");
   };
 
-  return { isLogin, isLoading, userInfo, handleLogout };
+  useEffect(() => {
+    if (isLogin) {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+
+          const response = await getUserById();
+
+          setUserInfo(response);
+          setIsLoading(false);
+
+          if (response) {
+            updateUserData(response);
+          }
+        } catch (error) {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [isLogin, updateUserData]);
+
+  return { isLogin, userInfo, isLoading, handleLogout };
 };

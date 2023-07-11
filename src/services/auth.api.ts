@@ -1,134 +1,103 @@
-import axios from "axios";
-import jwtDecode from "jwt-decode";
 import { useQuery } from "@tanstack/react-query";
+import { authApi, publicApi } from "./api";
 import {
-  getLocalStorageValue,
-  updateLocalStorageValue,
-} from "../utils/LocalStorage";
-import DecodeEmailFromJWT from "../utils/DecodeJWT";
+  FacebookLoginType,
+  LoginType,
+  RegisterType,
+  TokensType,
+  UserData,
+} from "./types.api";
+import { ChangePasswordFormType } from "../pages/ChangePassword";
+import { checkIsTokenExpired } from "../utils";
+import { EditProfileFormType } from "../constants";
 
-const BASE_URL_API = "http://localhost:3000/";
+const getNewTokens = async (
+  refreshToken?: string
+): Promise<TokensType | void> => {
+  if (checkIsTokenExpired(refreshToken))
+    return localStorage.removeItem("tokens");
 
-export type UserDataType = {
-  email?: string;
-  accessToken?: string;
-  refreshToken?: string;
-};
-
-type LoginType = {
-  email: string;
-  password: string;
-};
-
-const authApi = axios.create({
-  baseURL: BASE_URL_API,
-});
-
-const getUserData = (): UserDataType | null => {
-  const user = getLocalStorageValue({ key: "key" });
-  if (!user) {
-    return null;
-  }
-
-  return {
-    accessToken: user.accessToken,
-    refreshToken: user.refreshToken,
-    email: user.email,
-  };
-};
-
-const refreshToken = async () => {
-  try {
-    const { data } = await authApi.post("/auth/refresh-token", {
-      email: getUserData()?.email,
-      refreshToken: getUserData()?.refreshToken,
-    });
-    updateLocalStorageValue({
-      key: "key",
-      value: { ...data, email: getUserData()?.email },
-    });
-
-    return data.accessToken;
-  } catch (error: any) {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("key");
-    }
-
-    throw error;
-  }
-};
-
-authApi.interceptors.request.use(
-  (config) => {
-    if (config.url === "/auth/login") return config;
-
-    const user = getUserData();
-    if (user && user.accessToken) {
-      config.headers.Authorization = `Bearer ${user.accessToken}`;
-    }
-
-    return config;
-  },
-
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-authApi.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-
-  async (error) => {
-    const originalRequest = error.config;
-
-    if (originalRequest.url === "/auth/login") return Promise.reject(error);
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const accessToken = await refreshToken();
-        if (accessToken) {
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-
-          return authApi(originalRequest);
-        }
-      } catch (error) {
-        throw error;
-      }
-    }
-
-    return Promise.reject(error);
-  }
-);
-
-const login = (loginData: LoginType) => {
-  return authApi.post("/auth/login", loginData).then((response) => {
-    updateLocalStorageValue({
-      key: "key",
-      value: {
-        email: loginData.email,
-        accessToken: response.data?.accessToken,
-        refreshToken: response.data?.refreshToken,
-      },
-    });
-
-    return response.data;
+  const { data } = await publicApi.post("/auth/refresh-token", {
+    refreshToken: refreshToken,
   });
+
+  return data;
 };
 
-const getUserInfo = ({ email }: { email: string }) => {
+const loginFacebook = async (loginData: FacebookLoginType) => {
+  const { data } = await publicApi.post("/auth/facebook", loginData);
+
+  return data;
+};
+
+const login = async (loginData: LoginType) => {
+  const { data } = await publicApi.post("/auth/login", loginData);
+
+  return data;
+};
+
+const register = async (registerData: RegisterType) => {
+  const { data } = await publicApi.post("/auth/register", registerData);
+
+  return data;
+};
+
+const editProfile = async (profileData: EditProfileFormType) => {
+  const { data } = await authApi.patch("/users/me", profileData);
+
+  return data;
+};
+
+const changePassword = async (passwordData: ChangePasswordFormType) => {
+  const { data } = await authApi.patch("/auth/password", passwordData);
+
+  return data;
+};
+
+const editAvatar = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const { data } = await authApi.patch("/users/me/avatar", formData);
+
+  return data;
+};
+
+const getUserById = async () => {
+  const response = await authApi.get(`users/me`);
+  const result: UserData = response.data;
+
+  return result;
+};
+
+const getUserInfo = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["userInfo"],
-    queryFn: () =>
-      authApi.get(`users/${email}`).then((response) => {
-        return response.data;
-      }),
+    queryFn: getUserById,
   });
 
   return { userInfo: data, error, isLoading };
 };
 
-export { authApi, login, getUserInfo };
+const getOtp = async (email: string) => {
+  return await publicApi.get(`otp/${email}`);
+};
+
+const validateOtp = async (email: string, otp: string) => {
+  const { data } = await publicApi.post(`otp/${email}`, { otp });
+
+  return !!data;
+};
+
+export {
+  login,
+  getUserInfo,
+  loginFacebook,
+  getNewTokens,
+  editProfile,
+  changePassword,
+  editAvatar,
+  getUserById,
+  register,
+  getOtp,
+  validateOtp,
+};

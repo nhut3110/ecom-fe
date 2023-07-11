@@ -4,29 +4,29 @@ import React from "react";
 
 const NUMBER_OF_DOTS = 3; // 3 dots in loading screen
 
-const containerVariants = {
-  initial: {
-    transition: {
-      staggerChildren: 0.2,
+const DotsLoading = (): React.ReactElement => {
+  const containerVariants = {
+    initial: {
+      transition: {
+        staggerChildren: 0.2,
+      },
     },
-  },
-  animate: {
-    transition: {
-      staggerChildren: 0.2,
+    animate: {
+      transition: {
+        staggerChildren: 0.2,
+      },
     },
-  },
-};
+  };
 
-const dotVariants = {
-  initial: {
-    y: "0%",
-  },
-  animate: {
-    y: "100%",
-  },
-};
+  const dotVariants = {
+    initial: {
+      y: "0%",
+    },
+    animate: {
+      y: "100%",
+    },
+  };
 
-export default function DotsLoading() {
   return (
     <motion.div
       variants={containerVariants}
@@ -49,4 +49,6 @@ export default function DotsLoading() {
       ))}
     </motion.div>
   );
-}
+};
+
+export default DotsLoading;

@@ -1,49 +1,63 @@
+import { useMutation } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import React, { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import DotsLoading from "../components/Animation/DotsLoading";
-import { updateLocalStorageValue } from "../utils/LocalStorage";
+import { useNavigatePage } from "../hooks";
 import { NotificationContext } from "../context/NotificationContext";
-import { useNavigatePage } from "../hooks/useNavigatePage";
-import DecodeEmailFromJWT from "../utils/DecodeJWT";
+import { loginFacebook } from "../services";
+import GifLoading from "../components/GifLoading";
+import { updateLocalStorageValue } from "../utils";
+import { facebookConstants } from "../constants";
 
 const DELAY_WHILE_LOADING = 2000;
 
 const GetToken = () => {
-  const { token } = useParams();
+  const [searchParams] = useSearchParams();
   const { notify } = useContext(NotificationContext);
   const { redirect } = useNavigatePage();
 
-  useEffect(() => {
-    if (token) {
-      const decodeBase64Token = atob(token);
+  const { mutate, isLoading } = useMutation(loginFacebook, {
+    onSuccess: (response) => {
+      notify({
+        content: `Login successfully`,
+        type: "success",
+        open: true,
+        id: crypto.randomUUID(),
+      });
+
       updateLocalStorageValue({
-        key: "key",
+        key: "tokens",
         value: {
-          accessToken: decodeBase64Token,
-          email: DecodeEmailFromJWT(decodeBase64Token),
+          accessToken: response?.accessToken,
+          refreshToken: response?.refreshToken,
         },
       });
+    },
+    onError: () => {
+      notify({
+        content: `Wrong credentials`,
+        type: "error",
+        open: true,
+        id: crypto.randomUUID(),
+      });
+    },
+  });
+
+  useEffect(() => {
+    const authCode = searchParams.get("code");
+    if (authCode) {
+      mutate({ code: authCode, callbackUrl: facebookConstants.callbackUrl });
     }
 
-    notify({
-      content: `Redirecting...`,
-      type: token ? "success" : "error",
-      open: true,
-      id: crypto.randomUUID(),
-    });
+    if (!isLoading) {
+      const timer = setTimeout(() => {
+        isLoading ? redirect("/") : redirect("/login");
+      }, DELAY_WHILE_LOADING);
 
-    const timer = setTimeout(() => {
-      token ? redirect("/") : redirect("/login");
-    }, DELAY_WHILE_LOADING);
-
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
-  return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <DotsLoading />
-    </div>
-  );
+  return <GifLoading />;
 };
 
 export default GetToken;
