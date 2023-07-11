@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi, publicApi } from "./api";
 import { FindProductType } from "./types.api";
+import { PaginatedResponse } from "./types.api";
 
 const getProductList = async (params: FindProductType) => {
   const { data } = await publicApi.get("/products", { params });
@@ -76,6 +77,15 @@ const fetchCategoryById = ({ categoryId }: { categoryId: string }) => {
   return { data, error, isLoading };
 };
 
+const fetchFavoriteList = () => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: () => getFavorites({}),
+  });
+
+  return { favorites: data as PaginatedResponse, error, isLoading };
+};
+
 export {
   fetchProducts,
   fetchProductDetails,
@@ -88,4 +98,5 @@ export {
   getFavorites,
   addFavorite,
   removeFavorite,
+  fetchFavoriteList,
 };

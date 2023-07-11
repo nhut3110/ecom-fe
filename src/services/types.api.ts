@@ -1,5 +1,4 @@
-import { string } from "yup";
-import { ProductDetails } from "../constants";
+import { OrderStatus, PaymentOptions, ProductDetails } from "../constants";
 
 export type TokensType = {
   accessToken?: string;
@@ -103,4 +102,24 @@ export type PaymentType = {
   expiry: string;
   createdAt?: string;
   updatedAt?: string;
+};
+
+export type AddOrderType = {
+  addressId: string;
+  paymentId?: string;
+  paymentType: PaymentOptions;
+  description?: string;
+};
+
+export type Order = {
+  id: string;
+  orderStatus: OrderStatus;
+  createdAt: Date;
+  paymentType: PaymentOptions;
+  description?: string;
+  payment?: {
+    cardNumber: string;
+  };
+  address: AddressType;
+  orderDetails: CartType[];
 };

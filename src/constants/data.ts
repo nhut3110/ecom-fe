@@ -23,6 +23,7 @@ import ProductDetail from "../pages/ProductDetail";
 import Profile from "../pages/Profile";
 import Register from "../pages/Register";
 import AddPayment from "../pages/AddPayment";
+import OrderDetail from "../pages/OrderDetail";
 
 export type AddressCard = {
   id?: string;
@@ -102,6 +103,22 @@ export const MAX_FAVORITES = 100;
 export const PRODUCT_PREFIX = "product:";
 export const FAVORITE_PREFIX = "favorite:";
 
+export const enum PaymentOptions {
+  CASH = "cash",
+  CARD = "card",
+}
+
+export enum OrderStatus {
+  "pending",
+  "confirmed",
+  "paid",
+  "shipping",
+  "completed",
+  CANCELED = "canceled",
+}
+
+export const paymentOptions = [PaymentOptions.CASH, PaymentOptions.CARD];
+
 type RegisterFieldTypes = {
   name: string;
   type?: string;
@@ -133,6 +150,8 @@ export const registerFields: RegisterFieldTypes[] = [
     type: "password",
   },
 ];
+
+export const notDisplayCartButton: string[] = ["/checkout"];
 
 export const facebookConstants = {
   clientID: "1213240936224087",
@@ -258,6 +277,11 @@ export const publicRoutes: Routes[] = [
   {
     path: "/orders",
     component: Order,
+    layout: Layout,
+  },
+  {
+    path: "/orders/:id",
+    component: OrderDetail,
     layout: Layout,
   },
   {
