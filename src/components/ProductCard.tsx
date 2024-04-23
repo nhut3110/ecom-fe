@@ -137,7 +137,7 @@ const ProductCard = (props: {
           <Link to={`/product/${product.id}`}>
             {animation && <FlyingImageWrapper product={product} />}
             <img
-              src={product.image}
+              src={encodeURI(product.image)}
               alt={product.title}
               className="object-fit h-36"
             />
@@ -145,7 +145,7 @@ const ProductCard = (props: {
 
           <HeartButton
             love={love}
-            className="absolute top-2 -right-2"
+            className="absolute -right-2 top-2"
             onClick={handleFavorites}
           />
         </div>
@@ -161,7 +161,7 @@ const ProductCard = (props: {
               </motion.p>
             </Link>
 
-            <p className="text-sm text-gray-500 line-clamp-2">
+            <p className="line-clamp-2 text-sm text-gray-500">
               {product.description}
             </p>
           </div>

@@ -38,5 +38,18 @@ export function createApiInstance({ isPublic, baseURL }: ApiInstanceType) {
     }
   );
 
+  instance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (+error.response.status === 401) {
+        window.location.href = "/login";
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
   return instance;
 }
