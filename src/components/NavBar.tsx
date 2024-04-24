@@ -19,8 +19,10 @@ import HamburgerButton from "./Animation/HamburgerButton";
 import SearchBar from "./SearchBar";
 import { Logo, LogoTransparent } from "../assets/images";
 import { UserDataContext } from "../context/UserDataContext";
-import { navList, userMenu } from "../constants";
+import { COLORS, navList, userMenu } from "../constants";
 import { getProductList } from "../services/products.api";
+import { LogoutOutlined, SearchOutlined } from "@ant-design/icons";
+import { Avatar, Button, Menu } from "antd";
 
 const NavBar = (): React.ReactElement => {
   const [openUserBox, setOpenUserBox] = useState<boolean>(false);
@@ -83,10 +85,6 @@ const NavBar = (): React.ReactElement => {
     closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
   };
 
-  const handleOpenProfile = () => {
-    setOpenUserBox(!openUserBox);
-  };
-
   const handleScroll = () => {
     const navPositions = navRef.current?.getBoundingClientRect().top;
     if (navPositions !== undefined)
@@ -125,19 +123,18 @@ const NavBar = (): React.ReactElement => {
   const renderUserAvatar = useCallback(() => {
     if (!userDataState)
       return (
-        <div className="aspect-square h-8 rounded-full border border-purple-500 bg-gray-300 shadow-lg" />
+        <div className="aspect-square h-8 rounded-full border bg-gray-300 shadow-lg" />
       );
 
     return (
-      <motion.img
-        variants={avatarVariants}
-        initial="initial"
-        animate="visible"
-        src={userDataState?.picture}
-        alt="user-avatar"
-        className="object-fit aspect-square h-8 rounded-full border border-purple-500 shadow-lg"
-        onClick={() => setOpenUserBox(!openUserBox)}
-      />
+      <motion.div variants={avatarVariants} initial="initial" animate="visible">
+        <Avatar
+          src={userDataState?.picture}
+          alt="user-avatar"
+          className="object-fit aspect-square h-10 w-10 rounded-full border shadow-lg"
+          onClick={() => setOpenUserBox(!openUserBox)}
+        />
+      </motion.div>
     );
   }, [userDataState?.picture, openUserBox]);
 
@@ -149,31 +146,33 @@ const NavBar = (): React.ReactElement => {
             {renderUserAvatar()}
 
             <motion.div
-              className="absolute right-[100%] top-[120%] z-50 flex min-w-max flex-col rounded-md border-2 bg-white shadow-2xl"
+              className="shadow-4xl absolute right-[80%] top-[120%] z-50 flex min-w-max flex-col rounded-md border-2 bg-white text-lg font-medium shadow-inner"
               variants={avatarMenuVariants}
               initial="closed"
               animate={openUserBox ? "open" : "closed"}
               style={{ pointerEvents: openUserBox ? "auto" : "none" }}
             >
-              {userMenu.map((item, index) => (
-                <Link to={`/${item.url}`} key={index}>
-                  <motion.div
-                    className="w-full cursor-pointer rounded-md py-2 px-5 text-gray-900 hover:bg-gray-100"
-                    variants={itemVariants}
-                    onClick={handleOpenProfile}
-                  >
-                    <p>{item.name}</p>
-                  </motion.div>
-                </Link>
-              ))}
+              <Menu>
+                {userMenu.map((item, index) => (
+                  <Link to={`/${item.url}`} key={index}>
+                    <motion.div
+                      className="w-full cursor-pointer rounded-md text-gray-900 hover:bg-gray-100"
+                      variants={itemVariants}
+                      onClick={() => setOpenUserBox(!openUserBox)}
+                    >
+                      <Menu.Item icon={item.icon}>{item.name}</Menu.Item>
+                    </motion.div>
+                  </Link>
+                ))}
 
-              <motion.div
-                className="w-full cursor-pointer rounded-md py-2 px-5 text-gray-900 hover:bg-gray-100"
-                variants={itemVariants}
-                onClick={handleLogout}
-              >
-                <p>Log out</p>
-              </motion.div>
+                <motion.div
+                  className="w-full cursor-pointer rounded-md text-gray-900 hover:bg-gray-100"
+                  variants={itemVariants}
+                  onClick={handleLogout}
+                >
+                  <Menu.Item icon={<LogoutOutlined />}>Log out</Menu.Item>
+                </motion.div>
+              </Menu>
             </motion.div>
           </motion.div>
         )}
@@ -184,7 +183,7 @@ const NavBar = (): React.ReactElement => {
   const renderContent = useCallback(() => {
     if (isLogin) return renderLoggedInContent();
 
-    return <SmallButton content="sign in" onClick={() => redirect("/login")} />;
+    return <Button onClick={() => redirect("/login")}>sign in</Button>;
   }, [isLogin, openUserBox, isLoading]);
 
   return (
@@ -192,7 +191,9 @@ const NavBar = (): React.ReactElement => {
       ref={navRef}
       className={`${
         sticky ? "fixed" : "relative"
-      } z-50 flex w-full select-none justify-center bg-white pb-2 shadow-sm`}
+      } z-50 flex w-full select-none justify-center bg-${
+        COLORS.RED
+      } pb-2 shadow-sm`}
     >
       <div ref={scope}>
         <NavSideMenu ref={navMobileMenuRef} />
@@ -215,7 +216,7 @@ const NavBar = (): React.ReactElement => {
               <img
                 src={LogoTransparent}
                 alt="logo"
-                className="hidden h-10 invert md:block"
+                className="hidden h-12 md:block"
               />
             </Link>
           </div>
@@ -224,24 +225,35 @@ const NavBar = (): React.ReactElement => {
             <img src={LogoTransparent} alt="logo" className="h-10 invert " />
           </Link>
           {/* Nav items */}
-          <div className="z-30 hidden w-full items-center justify-center px-5 md:flex md:min-h-fit md:w-auto md:bg-white">
-            <ul className="flex items-center gap-8 md:flex-row md:gap-[4vw]">
+          <div className="z-30 hidden w-full items-center justify-center px-5 md:flex md:min-h-fit md:w-auto md:bg-transparent">
+            <ul className="flex items-center gap-8 bg-transparent md:flex-row md:gap-[4vw]">
               {navList.map((item: string, index: number) => (
                 <motion.li
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   key={index}
-                  className="text-xl no-underline first-letter:capitalize hover:text-slate-700 hover:underline"
+                  className="bg-transparent text-xl font-bold text-white no-underline first-letter:capitalize"
                 >
-                  <Link to={`/${item}`}>{item}</Link>
+                  <Link
+                    className={`hover:text-${COLORS.YELLOW}`}
+                    to={`/${item}`}
+                  >
+                    {item}
+                  </Link>
                 </motion.li>
               ))}
             </ul>
           </div>
           {/* Avatar and User Dialog */}
           <div className="flex items-center gap-6">
-            <div className=" flex h-8 w-8 items-center justify-center rounded-full border border-black">
-              <BiSearch size={20} onClick={() => setIsSearch(!isSearch)} />
+            <div
+              className={`hover:border-${COLORS.YELLOW} hover:text-${COLORS.YELLOW} flex h-8 w-8 items-center justify-center rounded-full border border-white`}
+            >
+              <SearchOutlined
+                size={20}
+                onClick={() => setIsSearch(!isSearch)}
+                style={{ color: "white" }}
+              />
             </div>
             {renderContent()}
           </div>

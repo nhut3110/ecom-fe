@@ -30,6 +30,8 @@ export function createApiInstance({ isPublic, baseURL }: ApiInstanceType) {
         return config;
       }
 
+      config.headers["Access-Control-Allow-Origin"] = "*";
+
       return config;
     },
 

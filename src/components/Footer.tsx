@@ -1,11 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { LogoTransparent } from "../assets/images";
-import { FooterContentType, footerContact, footerContents } from "../constants";
+import {
+  COLORS,
+  FooterContentType,
+  footerContact,
+  footerContents,
+} from "../constants";
+import { Layout } from "antd";
+
+const { Footer: AntdFooter } = Layout;
 
 const Footer = (): React.ReactElement => {
   return (
-    <div className=" relative mt-5 flex  w-full flex-col items-center justify-center rounded-t-xl bg-black md:h-60">
+    <AntdFooter
+      className={`relative mt-5 flex  w-full flex-col items-center justify-center rounded-t-xl bg-${COLORS.RED} md:h-60`}
+    >
       <div className="my-10 flex w-2/3 flex-col items-center justify-center gap-y-3 text-white md:flex-row md:items-start md:justify-around md:gap-5">
         <div className=" flex w-44 flex-col items-center justify-center gap-1 md:items-start">
           <img
@@ -39,9 +49,9 @@ const Footer = (): React.ReactElement => {
         ))}
       </div>
       <p className="absolute bottom-1  w-full text-center text-sm font-semibold text-white">
-        Fake Store Copyright 2023. All rights reserved.
+        Legood Copyright 2024. All rights reserved.
       </p>
-    </div>
+    </AntdFooter>
   );
 };
 

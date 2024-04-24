@@ -16,6 +16,14 @@ import BronzeBadge from "./bronze-badge.png";
 import SilverBadge from "./silver-badge.png";
 import GoldBadge from "./gold-badge.png";
 import PlatinumBadge from "./platinum-badge.png";
+import Batman from "./batman.png";
+import Shipping from "./shipping.png";
+import Artist from "./artist.png";
+import Rapper from "./rapper.png";
+import Joker from "./joker.png";
+import BlackNinja from "./black-ninja.png";
+import StormTrooper from "./storm-tropper.png";
+import Cars from "./cars.png";
 
 export {
   FakeLogo,
@@ -36,4 +44,12 @@ export {
   SilverBadge,
   GoldBadge,
   PlatinumBadge,
+  Batman,
+  Shipping,
+  Artist,
+  Rapper,
+  Joker,
+  BlackNinja,
+  StormTrooper,
+  Cars,
 };

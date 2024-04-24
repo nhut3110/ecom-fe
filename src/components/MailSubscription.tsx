@@ -3,7 +3,7 @@ import InputForm from "./InputForm";
 
 const MailSubscription = (): React.ReactElement => {
   return (
-    <div className="my-4  flex h-auto w-full flex-col items-center justify-around bg-gray-200 py-3 md:h-60 md:flex-row">
+    <div className="my-4  flex h-auto w-full flex-col items-center justify-around bg-yellow-100 py-3 md:h-60 md:flex-row">
       <div className="flex w-2/3 items-center gap-3 md:w-1/4 md:flex-col md:items-start">
         <p className="text-xl font-semibold first-letter:text-2xl md:text-4xl md:first-letter:text-5xl">
           Subscribe Mail List
@@ -21,7 +21,7 @@ const MailSubscription = (): React.ReactElement => {
           id="email-subscription-input"
         />
         <button
-          className="md:text-md mx-2 w-auto rounded bg-transparent py-2 px-4 text-xs font-bold text-black hover:rounded-lg hover:border-[0.0625rem] hover:border-solid hover:border-black"
+          className="md:text-md mx-2 w-auto rounded bg-transparent px-4 py-2 text-xs font-bold text-black hover:rounded-lg hover:border-[0.0625rem] hover:border-solid hover:border-black"
           type="submit"
         >
           Send

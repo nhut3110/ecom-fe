@@ -137,7 +137,7 @@ const ProductCard = (props: {
           <Link to={`/product/${product.id}`}>
             {animation && <FlyingImageWrapper product={product} />}
             <img
-              src={encodeURI(product.image)}
+              src={`http://localhost:3000/proxy/image?url=${product.image}`}
               alt={product.title}
               className="object-fit h-36"
             />
