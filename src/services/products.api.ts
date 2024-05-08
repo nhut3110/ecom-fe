@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { authApi, publicApi } from "./api";
 import { FindProductType } from "./types.api";
 import { PaginatedResponse } from "./types.api";
+import { Category } from "../constants";
 
 const getProductList = async (params: FindProductType) => {
   const { data } = await publicApi.get("/products", { params });
@@ -21,8 +22,20 @@ const getCategoryList = async () => {
   return data;
 };
 
+const getCategoryListWithCount = async () => {
+  const { data } = await publicApi.get("/categories/count-product");
+
+  return data;
+};
+
 const getFavorites = async (params: FindProductType) => {
   const { data } = await authApi.get("/my-favorites", { params });
+
+  return data;
+};
+
+const checkFavorite = async (productId: string) => {
+  const { data } = await authApi.get(`/my-favorites/check/${productId}`);
 
   return data;
 };
@@ -68,6 +81,15 @@ const fetchCategoryList = () => {
   return { categories: data, error, isLoading };
 };
 
+const fetchCategoryListWithCount = () => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["categories-count-product"],
+    queryFn: () => getCategoryListWithCount(),
+  });
+
+  return { categories: data as Category[], error, isLoading };
+};
+
 const fetchCategoryById = ({ categoryId }: { categoryId: string }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["categories", categoryId],
@@ -91,6 +113,7 @@ export {
   fetchProductDetails,
   fetchCategoryList,
   fetchCategoryById,
+  fetchCategoryListWithCount,
   getProductList,
   getProductDetails,
   getCategoryList,
@@ -99,4 +122,6 @@ export {
   addFavorite,
   removeFavorite,
   fetchFavoriteList,
+  checkFavorite,
+  getCategoryListWithCount,
 };

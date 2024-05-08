@@ -24,9 +24,18 @@ import Profile from "../pages/Profile";
 import Register from "../pages/Register";
 import AddPayment from "../pages/AddPayment";
 import OrderDetail from "../pages/OrderDetail";
-import { BankOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  BankOutlined,
+  HeartOutlined,
+  ShopOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Banner1, Banner2, Banner3, Banner4 } from "../assets/images";
+import { Theme } from "../pages/Theme";
+import ThemeDetail from "../pages/ThemeDetail";
+import Discount from "../pages/Discount";
 
-export type AddressCard = {
+export type AddressCardType = {
   id?: string;
   address?: string;
   name?: string;
@@ -86,20 +95,46 @@ export type SortOptionType = {
 
 export type FilterOptionType = {
   categoryId?: string;
+  year?: number | string;
+  maxPrice?: number | string;
+  minPrice?: number | string;
 };
 
 export interface ProductDetails {
   id: string;
   title: string;
   price: number;
-  description: string;
-  category_id: string;
+  description?: string | null;
   image: string;
+  thumbnailUrl: string;
+  categoryId: string;
   rate: number;
   count: number;
+  setId: number;
+  numberId: string;
+  pieces: number;
+  year: number;
+  instructionsCount: number;
+  minifigs: number;
+  height: number;
+  depth: number;
+  width: number;
+  weight: number;
+  discountPercentage: number;
+  availableQuantity: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export const PAGE_LIMIT = 10;
+export interface Category {
+  id: string;
+  name?: string;
+  productCount?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const PAGE_LIMIT = 12;
 export const MAX_FAVORITES = 100;
 export const PRODUCT_PREFIX = "product:";
 export const FAVORITE_PREFIX = "favorite:";
@@ -161,13 +196,15 @@ export const facebookConstants = {
 
 export enum NavItemType {
   PRODUCTS = "products",
-  FAVORITES = "favorites",
   ORDERS = "orders",
+  THEMES = "themes",
+  DISCOUNT = "discounts",
 }
 
 export const navList: NavItemType[] = [
+  NavItemType.THEMES,
   NavItemType.PRODUCTS,
-  NavItemType.FAVORITES,
+  NavItemType.DISCOUNT,
   NavItemType.ORDERS,
 ];
 
@@ -180,19 +217,19 @@ export const ADD_PRODUCT_DELAY = 1500; // 1.5s to prevent user from click contin
 
 export const carouselImages: Array<CarouselImageType> = [
   {
-    url: "https://idjewelry.com/media/wysiwyg/rose-gold/rose_gold_jewelry.jpg",
+    url: Banner1,
     category: "jewelry",
   },
   {
-    url: "https://mir-s3-cdn-cf.behance.net/project_modules/1400/264e3629894817.5609864fcd16d.png",
+    url: Banner2,
     category: "men clothing",
   },
   {
-    url: "https://i.pinimg.com/originals/3b/a6/79/3ba679fa46d14c310ee8008891ea5754.jpg",
+    url: Banner3,
     category: "women clothing",
   },
   {
-    url: "https://img.freepik.com/free-vector/shopping-time-banner-with-realistic-map-cart-gift-bags-vector-illustration_548887-120.jpg?w=2000&t=st=1682409168~exp=1682409768~hmac=76f38dd9de68734b8747b91ce52dce34f959949b298b34d48efdb42db67efe43",
+    url: Banner4,
     category: "electronics",
   },
 ];
@@ -228,14 +265,14 @@ export const userMenu = [
     icon: <UserOutlined />,
   },
   {
+    name: "Favorites",
+    url: "favorites",
+    icon: <HeartOutlined />,
+  },
+  {
     name: "Address",
     url: "address",
     icon: <ShopOutlined />,
-  },
-  {
-    name: "Payment",
-    url: "payment",
-    icon: <BankOutlined />,
   },
 ];
 
@@ -323,13 +360,18 @@ export const publicRoutes: Routes[] = [
     layout: Layout,
   },
   {
-    path: "/payment",
-    component: Payment,
+    path: "/themes",
+    component: Theme,
     layout: Layout,
   },
   {
-    path: "/payment/add",
-    component: AddPayment,
+    path: "/themes/:id",
+    component: ThemeDetail,
+    layout: Layout,
+  },
+  {
+    path: "/discounts",
+    component: Discount,
     layout: Layout,
   },
 ];

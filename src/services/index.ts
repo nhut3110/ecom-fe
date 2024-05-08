@@ -6,3 +6,5 @@ export * from "./address.api";
 export * from "./payment.api";
 export * from "./order.api";
 export * from "./cart.api";
+export * from "./discount.api";
+export * from "./discussion.api";

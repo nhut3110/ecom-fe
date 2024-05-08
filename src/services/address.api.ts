@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { AddressCard } from "../constants";
+import { AddressCardType } from "../constants";
 import { authApi } from "./api";
 
 const getAddresses = async () => {
@@ -14,11 +14,11 @@ const getAddress = async (id: string) => {
   return data;
 };
 
-const updateAddress = async (id: string, data: AddressCard) => {
+const updateAddress = async (id: string, data: AddressCardType) => {
   return await authApi.patch(`/addresses/${id}`, data);
 };
 
-const addAddress = async (data: AddressCard) => {
+const addAddress = async (data: AddressCardType) => {
   return await authApi.post("/addresses", data);
 };
 

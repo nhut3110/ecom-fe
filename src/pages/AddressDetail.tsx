@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { useNavigatePage } from "../hooks";
-import AddressForm from "../components/AddressForm";
-import GifLoading from "../components/GifLoading";
-import SmallButton from "../components/SmallButton";
-import Modal from "../components/Modal";
+import AddressForm from "../components/Address/AddressForm";
+import GifLoading from "../components/shared/GifLoading";
+import SmallButton from "../components/shared/SmallButton";
+import Modal from "../components/shared/Modal";
 import { AddressType, deleteAddress, getAddress } from "../services";
 import { NotificationContext } from "../context/NotificationContext";
 

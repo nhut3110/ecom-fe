@@ -3,14 +3,14 @@ import { MdEdit, MdCached } from "react-icons/md";
 import { BiImageAdd } from "react-icons/bi";
 import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import { useValidateLoginExpiration, useNavigatePage } from "../hooks";
-import MemberBadge from "../components/MemberBadge";
-import GifLoading from "../components/GifLoading";
-import AvatarModal from "../components/AvatarModal";
-import OrderChart from "../components/OrderChart";
+import MemberBadge from "../components/Profile/MemberBadge";
+import GifLoading from "../components/shared/GifLoading";
+import AvatarModal from "../components/shared/AvatarModal";
+import OrderChart from "../components/Order/OrderChart";
 import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
 import { OrderContext } from "../context/OrderContext";
 import { UserDataContext } from "../context/UserDataContext";
-import { Logo, UserBanner } from "../assets/images";
+import { LogoTransparent, UserBanner } from "../assets/images";
 import {
   convertTimestampToDate,
   determineCurrentBadge,
@@ -96,12 +96,12 @@ const Profile = () => {
               <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
                 <div className="group relative flex rounded-full bg-white">
                   <img
-                    src={userDataState?.picture ?? Logo}
+                    src={userDataState?.picture ?? LogoTransparent}
                     alt="avatar"
                     className="aspect-square w-32 rounded-full border border-black shadow-lg"
                   />
                   <button
-                    className="absolute top-0 left-0 right-0 flex h-full w-full items-center justify-center gap-2 rounded-full border border-black bg-gray-300 bg-opacity-50 p-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    className="absolute left-0 right-0 top-0 flex h-full w-full items-center justify-center gap-2 rounded-full border border-black bg-gray-300 bg-opacity-50 p-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                     onClick={() => setOpenModal(true)}
                   >
                     <BiImageAdd size={30} />

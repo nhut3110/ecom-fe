@@ -7,6 +7,10 @@ import MoneyIcon from "./money.svg";
 import GoodsIcon from "./goods.svg";
 import TrashIcon from "./trash.svg";
 import UploadIcon from "./upload.svg";
+import BlockIcon from "./block";
+import MinifigIcon from "./minifig";
+import DimensionIcon from "./dimension";
+import InstructionIcon from "./instruction";
 
 export {
   GoodsIcon,
@@ -18,4 +22,8 @@ export {
   ShirtIcon,
   MoneyIcon,
   UploadIcon,
+  BlockIcon,
+  MinifigIcon,
+  DimensionIcon,
+  InstructionIcon,
 };

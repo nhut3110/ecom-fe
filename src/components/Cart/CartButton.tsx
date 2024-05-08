@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import NumberBadge from "../NumberBadge";
 import { CartContext } from "../../context/CartContext";
 import CartAnimatedLogo from "./CartAnimatedLogo";
-import PortalWrapper from "../PortalWrapper";
-import Cart from "../../pages/Cart";
+import PortalWrapper from "../shared/PortalWrapper";
 import { getCart } from "../../services";
+import { FloatButton } from "antd";
+import { FloatButtonElement } from "antd/es/float-button/interface";
+import CartContent from "./CartContent";
 
 const miniCartContentVariants = {
   hidden: {
@@ -45,7 +46,7 @@ const CartButton = () => {
   const { cartState, updateCartPositions } = useContext(CartContext);
   const [openSmallCart, setOpenSmallCart] = useState<boolean>(false);
   const [cartQuantity, setCartQuantity] = useState<number>(0);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<FloatButtonElement>(null);
 
   const numberOfProducts = useMemo(() => {
     return Object.keys(cartState.cartList).length;
@@ -81,12 +82,7 @@ const CartButton = () => {
   }, []);
 
   return (
-    <div
-      id="cart-button"
-      className="fixed bottom-4 right-4 z-50 flex h-16 w-16 items-center justify-center rounded-full border bg-gray-100 shadow-lg"
-      ref={ref}
-      onClick={handleClick}
-    >
+    <div id="cart-button">
       <PortalWrapper>
         <AnimatePresence>
           {openSmallCart && (
@@ -95,21 +91,23 @@ const CartButton = () => {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="fixed bottom-24 right-0 h-96 w-full min-w-[25rem] max-w-xl overflow-auto rounded-xl border-2 bg-white p-5 shadow-xl scrollbar-hide md:right-10 md:w-auto"
+              className="fixed bottom-32 z-50 max-h-96 w-full min-w-[25rem] max-w-xl overflow-auto rounded-xl border-2 bg-yellow-100 p-5 shadow-xl scrollbar-hide md:right-10 md:w-auto"
             >
-              <Cart />
+              <CartContent showSummary={false} />
             </motion.div>
           )}
         </AnimatePresence>
       </PortalWrapper>
-
-      <NumberBadge
-        value={numberOfProducts ?? cartQuantity}
-        color="bg-red-200"
-      />
-      <div className="w-10">
-        <CartAnimatedLogo />
-      </div>
+      <FloatButton.Group shape="circle" style={{ bottom: 20 }}>
+        <FloatButton
+          icon={<CartAnimatedLogo />}
+          ref={ref}
+          type="primary"
+          onClick={handleClick}
+          badge={{ count: numberOfProducts || cartQuantity, color: "red" }}
+        />
+        <FloatButton.BackTop visibilityHeight={0} />
+      </FloatButton.Group>
     </div>
   );
 };

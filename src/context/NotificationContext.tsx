@@ -1,5 +1,5 @@
 import { createContext, ReactElement, useCallback, useReducer } from "react";
-import { NotificationType } from "../components/Notification";
+import { NotificationType } from "../components/shared/Notification";
 
 export type NotificationStateType = {
   notificationList: NotificationType[];

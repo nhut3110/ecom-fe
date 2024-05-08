@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { motion } from "framer-motion";
 import { useGetOrderFormFields } from "../../hooks";
 import OutlineInput from "./OutlineInput";
-import SmallButton from "../SmallButton";
+import SmallButton from "../shared/SmallButton";
 import { FormContext, InformationType } from "../../context/FormContext";
 import { validationInformationSchema } from "../../constants";
 

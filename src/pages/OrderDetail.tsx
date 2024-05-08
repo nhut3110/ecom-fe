@@ -5,8 +5,8 @@ import Payment from "payment";
 import { useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigatePage } from "../hooks";
-import GifLoading from "../components/GifLoading";
-import Modal from "../components/Modal";
+import GifLoading from "../components/shared/GifLoading";
+import Modal from "../components/shared/Modal";
 import { NotificationContext } from "../context/NotificationContext";
 import { CartType, cancelOrder, fetchSingleOrder } from "../services";
 import { convertTimestampToDate, transformCartResponse } from "../utils";
@@ -102,7 +102,7 @@ const OrderDetail = () => {
             {/* Column 1 */}
             <div className="flex w-full flex-col items-center gap-10 xl:w-2/3">
               {/* Item Summary Box */}
-              <div className="flex w-full flex-col items-center gap-3 rounded-lg border-2 border-gray-200 py-5 px-8">
+              <div className="flex w-full flex-col items-center gap-3 rounded-lg border-2 border-gray-200 px-8 py-5">
                 <div className="w-full">
                   <div className="flex items-center justify-between">
                     <p className="w-2/5 text-sm font-bold md:text-lg">Items</p>
@@ -127,7 +127,7 @@ const OrderDetail = () => {
                           alt="product image"
                           className="h-10 w-8 object-contain"
                         />
-                        <p className="invisible text-xs font-medium line-clamp-1 md:visible">
+                        <p className="invisible line-clamp-1 text-xs font-medium md:visible">
                           {item.product.title}
                         </p>
                       </div>
@@ -149,7 +149,7 @@ const OrderDetail = () => {
               </div>
 
               {/* Customer details */}
-              <div className="flex w-full flex-col gap-3 rounded-lg border-2 border-gray-200 py-5 px-8">
+              <div className="flex w-full flex-col gap-3 rounded-lg border-2 border-gray-200 px-8 py-5">
                 <p className="text-lg font-bold">Customer details</p>
                 <hr className="my-1 h-px border-0 bg-gray-300" />
                 <div className="flex w-full justify-between">
@@ -171,7 +171,7 @@ const OrderDetail = () => {
             {/* Column 2 */}
             <div className="flex w-full flex-col items-center gap-10 xl:w-2/3">
               {/* Payment */}
-              <div className="flex w-full flex-col gap-3 rounded-lg border-2 border-gray-200 py-5 px-8">
+              <div className="flex w-full flex-col gap-3 rounded-lg border-2 border-gray-200 px-8 py-5">
                 <p className="text-lg font-bold">Payment</p>
                 <hr className="my-1 h-px border-0 bg-gray-300" />
                 <div className="flex w-full justify-between">
@@ -189,7 +189,7 @@ const OrderDetail = () => {
               </div>
 
               {/* Address */}
-              <div className="flex w-full flex-col gap-3 rounded-lg border-2 border-gray-200 py-5 px-8">
+              <div className="flex w-full flex-col gap-3 rounded-lg border-2 border-gray-200 px-8 py-5">
                 <p className="text-lg font-bold">Address</p>
                 <hr className="my-1 h-px border-0 bg-gray-300" />
                 <div className="flex w-full justify-between">
@@ -209,7 +209,7 @@ const OrderDetail = () => {
               </div>
 
               {/* Order Summary */}
-              <div className="flex w-full flex-col gap-3 rounded-lg border-2 border-gray-200 py-5 px-8">
+              <div className="flex w-full flex-col gap-3 rounded-lg border-2 border-gray-200 px-8 py-5">
                 <div className="flex w-full items-center justify-between">
                   <p className="text-lg font-bold">Order summary</p>
                   <div

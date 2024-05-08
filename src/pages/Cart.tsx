@@ -6,15 +6,15 @@ import React, {
   useState,
 } from "react";
 import { useNavigatePage } from "../hooks";
-import Modal from "../components/Modal";
-import CartList from "../components/CartList";
-import OrderSummary from "../components/OrderSummary";
-import SmallButton from "../components/SmallButton";
+import Modal from "../components/shared/Modal";
+import CartList from "../components/Cart/CartList";
+import OrderSummary from "../components/Order/OrderSummary";
 import { CartContext } from "../context/CartContext";
-import GifLoading from "../components/GifLoading";
+import GifLoading from "../components/shared/GifLoading";
 import { NotificationContext } from "../context/NotificationContext";
 import { clearCart, fetchCartList } from "../services";
 import { transformCartResponse } from "../utils/transformCartResponse";
+import { Button } from "antd";
 
 const Cart = (): React.ReactElement => {
   const { cartState, removeAllFromCart, importCart } = useContext(CartContext);
@@ -90,7 +90,9 @@ const Cart = (): React.ReactElement => {
       {/* Header */}
       <div className="mx-auto my-5 flex w-4/5 items-center justify-between">
         <p className="text-xl font-bold">Review your bag</p>
-        <SmallButton content="Delete all" onClick={handleOpenModal} />
+        <Button danger onClick={handleOpenModal}>
+          Delete all
+        </Button>
       </div>
 
       {/* Cart Content */}
@@ -113,13 +115,9 @@ const Cart = (): React.ReactElement => {
         <OrderSummary />
 
         {/* Buttons */}
-        <div className="flex w-full justify-between">
-          <SmallButton onClick={() => redirect("/products")}>
-            <p className="text-md md:text-lg">Back</p>
-          </SmallButton>
-          <SmallButton onClick={handleCheckout}>
-            <p className="text-md md:text-lg">Checkout</p>
-          </SmallButton>
+        <div className="mb-5 flex w-full justify-between">
+          <Button onClick={() => redirect("/products")}>Back</Button>
+          <Button onClick={handleCheckout}>Checkout</Button>
         </div>
       </div>
     </div>

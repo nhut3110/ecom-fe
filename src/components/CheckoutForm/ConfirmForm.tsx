@@ -2,7 +2,7 @@ import { map } from "lodash";
 import React, { useContext } from "react";
 import { motion } from "framer-motion";
 import { useNavigatePage } from "../../hooks";
-import SmallButton from "../SmallButton";
+import SmallButton from "../shared/SmallButton";
 import { CartContext } from "../../context/CartContext";
 import { FormContext } from "../../context/FormContext";
 import { OrderContext } from "../../context/OrderContext";

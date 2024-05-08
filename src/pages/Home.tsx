@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useNavigatePage } from "../hooks";
-import SmallButton from "../components/SmallButton";
+import SmallButton from "../components/shared/SmallButton";
 import LeftAppearWrapper from "../components/Animation/LeftAppearWrapper";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 import RightAppearWrapper from "../components/Animation/RightAppearWrapper";
@@ -10,21 +10,36 @@ import {
   Batman,
   BlackNinja,
   Cars,
-  Headphone,
-  Joker,
-  MenShirt,
+  IronMan,
   Rapper,
   Shipping,
-  SilverRings,
   StormTrooper,
-  Watch,
-  WomenSuit,
+  sixFirstThemes,
 } from "../assets/images";
-import { Button } from "antd";
-import { COLORS } from "../constants";
+import { Button, Card, Col, Row, Typography } from "antd";
+import { useFetchProductList } from "../hooks/useFetchProductList";
+import { getProductList } from "../services";
+import ProductCard from "../components/Product/ProductCard";
+
+const { Meta } = Card;
+const PAGE_LIMIT = 6;
 
 const Home = (): React.ReactElement => {
   const { redirect } = useNavigatePage();
+
+  const selectedSort = useMemo(
+    () => ({
+      sortBy: "discountPercentage",
+      sortDirection: "DESC",
+    }),
+    []
+  );
+
+  const { products, isLoading } = useFetchProductList({
+    queryFn: getProductList,
+    limit: PAGE_LIMIT,
+    selectedSort: selectedSort,
+  });
 
   return (
     <div className="max-w-screen">
@@ -149,10 +164,10 @@ const Home = (): React.ReactElement => {
           <OpacityMotionWrapper className="relative flex w-3/4 items-center justify-items-center rounded-lg bg-red-300 md:items-start">
             <div className="ml-5 md:ml-10 md:mt-10">
               <p className="text-xl text-white">#Super Heroes</p>
-              <p className="font-bold lg:text-xl">Battles in DC Universe</p>
+              <p className="font-bold lg:text-xl">Battles in Marvel Universe</p>
             </div>
             <img
-              src={Joker}
+              src={IronMan}
               alt="ring"
               className="bottom-10 right-10 mr-1 max-h-[80%] w-2/5 object-contain md:absolute"
             />
@@ -200,15 +215,49 @@ const Home = (): React.ReactElement => {
       </div>
 
       {/* Quote */}
-      <div className="mb-10 flex flex-col items-center justify-center">
+      <div className="mb-20 flex flex-col items-center justify-center">
         <div className="flex w-4/5 flex-col items-center justify-center gap-3 rounded-md bg-yellow-100 p-5 md:p-10">
           <p className="relative top-2 text-4xl">"</p>
           <p className="text-md w-3/4 text-center text-red-400 md:text-xl">
-            Their products are Amazing! This is the best place to buy any
-            products with super fantastic quality. With super many benefits, you
-            must try it.
+            I want to bring the best place to buy any products with super
+            fantastic quality to the table. With super many benefits, you must
+            try it.
           </p>
-          <p className="mt-2 text-lg font-bold">Vo Minh Nhut</p>
+          <p className="mt-2 text-lg font-bold">Vo Minh Nhut - Founder</p>
+        </div>
+      </div>
+
+      {/* Top theme */}
+      <div className="mb-10 flex flex-col items-center justify-center">
+        <div className="w-4/5">
+          <Typography.Title level={2}>Top LEGO® Themes</Typography.Title>
+          <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
+            {sixFirstThemes.map((theme, index) => (
+              <Col sm={24} md={12} lg={8} key={index}>
+                <Card cover={<img src={theme.img} alt={theme.name} />}>
+                  <Meta title={theme.name} />
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </div>
+
+      <div className="mb-10 flex flex-col items-center justify-center">
+        <div className="w-4/5">
+          <Typography.Title level={2}>Top Deals from Legood®</Typography.Title>
+          <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
+            {products.map((item, index) => (
+              <Col sm={24} md={12} lg={8} key={index}>
+                <ProductCard
+                  product={item}
+                  isFavorite={false}
+                  hideFavorite
+                  hideHoverAnimation
+                />
+              </Col>
+            ))}
+          </Row>
         </div>
       </div>
     </div>

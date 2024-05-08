@@ -2,16 +2,19 @@ import times from "lodash/times";
 import { AnimatePresence } from "framer-motion";
 import React, { useCallback, useState, useEffect, useContext } from "react";
 import { useFetchProductList } from "../hooks/useFetchProductList";
-import Carousel from "../components/Carousel";
+import Carousel from "../components/shared/Carousel";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
-import ProductCard, { ProductCardSkeleton } from "../components/ProductCard";
-import SmallButton from "../components/SmallButton";
+import ProductCard, {
+  ProductCardSkeleton,
+} from "../components/Product/ProductCard";
+import SmallButton from "../components/shared/SmallButton";
 import { PaginatedResponse, getFavorites, getProductList } from "../services";
 import { determineSortDirections, selectSortMenu } from "../utils";
 import { PAGE_LIMIT, PRODUCT_PREFIX, ProductDetails } from "../constants";
 import { FavoriteContext } from "../context/FavoriteContext";
+import { Col, Row, Typography } from "antd";
 
-const DEFAULT_QUANTITY_PRODUCT_SKELETON = 20; // Number of products skeletons in the loading screen
+const DEFAULT_QUANTITY_PRODUCT_SKELETON = 12; // Number of products skeletons in the loading screen
 
 const Product = (): React.ReactElement => {
   const [favorites, setFavorites] = useState<ProductDetails[]>([]);
@@ -30,20 +33,22 @@ const Product = (): React.ReactElement => {
 
   const handleLoadMore = useCallback(() => {
     const sortOptions = determineSortDirections(selectedSort);
-    const filterOptions = selectedFilter ? { categoryId: selectedFilter } : {};
+    const filterOptions = selectedFilter ? selectedFilter : {};
 
     fetchList(sortOptions, filterOptions, cursor);
   }, [selectedSort, selectedFilter, cursor]);
 
   const renderSkeletonList = useCallback(
     () => (
-      <div className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
+      <Row gutter={[32, 32]} align={"middle"} justify={"center"}>
         {times(DEFAULT_QUANTITY_PRODUCT_SKELETON, (index) => (
           <OpacityMotionWrapper key={index}>
-            <ProductCardSkeleton />
+            <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
+              <ProductCardSkeleton />
+            </Col>
           </OpacityMotionWrapper>
         ))}
-      </div>
+      </Row>
     ),
     []
   );
@@ -53,27 +58,6 @@ const Product = (): React.ReactElement => {
 
     setFavorites(favoriteList.data);
   };
-
-  const checkIsFavorite = (id: string) => {
-    return favorites.findIndex((product) => product.id === id) !== -1;
-  };
-
-  const renderProductList = useCallback(
-    () => (
-      <div className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
-        {products.map((product: ProductDetails) => (
-          <OpacityMotionWrapper key={product.id}>
-            <ProductCard
-              product={product}
-              key={PRODUCT_PREFIX + product.id}
-              isFavorite={checkIsFavorite(product.id)}
-            />
-          </OpacityMotionWrapper>
-        ))}
-      </div>
-    ),
-    [products]
-  );
 
   const renderLoadMoreButton = useCallback(() => {
     if (products.length < totalRecords)
@@ -86,21 +70,46 @@ const Product = (): React.ReactElement => {
 
   useEffect(() => {
     fetchFavorites();
-  }, [favoriteState.favoriteList, products]);
+  }, []);
 
   return (
     <div className="p-5">
       <Carousel />
 
       {/* Sort Option List */}
-      <div className="m-10 grid grid-cols-2 justify-end gap-5 md:flex">
-        {renderSelectSortMenu()}
+      {renderSelectSortMenu()}
+      <div className="mt-10 w-full md:mx-14 xl:mx-32">
+        <Typography.Title level={2}> All products</Typography.Title>
       </div>
+      <hr className="my-5 h-px border-0 bg-gray-200" />
 
       {/* Product List */}
-      <AnimatePresence>
-        {isLoading ? renderSkeletonList() : renderProductList()}
-      </AnimatePresence>
+      <Row gutter={[16, 16]} align={"middle"}>
+        <AnimatePresence>
+          {isLoading ? (
+            renderSkeletonList()
+          ) : (
+            <Row gutter={[32, 32]} align={"middle"} justify={"center"}>
+              {products.map((product: ProductDetails) => (
+                <OpacityMotionWrapper key={product.id}>
+                  <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
+                    <ProductCard
+                      product={product}
+                      key={PRODUCT_PREFIX + product.id}
+                      isFavorite={
+                        favorites.findIndex(
+                          (favorite) => product.id === favorite.id
+                        ) !== -1
+                      }
+                    />
+                  </Col>
+                </OpacityMotionWrapper>
+              ))}
+            </Row>
+          )}
+        </AnimatePresence>
+      </Row>
+
       {renderLoadMoreButton()}
     </div>
   );

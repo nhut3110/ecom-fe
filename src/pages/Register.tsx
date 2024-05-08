@@ -7,9 +7,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import React, { useCallback, useContext, useState } from "react";
 import { useNavigatePage } from "../hooks";
-import AvatarModal from "../components/AvatarModal";
+import AvatarModal from "../components/shared/AvatarModal";
 import OutlineInput from "../components/CheckoutForm/OutlineInput";
-import GifLoading from "../components/GifLoading";
+import GifLoading from "../components/shared/GifLoading";
 import {
   LoginBackground,
   LogoTransparent,
@@ -249,7 +249,7 @@ const Register = (): React.ReactElement => {
         variants={leftAppearVariants}
         className="z-10 mx-3 my-auto flex h-fit w-full flex-col items-start justify-center rounded-lg border-2 bg-white px-10 py-10 shadow-2xl md:w-1/2 lg:w-1/3"
       >
-        <img src={LogoTransparent} alt="logo" className="h-9 invert" />
+        <img src={LogoTransparent} alt="logo" className="h-12" />
 
         <motion.div
           className="my-6"

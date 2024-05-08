@@ -112,7 +112,7 @@ const Login = (): React.ReactElement => {
         variants={leftAppearVariants}
         className="z-10 mx-3 my-auto flex h-fit w-full flex-col items-start justify-center rounded-lg border-2 bg-white px-10 py-10 shadow-2xl md:w-1/2 lg:w-1/3"
       >
-        <img src={LogoTransparent} alt="logo" className="h-9 invert" />
+        <img src={LogoTransparent} alt="logo" className="h-12" />
 
         <motion.div
           className="my-6"

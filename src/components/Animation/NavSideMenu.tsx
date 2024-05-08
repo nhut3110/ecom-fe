@@ -1,4 +1,4 @@
-import { FiClipboard, FiHeart, FiShoppingCart } from "react-icons/fi";
+import { FiClipboard, FiGrid, FiHeart, FiShoppingCart } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import React from "react";
@@ -9,6 +9,7 @@ type NavDataType = {
 };
 
 const navData: NavDataType[] = [
+  { image: <FiGrid />, name: "themes" },
   { image: <FiShoppingCart />, name: "products" },
   { image: <FiHeart />, name: "favorites" },
   { image: <FiClipboard />, name: "orders" },

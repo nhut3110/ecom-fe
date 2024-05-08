@@ -1,14 +1,22 @@
 import { Link } from "react-router-dom";
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { useFetchProductList } from "../hooks/useFetchProductList";
-import ProductCard from "../components/ProductCard";
+import ProductCard, {
+  ProductCardSkeleton,
+} from "../components/Product/ProductCard";
 import OpacityMotionWrapper from "../components/Animation/OpacityMotionWrapper";
 import { FavoriteContext } from "../context/FavoriteContext";
 import { determineSortDirections, selectSortMenu } from "../utils";
 import { FAVORITE_PREFIX, ProductDetails } from "../constants";
 import { getFavorites } from "../services/products.api";
-import GifLoading from "../components/GifLoading";
-import SearchBar from "../components/SearchBar";
+import GifLoading from "../components/shared/GifLoading";
+import SearchBar from "../components/shared/SearchBar";
+import EmptyLego from "../components/shared/EmptyLego";
+import { Col, Row, Typography } from "antd";
+import { times } from "lodash";
+import { AnimatePresence } from "framer-motion";
+
+const DEFAULT_QUANTITY_PRODUCT_SKELETON = 12; // Number of products skeletons in the loading screen
 
 const Favorite = (): React.ReactElement => {
   const { favoriteState, importFavorite } = useContext(FavoriteContext);
@@ -18,66 +26,68 @@ const Favorite = (): React.ReactElement => {
   const { renderSelectSortMenu, selectedSort, selectedFilter } =
     selectSortMenu();
 
-  const { isLoading, fetchList, products } = useFetchProductList({
+  const { isLoading, products } = useFetchProductList({
     selectedSort,
     selectedFilter,
     queryFn: getFavorites,
   });
 
-  const handleLoadMore = () => {
-    const sortOptions = determineSortDirections(selectedSort);
-    const filterOptions = selectedFilter ? { categoryId: selectedFilter } : {};
-
-    fetchList(sortOptions, filterOptions);
-  };
-
   const renderFavoriteList = () => {
     return (
       <div>
-        <div className="mt-10 grid w-auto grid-cols-1 justify-items-center gap-x-5 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-fluid">
+        <Row gutter={[32, 32]} align={"middle"} justify={"center"}>
           {favoriteState.favoriteList.map((product: ProductDetails) => (
             <OpacityMotionWrapper key={product.id}>
-              <ProductCard
-                product={product}
-                isFavorite={true}
-                key={FAVORITE_PREFIX + product.id}
-              />
+              <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
+                <ProductCard
+                  product={product}
+                  isFavorite={true}
+                  key={FAVORITE_PREFIX + product.id}
+                />
+              </Col>
             </OpacityMotionWrapper>
           ))}
-        </div>
+        </Row>
       </div>
     );
   };
+
+  const renderSkeletonList = useCallback(
+    () => (
+      <Row gutter={[32, 32]} align={"middle"} justify={"center"}>
+        {times(DEFAULT_QUANTITY_PRODUCT_SKELETON, (index) => (
+          <OpacityMotionWrapper key={index}>
+            <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
+              <ProductCardSkeleton />
+            </Col>
+          </OpacityMotionWrapper>
+        ))}
+      </Row>
+    ),
+    []
+  );
 
   useEffect(() => {
     importFavorite(products);
   }, [products]);
 
   return (
-    <div>
-      {/* Sort Option and Search List */}
-      <div className="mx-10 flex flex-col md:flex-row md:justify-between">
-        <div className="my-5 lg:w-1/2">
-          <SearchBar queryFn={getFavorites} />
-        </div>
-        <div className="grid grid-cols-2 justify-end gap-5 md:flex">
-          {renderSelectSortMenu()}
-        </div>
-      </div>
+    <div className="mx-auto my-5 w-4/5">
       {isLoading && <GifLoading />}
       {/* Favorite List  */}
+      <p className="text-xl font-bold">My favorites</p>
+      <hr className="my-2 h-px border-0 bg-gray-200" />
       <div className="min-h-[15rem] w-full">
         {isNotEmpty ? (
-          renderFavoriteList()
+          <div className="px-10">
+            {renderSelectSortMenu()}
+            <AnimatePresence>
+              {isLoading ? renderSkeletonList() : renderFavoriteList()}
+            </AnimatePresence>
+          </div>
         ) : (
-          <div className="flex w-full flex-col items-center justify-center">
-            <p className="text-2xl font-semibold">No favorite Products.</p>
-            <Link
-              to={"/products"}
-              className="text-sm italic text-gray-400 hover:text-black"
-            >
-              Back to product page.
-            </Link>
+          <div className="my-32 flex w-full flex-col items-center justify-center">
+            <EmptyLego />
           </div>
         )}
       </div>

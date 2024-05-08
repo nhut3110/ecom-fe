@@ -57,6 +57,16 @@ export type FindProductType = {
   limit?: number;
 };
 
+export type FindDiscountType = {
+  sortBy?: string;
+  sortDirection?: string;
+  discountType?: "percentage" | "fixed" | "tiered";
+  active?: boolean;
+  isValid?: boolean;
+  search?: string;
+  userId?: string;
+};
+
 export type PaginatedResponse = {
   data: ProductDetails[];
   pagination: {
@@ -109,9 +119,35 @@ export type AddOrderType = {
   paymentId?: string;
   paymentType: PaymentOptions;
   description?: string;
+  amount: number;
 };
 
-export type Order = {
+export interface Discount {
+  id: string; // UUID, auto-generated
+  code: string; // Unique string, required
+  description?: string; // Optional text
+  discountType: "percentage" | "fixed" | "tiered"; // Enum, required
+  discountValue: number; // Float, required
+  startDate: Date; // Date, required
+  endDate: Date; // Optional Date
+  minPurchaseAmount?: number; // Optional float
+  maxDiscountAmount?: number; // Optional float
+  active: boolean; // Boolean, default true
+  createdAt: Date; // Date, auto-generated
+  updatedAt: Date; // Date, auto-generated
+}
+
+export interface UserDiscount {
+  id: string;
+  discountId: string;
+  usageCount: number;
+  userId: string;
+  createdAt: Date; // Date, auto-generated
+  updatedAt: Date; // Date, auto-generated
+  discount: Discount;
+}
+
+export interface Order {
   id: string;
   orderStatus: OrderStatus;
   createdAt: Date;
@@ -122,4 +158,61 @@ export type Order = {
   };
   address: AddressType;
   orderDetails: CartType[];
-};
+}
+
+export interface Comment {
+  id: string;
+  userId: string;
+  productId: string;
+  text: string;
+  rating: number;
+  images: CommentImage[];
+  user?: UserData;
+  product?: ProductDetails;
+  createdAt?: string;
+  updatedAt?: string;
+  likeCount: number;
+  dislikeCount: number;
+  currentUserReaction: "like" | "dislike";
+  isCurrentUserReported: boolean;
+}
+
+export interface CommentImage {
+  id: string;
+  commentId: string;
+  imageUrl: string;
+}
+
+export interface Discussion {
+  id: string;
+  userId: string;
+  productId: string;
+  parentId?: string;
+  text: string;
+  replies?: Discussion[];
+  parent?: Discussion;
+  user?: UserData;
+  product?: ProductDetails;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface DiscussionListItem {
+  userId: string;
+  comId: string;
+  avatarUrl: string;
+  fullName: string;
+  text: string;
+  replies: DiscussionListItem[];
+  commentId?: string;
+}
+
+export interface ReactionData {
+  commentId: string;
+  type: "like" | "dislike";
+}
+
+export interface ReportData {
+  commentId: string;
+  reason: string;
+}

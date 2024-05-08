@@ -1,15 +1,22 @@
 import { AnimatePresence, motion } from "framer-motion";
-import Select, { SingleValue } from "react-select";
 import images from "react-payment-inputs/images";
 import Payment from "payment";
-import React, { ChangeEvent, useContext, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useNavigatePage } from "../hooks";
-import Modal from "../components/Modal";
-import AddressCard from "../components/AddressCard";
-import GifLoading from "../components/GifLoading";
-import SmallButton from "../components/SmallButton";
-import OrderSummary from "../components/OrderSummary";
-import CartList from "../components/CartList";
+import Modal from "../components/shared/Modal";
+import AddressCard from "../components/Address/AddressCard";
+import GifLoading from "../components/shared/GifLoading";
+import SmallButton from "../components/shared/SmallButton";
+import OrderSummary from "../components/Order/OrderSummary";
+import CartList from "../components/Cart/CartList";
 import {
   AddressType,
   PaymentType,
@@ -22,6 +29,32 @@ import { CartContext } from "../context/CartContext";
 import { NotificationContext } from "../context/NotificationContext";
 import { transformCartResponse } from "../utils";
 import { PaymentOptions, paymentOptions } from "../constants";
+import {
+  Button,
+  Col,
+  Flex,
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
+  Steps,
+  Typography,
+  message,
+} from "antd";
+import { useForm } from "antd/es/form/Form";
+import {
+  GlobalOutlined,
+  ShoppingCartOutlined,
+  TransactionOutlined,
+  TruckOutlined,
+} from "@ant-design/icons";
+import {
+  GoogleMap,
+  Libraries,
+  Marker,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 
 type SelectOptionType = ChangeEvent & {
   value: string;
@@ -38,40 +71,36 @@ const Checkout = (): React.ReactElement => {
   const { addresses, isLoading: isLoadingAddress } = fetchAddressList();
   const { payment, isLoading: isLoadingPayment } = fetchPaymentList();
 
-  const [addressId, setAddressId] = useState<string>("");
-  const [paymentId, setPaymentId] = useState<string>();
+  const [address, setAddress] = useState<AddressType>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [paymentType, setPaymentType] = useState<PaymentOptions>();
-  const [message, setMessage] = useState<string>("");
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [current, setCurrent] = useState(0);
 
-  const { importCart } = useContext(CartContext);
+  const { importCart, cartState } = useContext(CartContext);
   const { notify } = useContext(NotificationContext);
 
   const { redirect } = useNavigatePage();
+  const [form] = useForm();
 
-  const handleChoosePayment = (e: SingleValue<SelectOptionType>) => {
-    setPaymentId(e?.value ?? "");
-  };
+  const libs = useMemo(() => {
+    return ["places"] as Libraries;
+  }, []);
 
-  const handleChooseAddress = (e: SingleValue<SelectOptionType>) => {
-    setAddressId(e?.value ?? "");
-  };
+  const mapRef = useRef<google.maps.Map>();
 
-  const handleChangeMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
-  };
+  const { isLoaded } = useJsApiLoader({
+    libraries: libs,
+    googleMapsApiKey: "AIzaSyAgo5Lore5ZNzjsOi4oqOJI-7NQCA1ekVU", // MOVE TO ENV LATER
+  });
+
+  const cartValue = useMemo(() => {
+    if (cartState.cartValue) return cartState.cartValue.toFixed(2);
+    return "0.00";
+  }, [cartState.cartValue]);
 
   const handleSubmit = async () => {
-    if (paymentType === PaymentOptions.CARD && !paymentId)
-      return notify({
-        id: crypto.randomUUID(),
-        content: "Cannot checkout with an empty payment",
-        open: true,
-        type: "warning",
-      });
-
-    if (!addressId)
+    if (!address?.id)
       return notify({
         id: crypto.randomUUID(),
         content: "Cannot checkout with an empty address",
@@ -88,10 +117,9 @@ const Checkout = (): React.ReactElement => {
       });
 
     await addOrder({
-      addressId: addressId,
+      addressId: address?.id as string,
       paymentType: paymentType,
-      paymentId: paymentId,
-      description: message,
+      amount: Number(Number(cartValue).toFixed(0)),
     });
 
     redirect("/orders");
@@ -109,138 +137,192 @@ const Checkout = (): React.ReactElement => {
     setIsLoading(isLoadingAddress || isLoadingCart || isLoadingPayment);
   }, [isLoadingAddress, isLoadingCart, isLoadingPayment]);
 
-  return (
-    <div className="mx-5 flex w-full flex-col justify-around md:flex-row">
-      {isLoading && <GifLoading />}
-      <div className="my-5 mx-auto flex w-[90%] flex-col gap-5 px-5 md:mx-0 md:w-3/5">
-        <div className="mb-10 mt-5">
-          <p className="text-xl font-semibold md:text-2xl">
-            Thank you for ordering with us,
-          </p>
-          <p className="text-xl font-semibold md:text-3xl">
-            Fill Shipping info ✏️
-          </p>
-        </div>
+  const next = useCallback(() => {
+    setCurrent(current + 1);
+  }, [current]);
 
-        <div>
-          <p className="mb-5 text-xl font-semibold underline md:text-2xl">
-            Address Section
-          </p>
+  const prev = useCallback(() => {
+    setCurrent(current - 1);
+  }, [current]);
+
+  const onLoad = useCallback((map: google.maps.Map) => {
+    mapRef.current = map;
+    map.setZoom(18);
+  }, []);
+
+  const AddressStep = useCallback(() => {
+    return (
+      <div>
+        <Form.Item label="Message note" name="description">
+          <Input.TextArea
+            autoSize={{ minRows: 3, maxRows: 6 }}
+            showCount
+            maxLength={200}
+          />
+        </Form.Item>
+        <Form.Item label="Address" name="address" required>
           <Select
-            required
-            isSearchable={false}
-            isLoading={isLoadingAddress}
-            isDisabled={isLoadingAddress}
-            onChange={handleChooseAddress}
+            showSearch
+            size="large"
+            allowClear
+            onChange={(value) => {
+              setAddress(
+                addresses?.find((item: AddressType) => item.id === value)
+              );
+            }}
+            style={{ width: "100%" }}
+            onClear={() => setAddress(undefined)}
             options={addresses?.map((item: AddressType) => ({
-              value: item.id,
+              key: item.id,
               label: (
-                <div className="w-full p-2">
-                  <AddressCard details={item} />
-                </div>
+                <Space>
+                  <Typography.Text className="font-semibold">
+                    {item.name}
+                  </Typography.Text>
+                  <Typography.Text>-</Typography.Text>
+                  <Typography.Text>{item.address}</Typography.Text>
+                </Space>
               ),
+              value: item.id,
             }))}
           />
-        </div>
-
-        <div>
-          <p className="mb-5 text-xl font-semibold underline md:text-2xl">
-            Payment Section
-          </p>
-          <div className="mb-5 grid grid-cols-1 gap-5 px-5 md:grid-cols-2">
-            {paymentOptions.map((option, index) => (
-              <div
-                key={index}
-                className="flex items-center rounded border border-gray-200 pl-4 dark:border-gray-700"
-              >
-                <input
-                  checked={paymentType === option}
-                  id={option}
-                  onChange={() => setPaymentType(option)}
-                  type="checkbox"
-                  name="bordered-checkbox"
-                  className="h-6 w-6 rounded border-gray-300 bg-gray-100 text-black"
+        </Form.Item>
+        {address && (
+          <>
+            <Row gutter={[32, 32]} className="mt-7">
+              <Col sm={24} md={12}>
+                <Input
+                  size="large"
+                  readOnly
+                  value={address?.name}
+                  className="cursor-default"
                 />
-                <label
-                  htmlFor={option}
-                  className="ml-2 w-full py-4 font-semibold text-gray-900 first-letter:capitalize"
-                >
-                  {option}
-                </label>
-              </div>
-            ))}
-          </div>
-          <AnimatePresence>
-            {paymentType === PaymentOptions.CARD && (
-              <motion.div
-                variants={selectVariants}
-                initial="initial"
-                animate="animate"
-                exit="initial"
-              >
-                <Select
-                  required={paymentType === PaymentOptions.CARD}
-                  isSearchable={false}
-                  isLoading={isLoadingPayment}
-                  isDisabled={isLoadingPayment}
-                  onChange={handleChoosePayment}
-                  options={payment?.map((item: PaymentType) => {
-                    const cardType = Payment.fns.cardType(item.cardNumber);
-                    const cardImage = (images as any)[cardType];
-
-                    return {
-                      value: item.id,
-                      label: (
-                        <div className="flex h-4 w-full items-center">
-                          <svg className="h-4 w-10">{cardImage}</svg>
-                          <p>{item.cardNumber}</p>
-                        </div>
-                      ),
-                    };
-                  })}
+              </Col>
+              <Col sm={24} md={12}>
+                <Input
+                  size="large"
+                  readOnly
+                  value={address?.phoneNumber}
+                  className="cursor-default"
                 />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+              </Col>
+              <Col span={24}>
+                <Input
+                  size="large"
+                  readOnly
+                  value={address?.email}
+                  className="cursor-default"
+                />
+              </Col>
+              <Col span={24}>
+                <div className="mb-2 w-full rounded-full pt-2">
+                  {isLoaded && (
+                    <GoogleMap
+                      mapContainerStyle={{
+                        width: "100%",
+                        height: "300px",
+                      }}
+                      onLoad={onLoad}
+                      center={{
+                        lat: address?.lat as number,
+                        lng: address?.lng as number,
+                      }}
+                      onCenterChanged={() => mapRef.current?.setZoom(15)}
+                    >
+                      <Marker
+                        position={{
+                          lat: address?.lat as number,
+                          lng: address?.lng as number,
+                        }}
+                      />
+                    </GoogleMap>
+                  )}
+                </div>
+              </Col>
+            </Row>
+          </>
+        )}
+      </div>
+    );
+  }, [addresses, address]);
 
-        <div>
-          <p className="mb-5 text-xl font-semibold underline md:text-2xl">
-            Message Section
-          </p>
-          <textarea
-            onChange={handleChangeMessage}
-            rows={4}
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-            placeholder="Write your message..."
+  const ReviewStep = useCallback(() => {
+    return;
+  }, []);
+
+  const steps = [
+    {
+      key: "address-form",
+      title: <Typography.Title level={5}>Address</Typography.Title>,
+      content: <AddressStep />,
+      icon: <TruckOutlined />,
+    },
+    {
+      key: "cart-form",
+      title: <Typography.Title level={5}>Review</Typography.Title>,
+      content: <></>,
+      icon: <ShoppingCartOutlined />,
+    },
+    {
+      key: "payment-form",
+      title: <Typography.Title level={5}>Payment</Typography.Title>,
+      content: <></>,
+      icon: <TransactionOutlined />,
+    },
+  ];
+
+  return (
+    <div className=" mx-5 mt-5">
+      <Typography.Title level={1} className="w-full text-center">
+        Checkout
+      </Typography.Title>
+      <div className="xs:px-10 mt-10 rounded-3xl border-4 py-10 shadow-xl sm:mx-auto md:px-10 lg:mx-10 lg:px-16">
+        <Form form={form} layout="vertical">
+          <Steps
+            labelPlacement="vertical"
+            responsive={false}
+            current={current}
+            items={steps.map((item) => ({
+              key: item.key,
+              title: item.title,
+              icon: item.icon,
+            }))}
           />
-        </div>
+          <div className="p-10">{steps[current].content}</div>
+          <Flex
+            style={{ marginTop: 24, width: "100%" }}
+            justify="space-between"
+            align="center"
+          >
+            <Button
+              style={{ margin: "0 10px" }}
+              onClick={() => prev()}
+              disabled={current === 0}
+            >
+              Previous
+            </Button>
 
-        <div>
-          <p className="mb-5 text-xl font-semibold underline md:text-2xl">
-            Product Section
-          </p>
-          <div className="flex max-h-96 w-full flex-col gap-4 overflow-x-hidden overflow-y-scroll rounded-lg border border-gray-500 p-3 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full">
-            {<CartList />}
-          </div>
-        </div>
+            {current < steps.length - 1 && (
+              <Button
+                type="primary"
+                onClick={() => next()}
+                style={{ margin: "0 10px" }}
+              >
+                Next
+              </Button>
+            )}
+            {current === steps.length - 1 && (
+              <Button
+                type="primary"
+                style={{ margin: "0 10px" }}
+                onClick={() => message.success("Processing complete!")}
+              >
+                Done
+              </Button>
+            )}
+          </Flex>
+        </Form>
       </div>
-      <div className="mx-auto md:mt-20 md:h-full">
-        <div className="top-28 bottom-0 w-full md:relative">
-          <OrderSummary />
-          <SmallButton onClick={() => setOpenModal(true)}>
-            <p className="w-72 text-center">Place your Order</p>
-          </SmallButton>
-        </div>
-      </div>
-
-      <Modal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        onSubmit={handleSubmit}
-      >
-        <p>Do you want to place order?</p>
-      </Modal>
     </div>
   );
 };

@@ -1,11 +1,11 @@
 import React, { ReactElement } from "react";
 import { useLocation } from "react-router-dom";
 import { Layout as AntdLayout } from "antd";
-import Footer from "../components/Footer";
-import MailSubscription from "../components/MailSubscription";
-import NavBar from "../components/NavBar";
+import Footer from "../components/Layout/Footer";
+import MailSubscription from "../components/Layout/MailSubscription";
+import NavBar from "../components/Layout/NavBar";
 import CartButton from "../components/Cart/CartButton";
-import ValidateLoginModal from "../components/ValidateLoginModal";
+import ValidateLoginModal from "../components/shared/ValidateLoginModal";
 import { notDisplayCartButton } from "../constants";
 
 type ChildrenType = {
@@ -21,16 +21,15 @@ const Layout = ({ children }: ChildrenType): ReactElement => {
   );
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-x-hidden">
+    <div className="relative flex min-h-screen flex-col overflow-hidden">
       <ValidateLoginModal />
 
-      <AntdLayout>
+      <AntdLayout className="bg-white">
         <NavBar />
         <AntdContent>
           {/* children component of layout here */}
-          <main className="min-h-[20vh]">{children}</main>
+          <main className="pt-[68px]">{children}</main>
           {!isNotDisplayCartButton && <CartButton />}
-          <MailSubscription />
         </AntdContent>
         <Footer />
       </AntdLayout>

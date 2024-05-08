@@ -1,48 +1,65 @@
-import { motion } from "framer-motion";
 import React, { useState, useRef, useEffect } from "react";
-import SelectMenu from "../components/SelectMenu";
-import Tooltip from "../components/Tooltip";
 import { getCategoryList, CategoryType } from "../services";
 import { SortOptionType } from "../constants";
+import SortMenu from "../components/Menu/SortMenu";
+import {
+  Button,
+  Col,
+  FloatButton,
+  InputNumber,
+  Modal,
+  Radio,
+  Row,
+  Slider,
+  Tooltip,
+  Typography,
+} from "antd";
+import {
+  ControlOutlined,
+  QuestionCircleOutlined,
+  SettingOutlined,
+  SortAscendingOutlined,
+} from "@ant-design/icons";
+import { useBoolean } from "usehooks-ts";
 
 type SortListType = {
   name: string;
   options: string[];
-};
-
-const iconVariants = {
-  hidden: {
-    opacity: 0,
-    pathLength: 0,
-    fill: "rgba(0, 0, 0, 0)",
-  },
-  visible: {
-    opacity: 1,
-    pathLength: 1,
-    fill: "rgba(0, 0, 0, 1)",
-  },
+  label: string;
 };
 
 const sortOptions: SortListType[] = [
   {
     name: "price",
+    label: "Price",
     options: ["Ascending", "Descending", "Default"],
   },
   {
     name: "rate",
+    label: "Rating",
+    options: ["Ascending", "Descending", "Default"],
+  },
+  {
+    name: "year",
+    label: "Year",
+    options: ["Ascending", "Descending", "Default"],
+  },
+  {
+    name: "discountPercentage",
+    label: "Discount",
     options: ["Ascending", "Descending", "Default"],
   },
 ];
 
-const DEFAULT_CATEGORY_FILTER = "Default";
-
 export const selectSortMenu = () => {
   const [selectedSort, setSelectedSort] = useState<SortOptionType>();
-  const [selectedFilter, setSelectedFilter] = useState<string | undefined>("");
+  const [selectedFilter, setSelectedFilter] = useState({});
   const [isReset, setIsReset] = useState<boolean>(false);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [categoryNameList, setCategoryNameList] = useState<string[]>([]);
+  const [selectedYear, setSelectedYear] = useState<number>();
+  const [priceRange, setPriceRange] = useState([0, 1000]);
   const lastChangedIndex = useRef(-1);
+  const filterModalVisibility = useBoolean(false);
+  const sortModalVisibility = useBoolean(false);
 
   const handleSortChange = (
     optionName: string,
@@ -64,90 +81,136 @@ export const selectSortMenu = () => {
     return -1;
   };
 
-  const handleFilterChange = async (selectedOption: string) => {
-    if (categories) {
-      const temp = categories.find(
-        (category: CategoryType) =>
-          category.name === selectedOption.toLowerCase()
-      );
-
-      if (!temp) return setSelectedFilter(undefined);
-
-      return setSelectedFilter(temp.id);
-    }
-
-    return setSelectedFilter(undefined);
-  };
-
-  const fetchCategoryList = async () => {
-    const list: CategoryType[] = await getCategoryList();
-    setCategories(list);
-    const nameList = list.map((category) => category.name);
-
-    setCategoryNameList((prevNameList) => [
-      ...prevNameList,
-      ...nameList,
-      DEFAULT_CATEGORY_FILTER,
-    ]);
-  };
-
-  useEffect(() => {
-    fetchCategoryList();
-  }, []);
-
   const renderSelectSortMenu = () => {
     return (
-      <div className="flex flex-col gap-5 md:flex-row">
-        <div>
-          <div className="flex items-center gap-1">
-            <Tooltip content="Only one sort type in a time">
-              <motion.svg
-                className="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit css-1cw4hi4 w-4"
-                focusable="false"
-                aria-hidden="true"
-                viewBox="0 0 24 24"
+      <div>
+        <Modal
+          onCancel={() => filterModalVisibility.setFalse()}
+          open={filterModalVisibility.value}
+          footer={[
+            <Button
+              onClick={() => {
+                setSelectedFilter({
+                  ...selectedFilter,
+                  year: selectedYear,
+                  minPrice: priceRange[0],
+                  maxPrice: priceRange[1],
+                });
+                filterModalVisibility.setFalse();
+              }}
+            >
+              Confirm
+            </Button>,
+          ]}
+        >
+          <Typography.Title level={5}>Filter Option</Typography.Title>
+          <Row gutter={[16, 16]} className="w-full">
+            <Col span={24}>
+              <Typography.Title level={5}>Year</Typography.Title>
+              <Radio.Group
+                onChange={(e) => setSelectedYear(e.target.value)}
+                value={selectedYear}
               >
-                <motion.path
-                  variants={iconVariants}
-                  initial="hidden"
-                  animate="visible"
-                  transition={{
-                    default: { duration: 0.5, ease: "easeInOut" },
-                    fill: { duration: 0.5, ease: [1, 0, 0.8, 1] },
-                  }}
-                  d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20, 12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10, 10 0 0,0 12,2M11,17H13V11H11V17Z"
-                ></motion.path>
-              </motion.svg>
-            </Tooltip>
-
-            <p className="text-sm italic">Sorting options</p>
-          </div>
-
-          <div className="flex gap-5">
-            {sortOptions.map((sortOption, index) => (
-              <SelectMenu
-                options={sortOption.options}
-                defaultOption={sortOption.name}
-                onSelectionChange={(selectedOption) =>
-                  handleSortChange(sortOption.name, selectedOption, index)
-                }
-                isReset={isReset && lastChangedIndex.current !== index}
-                onReset={() => setIsReset(false)}
-                key={index}
+                <Row gutter={[32, 32]}>
+                  {[2020, 2021, 2022, 2023, 2024].map((year, index) => (
+                    <Col span={4} key={index}>
+                      <Radio value={year}>{year}</Radio>
+                    </Col>
+                  ))}
+                </Row>
+              </Radio.Group>
+            </Col>
+            <Col span={24}>
+              <Typography.Title level={5} style={{ marginTop: 16 }}>
+                Price Range
+              </Typography.Title>
+              <Row>
+                <Col span={10}>
+                  <InputNumber
+                    min={0}
+                    max={1000}
+                    style={{ width: "100%" }}
+                    value={priceRange[0]}
+                    onChange={(value) =>
+                      setPriceRange([value as number, priceRange[1]])
+                    }
+                  />
+                </Col>
+                <Col span={4} style={{ textAlign: "center" }}>
+                  to
+                </Col>
+                <Col span={10}>
+                  <InputNumber
+                    min={0}
+                    max={1000}
+                    style={{ width: "100%" }}
+                    value={priceRange[1]}
+                    onChange={(value) =>
+                      setPriceRange([priceRange[0], value as number])
+                    }
+                  />
+                </Col>
+              </Row>
+              <Slider
+                range
+                min={0}
+                max={1000}
+                value={priceRange}
+                onChange={(value) => setPriceRange(value)}
+                style={{ marginTop: 16 }}
               />
+            </Col>
+          </Row>
+        </Modal>
+
+        <Modal
+          onCancel={() => sortModalVisibility.setFalse()}
+          open={sortModalVisibility.value}
+          footer={[
+            <Button onClick={() => sortModalVisibility.toggle()}>
+              Confirm
+            </Button>,
+          ]}
+          onOk={() => {
+            sortModalVisibility.setFalse();
+          }}
+        >
+          <Typography.Title level={5}>
+            Sorting Option{" "}
+            <Tooltip title="Only one Option at the same time">
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </Typography.Title>
+          <Row gutter={[16, 16]} className="w-full">
+            {sortOptions.map((sortOption, index) => (
+              <Col span={24} key={index}>
+                <SortMenu
+                  label={sortOption.label}
+                  options={sortOption.options}
+                  onSelectionChange={(selectedOption) =>
+                    handleSortChange(sortOption.name, selectedOption, index)
+                  }
+                  isReset={isReset && lastChangedIndex.current !== index}
+                  onReset={() => setIsReset(false)}
+                />
+              </Col>
             ))}
-          </div>
-        </div>
-        <div>
-          <p className="text-sm italic">Filtering options</p>
-          <div>
-            <SelectMenu
-              options={categoryNameList}
-              defaultOption={"Category"}
-              onSelectionChange={handleFilterChange}
-            />
-          </div>
-        </div>
+          </Row>
+        </Modal>
+
+        <FloatButton.Group style={{ bottom: 20, left: 20 }}>
+          <FloatButton
+            icon={<SortAscendingOutlined />}
+            onClick={() => sortModalVisibility.toggle()}
+            tooltip="Sort Products"
+            style={{ width: "2rem" }}
+          />
+          <FloatButton
+            icon={<ControlOutlined />}
+            onClick={() => filterModalVisibility.toggle()}
+            tooltip="Filter Products"
+          />
+        </FloatButton.Group>
       </div>
     );
   };

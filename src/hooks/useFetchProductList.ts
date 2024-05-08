@@ -10,7 +10,7 @@ import { FindProductType, PaginatedResponse } from "../services";
 
 type UseFetchProductListType = {
   selectedSort?: SortOptionType;
-  selectedFilter?: string;
+  selectedFilter?: FilterOptionType;
   limit?: number;
   queryFn: (params: FindProductType) => Promise<PaginatedResponse>;
 };
@@ -48,7 +48,7 @@ export const useFetchProductList = ({
 
   useEffect(() => {
     const sortOptions = determineSortDirections(selectedSort);
-    const filterOptions = selectedFilter ? { categoryId: selectedFilter } : {};
+    const filterOptions = selectedFilter ? selectedFilter : {};
     setCursor(() => undefined);
     setProducts([]);
 

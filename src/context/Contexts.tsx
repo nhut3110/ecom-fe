@@ -5,7 +5,7 @@ import { CartProvider } from "./CartContext";
 import { OrderProvider } from "./OrderContext";
 import { UserDataProvider } from "./UserDataContext";
 import { defaultForm, FormProvider } from "./FormContext";
-import { NotificationType } from "../components/Notification";
+import { NotificationType } from "../components/shared/Notification";
 import { TokensType } from "../services";
 import { getLocalStorageValue } from "../utils";
 import { OrderType, ProductDetails } from "../constants";

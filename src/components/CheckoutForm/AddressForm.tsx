@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useContext, useState } from "react";
 import { useGetOrderFormFields } from "../../hooks";
-import SmallButton from "../SmallButton";
+import SmallButton from "../shared/SmallButton";
 import OutlineInput from "./OutlineInput";
 import { AddressType, FormContext } from "../../context/FormContext";
 import { validationAddressSchema } from "../../constants";

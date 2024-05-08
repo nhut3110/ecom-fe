@@ -4,7 +4,7 @@ import React, { useContext, useEffect } from "react";
 import { useNavigatePage } from "../hooks";
 import { NotificationContext } from "../context/NotificationContext";
 import { loginFacebook } from "../services";
-import GifLoading from "../components/GifLoading";
+import GifLoading from "../components/shared/GifLoading";
 import { updateLocalStorageValue } from "../utils";
 import { facebookConstants } from "../constants";
 
