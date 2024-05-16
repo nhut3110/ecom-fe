@@ -25,8 +25,8 @@ import {
   LikeOutlined,
   SendOutlined,
 } from "@ant-design/icons";
-import * as dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import dayjs from "dayjs/esm";
+import relativeTime from "dayjs/esm/plugin/relativeTime";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";

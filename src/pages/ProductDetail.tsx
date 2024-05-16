@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import React, {
   useCallback,
   useContext,

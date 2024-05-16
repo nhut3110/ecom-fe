@@ -13,8 +13,8 @@ import {
 } from "antd";
 import { Comment as AntComment } from "@ant-design/compatible";
 import EmojiPicker, { EmojiClickData, EmojiStyle } from "emoji-picker-react";
-import * as dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import dayjs from "dayjs/esm";
+import relativeTime from "dayjs/esm/plugin/relativeTime";
 import {
   Discussion,
   createDiscussion,
@@ -278,18 +278,7 @@ const DiscussionThread: React.FC<DiscussionThreadProps> = ({
                 content={<p>{item.text}</p>}
                 actions={renderItemActions(item)}
                 datetime={
-                  <Flex gap={2}>
-                    {dayjs().to(dayjs(item?.createdAt))}{" "}
-                    {item?.createdAt !== item?.updatedAt ? (
-                      <Tooltip
-                        title={`Edited ${dayjs().to(dayjs(item?.updatedAt))}`}
-                      >
-                        <EditOutlined />
-                      </Tooltip>
-                    ) : (
-                      <></>
-                    )}
-                  </Flex>
+                  <Flex gap={2}>{dayjs().to(dayjs(item?.createdAt))}</Flex>
                 }
               />
               {item.id === editingId ? (

@@ -20,7 +20,7 @@ import {
   message,
 } from "antd";
 import { CameraOutlined, DownloadOutlined } from "@ant-design/icons";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import { Santa } from "../assets/images";
 import { formatDate } from "../utils";
 import { useBoolean } from "usehooks-ts";
