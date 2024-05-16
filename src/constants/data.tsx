@@ -193,7 +193,7 @@ export const notDisplayCartButton: string[] = ["/checkout"];
 
 export const facebookConstants = {
   clientID: "1213240936224087",
-  callbackUrl: "http://localhost:5173/auth/facebook/callback/",
+  callbackUrl: `${import.meta.env.VITE_CLIENT_URL}/auth/facebook/callback/`,
 };
 
 export enum NavItemType {

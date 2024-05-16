@@ -5,12 +5,9 @@ import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { useNavigatePage } from "../hooks";
-import FacebookButton from "../components/Animation/FacebookButton";
-import OutlineInput from "../components/CheckoutForm/OutlineInput";
 import { LoginBackground, ShoppingArt } from "../assets/images";
 import { login } from "../services";
 import { getLocalStorageValue, updateLocalStorageValue } from "../utils";
-import { facebookConstants, validationLoginSchema } from "../constants";
 import { Button, Form, Input, Typography, message } from "antd";
 import { useBoolean } from "usehooks-ts";
 import GifLoading from "../components/shared/GifLoading";
@@ -26,6 +23,11 @@ export type LoginFormType = {
 const Login = (): React.ReactElement => {
   const loading = useBoolean(false);
   const [form] = Form.useForm();
+
+  const facebookConstants = {
+    clientID: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
+    callbackUrl: `${import.meta.env.VITE_CLIENT_URL}/auth/facebook/callback/`,
+  };
 
   const { redirect } = useNavigatePage();
 
