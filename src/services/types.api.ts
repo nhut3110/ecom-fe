@@ -85,6 +85,8 @@ export type CartProduct = {
   title: string;
   image: string;
   price: number;
+  availableQuantity: number;
+  discountPercentage: number;
 };
 
 export type CartType = {
@@ -120,6 +122,7 @@ export type AddOrderType = {
   paymentType: PaymentOptions;
   description?: string;
   amount: number;
+  discountId?: string;
 };
 
 export interface Discount {
@@ -158,6 +161,8 @@ export interface Order {
   };
   address: AddressType;
   orderDetails: CartType[];
+  amount: number;
+  discountId?: string;
 }
 
 export interface Comment {

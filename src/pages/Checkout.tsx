@@ -1,42 +1,41 @@
-import { AnimatePresence, motion } from "framer-motion";
-import images from "react-payment-inputs/images";
-import Payment from "payment";
 import React, {
   ChangeEvent,
   useCallback,
   useContext,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
 import { useNavigatePage } from "../hooks";
-import Modal from "../components/shared/Modal";
-import AddressCard from "../components/Address/AddressCard";
-import GifLoading from "../components/shared/GifLoading";
-import SmallButton from "../components/shared/SmallButton";
-import OrderSummary from "../components/Order/OrderSummary";
-import CartList from "../components/Cart/CartList";
 import {
   AddressType,
-  PaymentType,
   addOrder,
   fetchAddressList,
   fetchCartList,
-  fetchPaymentList,
+  fetchUserDiscountList,
+  getEstimateAmount,
+  useCreateOrder,
 } from "../services";
 import { CartContext } from "../context/CartContext";
 import { NotificationContext } from "../context/NotificationContext";
 import { transformCartResponse } from "../utils";
-import { PaymentOptions, paymentOptions } from "../constants";
+import { PaymentOptions } from "../constants";
 import {
+  Avatar,
   Button,
+  Card,
   Col,
+  Empty,
   Flex,
+  FloatButton,
   Form,
   Input,
+  List,
+  Modal,
+  Radio,
+  Result,
   Row,
   Select,
+  Skeleton,
   Space,
   Steps,
   Typography,
@@ -44,111 +43,124 @@ import {
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import {
-  GlobalOutlined,
+  CheckOutlined,
+  DeleteOutlined,
   ShoppingCartOutlined,
+  SmileOutlined,
   TransactionOutlined,
   TruckOutlined,
 } from "@ant-design/icons";
-import {
-  GoogleMap,
-  Libraries,
-  Marker,
-  useJsApiLoader,
-} from "@react-google-maps/api";
-
-type SelectOptionType = ChangeEvent & {
-  value: string;
-  label: string;
-};
-
-const selectVariants = {
-  initial: { x: -50, opacity: 0 },
-  animate: { x: 0, opacity: 1 },
-};
+import { Mapbox } from "../components/shared/Mapbox";
+import CartContent from "../components/Cart/CartContent";
+import { UserDataContext } from "../context/UserDataContext";
+import Meta from "antd/es/card/Meta";
+import { formatVNDPrice } from "../utils/formatVNDPrice";
+import CountUp from "react-countup";
+import { useBoolean } from "usehooks-ts";
+import { Santa } from "../assets/images";
 
 const Checkout = (): React.ReactElement => {
   const { cart, isLoading: isLoadingCart } = fetchCartList();
   const { addresses, isLoading: isLoadingAddress } = fetchAddressList();
-  const { payment, isLoading: isLoadingPayment } = fetchPaymentList();
+
+  const confirmModal = useBoolean(false);
 
   const [address, setAddress] = useState<AddressType>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [paymentType, setPaymentType] = useState<PaymentOptions>();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [current, setCurrent] = useState(0);
+  const [selectedDiscountId, setSelectedDiscountId] = useState<string | null>(
+    null
+  );
 
   const { importCart, cartState } = useContext(CartContext);
+  const { userDataState } = useContext(UserDataContext);
   const { notify } = useContext(NotificationContext);
+
+  const {
+    userDiscounts,
+    refetchUserDiscountList,
+    isLoading: isLoadingDiscount,
+  } = fetchUserDiscountList({
+    active: true,
+    isValid: true,
+  });
 
   const { redirect } = useNavigatePage();
   const [form] = useForm();
-
-  const libs = useMemo(() => {
-    return ["places"] as Libraries;
-  }, []);
-
-  const mapRef = useRef<google.maps.Map>();
-
-  const { isLoaded } = useJsApiLoader({
-    libraries: libs,
-    googleMapsApiKey: "AIzaSyAgo5Lore5ZNzjsOi4oqOJI-7NQCA1ekVU", // MOVE TO ENV LATER
-  });
-
-  const cartValue = useMemo(() => {
-    if (cartState.cartValue) return cartState.cartValue.toFixed(2);
-    return "0.00";
-  }, [cartState.cartValue]);
+  const orderMutation = useCreateOrder();
 
   const handleSubmit = async () => {
-    if (!address?.id)
-      return notify({
-        id: crypto.randomUUID(),
-        content: "Cannot checkout with an empty address",
-        open: true,
-        type: "warning",
-      });
+    if (!paymentType) return message.error("Please enter a valid payment type");
 
-    if (!paymentType)
-      return notify({
-        id: crypto.randomUUID(),
-        content: "Cannot checkout with an empty payment method",
-        open: true,
-        type: "warning",
-      });
+    const formValues = await form.validateFields();
 
-    await addOrder({
-      addressId: address?.id as string,
-      paymentType: paymentType,
-      amount: Number(Number(cartValue).toFixed(0)),
+    orderMutation.mutate(formValues, {
+      onSuccess: () => {
+        message.success("Successfully placed order!");
+        if (paymentType !== PaymentOptions.VNPAY) {
+          redirect("/orders");
+        }
+      },
+      onError: () => {
+        message.error("An error occurred while placing order!");
+      },
     });
 
-    redirect("/orders");
-
-    return notify({
-      id: crypto.randomUUID(),
-      content: "Order successfully",
-      open: true,
-      type: "success",
-    });
+    // redirect("/orders");
   };
 
   useEffect(() => {
-    if (!isLoadingCart) importCart(transformCartResponse(cart));
-    setIsLoading(isLoadingAddress || isLoadingCart || isLoadingPayment);
-  }, [isLoadingAddress, isLoadingCart, isLoadingPayment]);
+    refetchUserDiscountList();
+  }, [userDataState?.id]);
 
-  const next = useCallback(() => {
-    setCurrent(current + 1);
-  }, [current]);
+  useEffect(() => {
+    if (!cartState.cartValue) {
+      message.warning("Please have at least one product before checkout!");
+      const timeout = setTimeout(() => {
+        redirect("/products");
+      }, 1500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [cartState]);
+
+  useEffect(() => {
+    if (!isLoadingCart) importCart(transformCartResponse(cart));
+    setIsLoading(isLoadingAddress || isLoadingCart);
+  }, [isLoadingAddress, isLoadingCart]);
+
+  const next = useCallback(async () => {
+    try {
+      // Define the required fields for each step
+      const stepRequiredFields = [["addressId"], [], ["paymentType"]];
+
+      // Validate the required fields for the current step
+      if (current < stepRequiredFields.length) {
+        await form.validateFields(stepRequiredFields[current]);
+      }
+
+      setCurrent(current + 1);
+
+      // Scroll to the top of the page after moving to the next step
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      message.error("Please fill in all required fields before proceeding.");
+    }
+  }, [current, form]);
 
   const prev = useCallback(() => {
     setCurrent(current - 1);
+
+    // Scroll to the top of the page after moving back
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [current]);
 
-  const onLoad = useCallback((map: google.maps.Map) => {
-    mapRef.current = map;
-    map.setZoom(18);
-  }, []);
+  const clearDiscountSelection = () => {
+    form.resetFields(["discountId"]);
+    setSelectedDiscountId(null);
+  };
 
   const AddressStep = useCallback(() => {
     return (
@@ -160,7 +172,11 @@ const Checkout = (): React.ReactElement => {
             maxLength={200}
           />
         </Form.Item>
-        <Form.Item label="Address" name="address" required>
+        <Form.Item
+          label="Address"
+          name="addressId"
+          rules={[{ required: true, message: "Please select an address" }]}
+        >
           <Select
             showSearch
             size="large"
@@ -215,29 +231,11 @@ const Checkout = (): React.ReactElement => {
                 />
               </Col>
               <Col span={24}>
-                <div className="mb-2 w-full rounded-full pt-2">
-                  {isLoaded && (
-                    <GoogleMap
-                      mapContainerStyle={{
-                        width: "100%",
-                        height: "300px",
-                      }}
-                      onLoad={onLoad}
-                      center={{
-                        lat: address?.lat as number,
-                        lng: address?.lng as number,
-                      }}
-                      onCenterChanged={() => mapRef.current?.setZoom(15)}
-                    >
-                      <Marker
-                        position={{
-                          lat: address?.lat as number,
-                          lng: address?.lng as number,
-                        }}
-                      />
-                    </GoogleMap>
-                  )}
-                </div>
+                <Mapbox
+                  lat={address?.lat as number}
+                  lng={address?.lng as number}
+                  style={{ width: "100%", height: "300px" }}
+                />
               </Col>
             </Row>
           </>
@@ -246,9 +244,168 @@ const Checkout = (): React.ReactElement => {
     );
   }, [addresses, address]);
 
-  const ReviewStep = useCallback(() => {
-    return;
-  }, []);
+  const PaymentStep = useCallback(() => {
+    return (
+      <div style={{ width: "100%" }}>
+        <Form.Item name="discountId" label="Discounts" className="relative">
+          <Radio.Group
+            style={{ width: "100%" }}
+            value={selectedDiscountId}
+            onChange={(e) => setSelectedDiscountId(e.target.value)}
+            size="large"
+          >
+            {userDiscounts?.length ? (
+              <Space direction="vertical" style={{ width: "100%" }}>
+                {userDiscounts?.map((item, index) => (
+                  <Card
+                    key={index}
+                    style={{
+                      width: "100%",
+                      minHeight: "100px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                    extra={<Radio value={item.id} />}
+                  >
+                    <Meta
+                      title={
+                        <Typography>
+                          {item?.discount.discountType === "percentage"
+                            ? `Discount ${item?.discount.discountValue}%`
+                            : `Discount ${formatVNDPrice(
+                                item?.discount.discountValue
+                              )}đ`}
+                        </Typography>
+                      }
+                      description={
+                        <Space direction="vertical">
+                          {item?.discount.discountType === "percentage" && (
+                            <p>{`maximum ${formatVNDPrice(
+                              item?.discount?.maxDiscountAmount ?? 0
+                            )}đ`}</p>
+                          )}
+                          <p>{`Min amount purchase: ${formatVNDPrice(
+                            item?.discount?.minPurchaseAmount ?? 0
+                          )}`}</p>
+                        </Space>
+                      }
+                    />
+                  </Card>
+                ))}
+              </Space>
+            ) : (
+              <Empty
+                image={<img src={Santa} alt={"santa"} className="mx-auto" />}
+                imageStyle={{ height: "50px" }}
+                description={
+                  <Typography.Text className="text-lg font-semibold">
+                    You don't have any available valid discounts.
+                  </Typography.Text>
+                }
+              />
+            )}
+          </Radio.Group>
+          {selectedDiscountId && (
+            <Button
+              type="link"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={clearDiscountSelection}
+              className="absolute -top-[37px] right-0"
+            >
+              Clear
+            </Button>
+          )}
+        </Form.Item>
+
+        <Form.Item
+          name="paymentType"
+          label="Payment Type"
+          rules={[{ required: true, message: "Please select a payment type" }]}
+        >
+          <Radio.Group
+            style={{ width: "100%" }}
+            size="large"
+            onChange={(e) => setPaymentType(e.target.value)}
+          >
+            <Space direction="vertical" style={{ width: "100%" }}>
+              {["cash", "vnpay"].map((type) => (
+                <Card
+                  key={type}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                  extra={<Radio value={type} />}
+                >
+                  <Meta title={<Typography>{type.toUpperCase()}</Typography>} />
+                </Card>
+              ))}
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+      </div>
+    );
+  }, [userDiscounts, form, selectedDiscountId]);
+
+  const ConfirmationStep = useCallback(() => {
+    const [estimatedAmount, setEstimatedAmount] = useState<number | null>(null);
+
+    // Fetch estimated amount on first render
+    useEffect(() => {
+      const fetchEstimate = async () => {
+        try {
+          const response = await getEstimateAmount(
+            selectedDiscountId || undefined
+          );
+          setEstimatedAmount(response.estimatedAmount);
+          form?.setFieldValue("amount", response.estimatedAmount);
+        } catch (error) {
+          message.error("Error fetching estimated amount.");
+        }
+      };
+
+      if (current === steps.length - 1) fetchEstimate();
+    }, [selectedDiscountId, current]);
+
+    return (
+      <div>
+        <Form.Item name={"amount"} hidden>
+          <Input />
+        </Form.Item>
+        <Result
+          icon={<SmileOutlined />}
+          title="Order Information"
+          subTitle={
+            <>
+              {estimatedAmount !== null && (
+                <Flex vertical>
+                  {/* <Typography.Text strong>Estimated Total:</Typography.Text> */}
+                  <Typography.Title className="mb-10">
+                    <CountUp end={estimatedAmount} separator="." />đ
+                  </Typography.Title>
+                </Flex>
+              )}
+              {paymentType && (
+                <>
+                  <Typography.Text strong>Payment Method:</Typography.Text>
+                  <p>{paymentType.toUpperCase()}</p>
+                </>
+              )}
+              {address && (
+                <>
+                  {/* <Typography.Text strong>Shipping Address:</Typography.Text> */}
+                  <p>{`${address.name}, ${address.address}`}</p>
+                  <p>{`${address.phoneNumber}, ${address.email}`}</p>
+                </>
+              )}
+            </>
+          }
+        />
+      </div>
+    );
+  }, [address, paymentType, selectedDiscountId, current]);
 
   const steps = [
     {
@@ -260,19 +417,32 @@ const Checkout = (): React.ReactElement => {
     {
       key: "cart-form",
       title: <Typography.Title level={5}>Review</Typography.Title>,
-      content: <></>,
+      content: (
+        <CartContent
+          showSummary={false}
+          showCheckoutButton={false}
+          showCountUpTotal
+        />
+      ),
       icon: <ShoppingCartOutlined />,
     },
     {
       key: "payment-form",
       title: <Typography.Title level={5}>Payment</Typography.Title>,
-      content: <></>,
+      content: <PaymentStep />,
       icon: <TransactionOutlined />,
+    },
+    {
+      key: "confirmation",
+      title: <Typography.Title level={5}>Confirmation</Typography.Title>,
+      content: <ConfirmationStep />,
+      icon: <CheckOutlined />,
     },
   ];
 
   return (
     <div className=" mx-5 mt-5">
+      <FloatButton.BackTop visibilityHeight={500} />
       <Typography.Title level={1} className="w-full text-center">
         Checkout
       </Typography.Title>
@@ -288,7 +458,16 @@ const Checkout = (): React.ReactElement => {
               icon: item.icon,
             }))}
           />
-          <div className="p-10">{steps[current].content}</div>
+          <div className="p-10">
+            {steps.map((step, index) => (
+              <div
+                className={`${index === current ? "block" : "hidden"}`}
+                key={index}
+              >
+                {step.content}
+              </div>
+            ))}
+          </div>
           <Flex
             style={{ marginTop: 24, width: "100%" }}
             justify="space-between"
@@ -315,14 +494,27 @@ const Checkout = (): React.ReactElement => {
               <Button
                 type="primary"
                 style={{ margin: "0 10px" }}
-                onClick={() => message.success("Processing complete!")}
+                onClick={() => confirmModal.setTrue()}
               >
-                Done
+                Order
               </Button>
             )}
           </Flex>
         </Form>
       </div>
+      <Modal
+        title="Place an order"
+        width={400}
+        open={confirmModal.value}
+        onCancel={() => confirmModal.setFalse()}
+        onOk={handleSubmit}
+        okText="Confirm"
+      >
+        <Typography.Text>
+          By click on <strong>Confirm</strong> button, an order will be placed
+          but you can cancel it before completing your payment!
+        </Typography.Text>
+      </Modal>
     </div>
   );
 };

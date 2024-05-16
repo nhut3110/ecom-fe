@@ -10,22 +10,23 @@ import Modal from "../shared/Modal";
 import CartList from "./CartList";
 import OrderSummary from "../Order/OrderSummary";
 import { CartContext } from "../../context/CartContext";
-import GifLoading from "../shared/GifLoading";
 import { NotificationContext } from "../../context/NotificationContext";
 import { clearCart, fetchCartList } from "../../services";
 import { transformCartResponse } from "../../utils/transformCartResponse";
-import { Button, Empty, Typography } from "antd";
-import { FrownOutlined } from "@ant-design/icons";
+import { Button, Empty, Flex, Typography } from "antd";
 import { Detective } from "../../assets/images";
+import CountUp from "react-countup";
 
 interface CartContentProps {
   showSummary?: boolean;
   showCheckoutButton?: boolean;
+  showCountUpTotal?: boolean;
 }
 
 const CartContent = ({
   showSummary = true,
   showCheckoutButton = true,
+  showCountUpTotal = false,
 }: CartContentProps): React.ReactElement => {
   const { cartState, removeAllFromCart, importCart } = useContext(CartContext);
   const { notify } = useContext(NotificationContext);
@@ -80,6 +81,11 @@ const CartContent = ({
     }
   };
 
+  const cartValue = useMemo(() => {
+    if (cartState.cartValue) return Number(cartState.cartValue.toFixed(0));
+    return 0;
+  }, [cartState.cartValue]);
+
   useEffect(() => {
     if (!isLoading) importCart(transformCartResponse(cart));
   }, [isLoading, cart]);
@@ -111,7 +117,17 @@ const CartContent = ({
             </Typography.Title>
           </div>
         ) : (
-          <CartList />
+          <div className="w-full">
+            {showCountUpTotal && (
+              <Flex align="center" justify="space-between" className="w-full">
+                <Typography.Title level={4}>Total:</Typography.Title>
+                <Typography.Title level={4}>
+                  <CountUp end={cartValue} separator="." />
+                </Typography.Title>
+              </Flex>
+            )}
+            <CartList />
+          </div>
         )}
 
         {/* Order Summary */}
@@ -119,7 +135,7 @@ const CartContent = ({
 
         {/* Buttons */}
         {!isEmptyCart && (
-          <div className="mb-5 flex w-full justify-between">
+          <div className="flex w-full justify-between">
             <Button danger onClick={handleOpenModal}>
               Delete all
             </Button>

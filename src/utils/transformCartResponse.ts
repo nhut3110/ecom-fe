@@ -17,7 +17,12 @@ export const transformCartResponse = (list: CartType[]) => {
           product: item.product,
           cartAnimations: [],
         };
-        return total + item.quantity * item.product.price;
+        return (
+          total +
+          item.quantity *
+            (item.product.price -
+              (item.product.price * item.product.discountPercentage) / 100)
+        );
       }, 0)
       .toFixed(2)
   );

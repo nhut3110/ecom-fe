@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useNavigatePage } from "../hooks";
 import { UserDataContext } from "../context/UserDataContext";
 import { getLocalStorageValue } from "../utils";
@@ -18,28 +18,31 @@ export const useValidateLoginExpiration = () => {
     redirect("/login");
   };
 
+  const fetchData = useMemo(
+    () => async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await getUserById();
+
+        setUserInfo(response);
+        setIsLoading(false);
+
+        if (response) {
+          updateUserData(response);
+        }
+      } catch (error) {
+        setIsLoading(false);
+      }
+    },
+    [updateUserData]
+  );
+
   useEffect(() => {
     if (isLogin) {
-      const fetchData = async () => {
-        try {
-          setIsLoading(true);
-
-          const response = await getUserById();
-
-          setUserInfo(response);
-          setIsLoading(false);
-
-          if (response) {
-            updateUserData(response);
-          }
-        } catch (error) {
-          setIsLoading(false);
-        }
-      };
-
       fetchData();
     }
-  }, [isLogin, updateUserData]);
+  }, [isLogin, fetchData]);
 
   return { isLogin, userInfo, isLoading, handleLogout };
 };

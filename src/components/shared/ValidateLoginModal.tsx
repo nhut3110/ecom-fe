@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Modal from "./Modal";
 import { useValidateLoginExpiration } from "../../hooks";
+import { Modal } from "antd";
 
 const ValidateLoginModal = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -21,7 +21,7 @@ const ValidateLoginModal = () => {
   }, [isLoading, userInfo]);
 
   return (
-    <Modal open={openModal} title="Warning" onSubmit={handleSubmitModal}>
+    <Modal open={openModal} title="Warning" onOk={handleSubmitModal}>
       <p>Session expired, please login again!</p>
     </Modal>
   );

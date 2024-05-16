@@ -11,6 +11,7 @@ import { NotificationContext } from "../context/NotificationContext";
 import { CartType, cancelOrder, fetchSingleOrder } from "../services";
 import { convertTimestampToDate, transformCartResponse } from "../utils";
 import { OrderStatus } from "../constants";
+import { formatVNDPrice } from "../utils/formatVNDPrice";
 
 const OrderDetail = () => {
   const [cardLogo, setCardLogo] = useState<React.ReactElement>();
@@ -135,10 +136,10 @@ const OrderDetail = () => {
                         x{item.quantity}
                       </p>
                       <p className="w-1/5 text-center text-xs md:text-base">
-                        ${item.product.price}
+                        {formatVNDPrice(item.product.price)}đ
                       </p>
                       <p className="w-1/5 text-center text-xs md:text-base">
-                        ${item.quantity * item.product.price}
+                        {formatVNDPrice(item.quantity * item.product.price)}đ
                       </p>
                     </div>
                     {order?.orderDetails.length - 1 > index && (
@@ -236,9 +237,7 @@ const OrderDetail = () => {
                 <div className="flex w-full justify-between">
                   <p className="font-semibold">Total</p>
                   <p className="font-medium">
-                    $
-                    {order?.orderDetails &&
-                      transformCartResponse(order.orderDetails).cartValue}
+                    {formatVNDPrice(order?.amount ?? 0)}đ
                   </p>
                 </div>
 

@@ -222,8 +222,8 @@ const Discount = () => {
               title={
                 <Typography>
                   {item?.discount.discountType === "percentage"
-                    ? `Discount ${item?.discount.discountValue}%, maximum $${item?.discount?.maxDiscountAmount}`
-                    : `Discount $${item?.discount.discountValue}`}
+                    ? `Discount ${item?.discount.discountValue}%, maximum ${item?.discount?.maxDiscountAmount}đ`
+                    : `Discount ${item?.discount.discountValue}đ`}
                 </Typography>
               }
               description={`Min amount purchase: $${item?.discount.minPurchaseAmount}`}

@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useContext } from "react";
 import { NotificationContext } from "../../context/NotificationContext";
 import { getLocalStorageValue } from "../../utils";
+import { message } from "antd";
 
 type ChildrenType = {
   children: React.ReactElement | React.ReactElement[];
@@ -11,12 +12,7 @@ const QueryWrapper = ({ children }: ChildrenType) => {
   const handleError = (error: any) => {
     switch (error.response.status) {
       case 400: {
-        notify({
-          content: "Bad request or wrong input value",
-          type: "error",
-          open: true,
-          id: crypto.randomUUID(),
-        });
+        message.error("Something went wrong");
         break;
       }
       case 401: {
@@ -25,31 +21,18 @@ const QueryWrapper = ({ children }: ChildrenType) => {
         }).accessToken;
 
         if (!accessToken) {
-          notify({
-            content: "Unauthorized action. Please check your credentials",
-            type: "error",
-            open: true,
-            id: crypto.randomUUID(),
-          });
+          message.error("Unauthorized action. Please check your credentials");
         }
         break;
       }
       case 404: {
-        notify({
-          content: "Wrong URL requested",
-          type: "error",
-          open: true,
-          id: crypto.randomUUID(),
-        });
+        message.error("Wrong URL requested");
+
         break;
       }
       case 500: {
-        notify({
-          content: "Server error",
-          type: "error",
-          open: true,
-          id: crypto.randomUUID(),
-        });
+        message.error("Server error");
+
         break;
       }
       default:
@@ -58,15 +41,16 @@ const QueryWrapper = ({ children }: ChildrenType) => {
     }
   };
 
-  const { notify } = useContext(NotificationContext);
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         onError: handleError,
         refetchOnWindowFocus: false, // default: true
+        retry: 1,
       },
       mutations: {
         onError: handleError,
+        retry: 1,
       },
     },
   });

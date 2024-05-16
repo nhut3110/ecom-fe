@@ -84,9 +84,11 @@ type ReducerAction =
 const cartReducer = (state: CartStateType, action: ReducerAction) => {
   switch (action.type) {
     case REDUCER_ACTION_TYPE.CALCULATE_VALUE: {
-      const updatedPrice =
-        (action.payload?.product.price ?? DEFAULT_CART_VALUE) *
-        (action.payload?.quantity ?? DEFAULT_CART_VALUE);
+      const price = action.payload?.product.price ?? DEFAULT_CART_VALUE;
+      const quantity = action.payload?.quantity ?? DEFAULT_CART_VALUE;
+      const discount =
+        action.payload?.product.discountPercentage ?? DEFAULT_CART_VALUE;
+      const updatedPrice = (price - (price * discount) / 100) * quantity;
 
       return {
         ...state,

@@ -12,6 +12,15 @@ export type InformationType = {
 
 export type AddressType = {
   address: string;
+  // number: string;
+  // street: string;
+  // ward: string;
+  // city: string;
+  // country: string;
+};
+
+export type AddressMapType = {
+  address: string;
   lat?: number;
   lng?: number;
 };
@@ -25,7 +34,7 @@ export type PaymentType = {
 
 export type FormStateType = {
   information: InformationType;
-  address: AddressType;
+  address: any;
   payment: PaymentType;
   step: number;
   forms: React.ElementType[];

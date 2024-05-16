@@ -24,6 +24,8 @@ import { addFavorite, removeFavorite } from "../../services/products.api";
 import { addToCart } from "../../services";
 import { Button, Tag, Typography } from "antd";
 import { formatVNDPrice } from "../../utils/formatVNDPrice";
+import { useValidateLoginExpiration } from "../../hooks";
+import { getLocalStorageValue } from "../../utils";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart
 
@@ -55,6 +57,11 @@ const ProductCard = (props: {
     calculateCartValue,
     cartState,
   } = useContext(CartContext);
+
+  const isLogin = useMemo(
+    () => !!Object.keys(getLocalStorageValue({ key: "tokens" })).length,
+    []
+  );
 
   const notifyFavoriteAction = () => {
     notify({
@@ -149,12 +156,12 @@ const ProductCard = (props: {
       {loading && <GifLoading />}
       <motion.div
         whileHover={{
-          scale: hideHoverAnimation ? 1 : 1.1,
+          scale: hideHoverAnimation ? 1 : 1.05,
         }}
         className="relative flex w-80 flex-col items-center justify-center gap-1 rounded-lg border-[0.0625rem] border-solid border-black bg-white p-2 shadow-xl"
       >
         <div className="relative flex aspect-square w-60 items-center justify-center">
-          <Link to={`/product/${product.id}`}>
+          <Link to={isLogin ? `/product/${product.id}` : ""}>
             {animation && <FlyingImageWrapper product={product} />}
             <img
               src={`${product.image}`}
@@ -162,7 +169,7 @@ const ProductCard = (props: {
               className="object-fit h-36"
             />
           </Link>
-          {!hideFavorite && (
+          {!hideFavorite && isLogin && (
             <HeartButton
               love={love}
               className="absolute -right-2 top-2"
@@ -181,7 +188,7 @@ const ProductCard = (props: {
 
         <div className="flex w-full justify-between gap-2 px-2">
           <div className="flex w-[65%] flex-col ">
-            <Link to={`/product/${product.id}`}>
+            <Link to={isLogin ? `/product/${product.id}` : ""}>
               <motion.p
                 whileHover={{ scale: 1.05 }}
                 className="truncate text-lg font-semibold"
@@ -220,14 +227,16 @@ const ProductCard = (props: {
         </div>
 
         <div className="mb-2 mt-5 w-full self-start">
-          <Button
-            className="bg-red-200"
-            block
-            onClick={handleAddToCart}
-            disabled={!product.availableQuantity || !product.price}
-          >
-            Add to Cart
-          </Button>
+          {isLogin && (
+            <Button
+              className="bg-red-200"
+              block
+              onClick={handleAddToCart}
+              disabled={!product.availableQuantity || !product.price}
+            >
+              Add to Cart
+            </Button>
+          )}
         </div>
       </motion.div>
     </>

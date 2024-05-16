@@ -21,7 +21,7 @@ const AddressForm = (): React.ReactElement => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AddressType>({
+  } = useForm<any>({
     defaultValues: {
       number: formData.number,
       street: formData.street,

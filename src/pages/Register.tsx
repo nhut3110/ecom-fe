@@ -1,34 +1,22 @@
 import Countdown, { CountdownRenderProps, zeroPad } from "react-countdown";
-import OTPInput from "react-otp-input";
 import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigatePage } from "../hooks";
 import AvatarModal from "../components/shared/AvatarModal";
-import OutlineInput from "../components/CheckoutForm/OutlineInput";
 import GifLoading from "../components/shared/GifLoading";
-import {
-  LoginBackground,
-  LogoTransparent,
-  ShoppingArt,
-} from "../assets/images";
+import { LoginBackground, ShoppingArt } from "../assets/images";
 import {
   register as registerFn,
   login,
   getOtp,
   validateOtp,
 } from "../services/auth.api";
-import { NotificationContext } from "../context/NotificationContext";
-import {
-  DELAY_OTP_TIME,
-  OTP_LENGTH,
-  registerFields,
-  validationRegisterSchema,
-} from "../constants";
+import { DELAY_OTP_TIME, OTP_LENGTH } from "../constants";
 import { updateLocalStorageValue } from "../utils";
+import { Button, Form, FormProps, Input, Typography, message } from "antd";
+import { PasswordStrengthIndicator } from "../components/shared/PasswordStrengthIndicator";
 
 const DELAY_BEFORE_REDIRECT = 3000;
 
@@ -49,16 +37,10 @@ const Register = (): React.ReactElement => {
   );
   const [isOtpWrong, setIsOtpWrong] = useState<boolean>(false);
   const [countdownTime, setCountdownTime] = useState<number>(0);
+  const [password, setPassword] = useState<string>("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterFormType>({
-    resolver: yupResolver(validationRegisterSchema),
-  });
+  const [form] = Form.useForm();
 
-  const { notify } = useContext(NotificationContext);
   const { redirect } = useNavigatePage();
 
   const { mutate: mutateLogin } = useMutation(login, {
@@ -71,7 +53,10 @@ const Register = (): React.ReactElement => {
         },
       });
 
+      setIsLoading(true);
+
       setTimeout(() => {
+        setIsLoading(false);
         redirect("/");
       }, DELAY_BEFORE_REDIRECT);
     },
@@ -79,12 +64,7 @@ const Register = (): React.ReactElement => {
 
   const { mutate } = useMutation(registerFn, {
     onSuccess: () => {
-      notify({
-        content: `Register successfully`,
-        type: "success",
-        open: true,
-        id: crypto.randomUUID(),
-      });
+      message.success(`Register successfully`);
 
       mutateLogin({
         email: userAccount!.email,
@@ -92,12 +72,7 @@ const Register = (): React.ReactElement => {
       });
     },
     onError: () => {
-      notify({
-        content: `Wrong credentials`,
-        type: "error",
-        open: true,
-        id: crypto.randomUUID(),
-      });
+      message.error(`Wrong credentials`);
     },
   });
 
@@ -136,25 +111,20 @@ const Register = (): React.ReactElement => {
   };
 
   const handleValidateOtp = useCallback(async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       if (userAccount) await validateOtp(userAccount.email, otp);
       setIsOtpWrong(false);
+      setIsLoading(false);
 
       return true;
     } catch (error) {
-      notify({
-        content: `Wrong OTP`,
-        type: "error",
-        open: true,
-        id: crypto.randomUUID(),
-      });
+      message.error(`Wrong OTP`);
 
       setIsOtpWrong(true);
+      setIsLoading(false);
 
       return false;
-    } finally {
-      setIsLoading(false);
     }
   }, [userAccount, otp]);
 
@@ -163,23 +133,19 @@ const Register = (): React.ReactElement => {
     setIsOtpWrong(false);
   };
 
-  const onSubmit = async (registerData: RegisterFormType) => {
+  const onSubmit: FormProps["onFinish"] = async () => {
     try {
+      const { confirmPassword, ...registerData } = await form.validateFields();
       setIsLoading(true);
       setUserAccount(registerData);
 
       await getOtp(registerData.email);
-    } catch (error) {
-      notify({
-        content: `Cannot request OTP now`,
-        type: "error",
-        open: true,
-        id: crypto.randomUUID(),
-      });
-    } finally {
-      setIsLoading(false);
       setOpenOtpBox(true);
       setCountdownTime(Date.now() + DELAY_OTP_TIME);
+    } catch (error) {
+      message.error(`Cannot request OTP now`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -200,12 +166,7 @@ const Register = (): React.ReactElement => {
       setCountdownTimeKey(() => crypto.randomUUID());
       setCountdownTime(Date.now() + DELAY_OTP_TIME);
     } catch (error) {
-      notify({
-        content: `Too many requests`,
-        type: "error",
-        open: true,
-        id: crypto.randomUUID(),
-      });
+      message.error(`Too many requests`);
     } finally {
       setIsLoading(false);
     }
@@ -249,40 +210,28 @@ const Register = (): React.ReactElement => {
         variants={leftAppearVariants}
         className="z-10 mx-3 my-auto flex h-fit w-full flex-col items-start justify-center rounded-lg border-2 bg-white px-10 py-10 shadow-2xl md:w-1/2 lg:w-1/3"
       >
-        <img src={LogoTransparent} alt="logo" className="h-12" />
-
         <motion.div
           className="my-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 2, type: "easeIn" }}
         >
-          <p className="mb-2 text-3xl font-semibold">Hello there!</p>
+          <p className="mb-2 text-3xl font-semibold text-red-400">
+            Hello there!
+          </p>
           <p className="text-base font-normal text-gray-400">
             Let's create new account.
           </p>
         </motion.div>
         {openOtpBox ? (
           <div className="flex w-full flex-col items-center justify-center gap-5">
-            <OTPInput
-              shouldAutoFocus
+            <Input.OTP
+              autoFocus
               value={otp}
               onChange={handleOtpChange}
-              numInputs={OTP_LENGTH}
-              renderSeparator={<span className="mx-2" />}
-              renderInput={(props) => (
-                <input
-                  {...props}
-                  style={{}}
-                  className={`aspect-square w-1/6 rounded-lg border-2 ${
-                    isOtpWrong ? "border-red-400" : "border-black"
-                  } select-none text-center text-lg font-semibold md:text-xl`}
-                  maxLength={1}
-                  type="number"
-                  inputMode="numeric"
-                  disabled={isLoading}
-                />
-              )}
+              size="large"
+              length={OTP_LENGTH}
+              status={isOtpWrong ? "error" : undefined}
             />
             <div className="flex w-full items-center justify-center gap-2">
               <p>Don't receive OTP, </p>
@@ -295,57 +244,116 @@ const Register = (): React.ReactElement => {
             </div>
 
             <div className="w-full">
-              <motion.button
-                onClick={handleOpenModal}
-                whileTap={{ scale: 0.8 }}
-                className="h-10 w-full rounded-lg border-2 bg-white font-semibold text-black hover:bg-gray-300"
-              >
-                Register with avatar
-              </motion.button>
-              <motion.button
-                whileTap={{ scale: 0.8 }}
-                className="mt-4 h-10 w-full rounded-lg border-2 bg-black font-semibold text-white hover:bg-gray-300"
+              <Button
                 onClick={handleRegister}
+                block
+                type="default"
+                className="bg-red-400"
               >
                 Register now
-              </motion.button>
+              </Button>
             </div>
           </div>
         ) : (
-          <motion.form
-            variants={leftAppearVariants}
-            className="w-full"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            {registerFields.map((field, index) => (
-              <OutlineInput
-                label={field.name}
-                name={field.name}
-                register={register}
-                error={errors}
-                type={field?.type}
-                key={index}
-              />
-            ))}
+          <motion.div variants={leftAppearVariants} className="w-full">
+            <Form form={form} layout="vertical" onFinish={onSubmit}>
+              <Form.Item
+                name="name"
+                label="Name"
+                rules={[{ required: true, message: "Please input your name!" }]}
+              >
+                <Input placeholder="Name" size="large" variant="filled" />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                label="Email"
+                rules={[
+                  {
+                    required: true,
+                    type: "email",
+                    message: "Please input a valid email!",
+                  },
+                ]}
+              >
+                <Input placeholder="Email" size="large" variant="filled" />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                label="Password"
+                rules={[
+                  { required: true, message: "Please input your password!" },
+                  {
+                    min: 8,
+                    message: "Password must be at least 8 characters long!",
+                  },
+                ]}
+                tooltip="Password should have at least 8 characters"
+              >
+                <Input.Password
+                  placeholder="Password"
+                  size="large"
+                  variant="filled"
+                  onChange={(e) => {
+                    form.setFieldsValue({ password: e.target.value });
+                    setPassword(e.target.value);
+                  }}
+                />
+                <PasswordStrengthIndicator password={password} />
+              </Form.Item>
 
-            <motion.button
-              whileTap={{ scale: 0.8 }}
-              className="mt-4 h-10 w-full rounded-lg border-2 bg-black font-semibold text-white hover:bg-gray-300"
-            >
-              Confirm
-            </motion.button>
-          </motion.form>
+              <Form.Item
+                name="confirmPassword"
+                label="Confirm Password"
+                dependencies={["password"]}
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Please confirm your password!",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(
+                          "The two passwords that you entered do not match!"
+                        )
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password
+                  placeholder="Confirm Password"
+                  size="large"
+                  variant="filled"
+                />
+              </Form.Item>
+
+              <Button
+                block
+                type="default"
+                htmlType="submit"
+                loading={isLoading}
+                className="bg-red-400"
+              >
+                Register
+              </Button>
+            </Form>
+          </motion.div>
         )}
 
-        <p className=" mt-5 w-full text-center text-sm font-normal text-gray-400">
-          Already had an account?
+        <Typography.Text className=" mt-5 w-full text-center text-sm font-normal text-gray-400">
+          Already had an account?{" "}
           <Link
             to={"/login"}
-            className="mt-5 w-full text-center text-sm font-semibold text-gray-500"
+            className="mt-5 w-full text-center text-sm font-semibold decoration-red-400 "
           >
             Login
           </Link>
-        </p>
+        </Typography.Text>
       </motion.div>
 
       <div className="hidden h-screen items-center justify-center lg:flex lg:w-2/3">
@@ -358,7 +366,7 @@ const Register = (): React.ReactElement => {
       </div>
       <AvatarModal
         open={openAvatarModal}
-        onSubmit={handleMutating}
+        onSubmit={handleRegister}
         onClose={() => setOpenAvatarModal(false)}
       />
     </motion.div>

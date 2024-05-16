@@ -1,6 +1,8 @@
-import { AnimatePresence } from "framer-motion";
-import { MdEdit, MdCached } from "react-icons/md";
+import { AnimatePresence, motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { BiImageAdd } from "react-icons/bi";
+import { Button } from "antd";
+import { EditOutlined, SyncOutlined } from "@ant-design/icons";
 import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import { useValidateLoginExpiration, useNavigatePage } from "../hooks";
 import MemberBadge from "../components/Profile/MemberBadge";
@@ -10,15 +12,15 @@ import OrderChart from "../components/Order/OrderChart";
 import SlideDownDisappearWrapper from "../components/Animation/SlideDownDisappearWrapper";
 import { OrderContext } from "../context/OrderContext";
 import { UserDataContext } from "../context/UserDataContext";
-import { LogoTransparent, UserBanner } from "../assets/images";
+import { LogoTransparent } from "../assets/images";
 import {
   convertTimestampToDate,
   determineCurrentBadge,
   determineNextBadge,
-  transformCartResponse,
 } from "../utils";
 import { Order, fetchFavoriteList, fetchOrderList } from "../services";
 import { OrderStatus } from "../constants";
+import { formatVNDPrice } from "../utils/formatVNDPrice";
 
 const NUMBER_OF_RECENT_ORDERS = 5;
 
@@ -83,13 +85,7 @@ const Profile = () => {
         </AnimatePresence>
       ) : (
         <Fragment>
-          <div className="h-40 w-full">
-            <img
-              src={UserBanner}
-              alt="banner"
-              className="h-40 w-full object-cover"
-            />
-          </div>
+          <div className="container-profile-pattern h-40 w-full" />
           <div className="relative -top-10 mx-auto w-[90%] md:-top-5">
             <div className="mb-8 flex flex-col items-center justify-between gap-3 md:flex-row">
               {/* Avatar and Info */}
@@ -116,22 +112,20 @@ const Profile = () => {
                 </div>
               </div>
               {/* Buttons  */}
-              <div className="mt-5 flex gap-5 md:mt-2 md:gap-2">
-                <button
-                  className="flex h-fit items-center justify-center gap-2 rounded-lg border border-black p-1"
+              <div className="mt-5 flex gap-5 sm:flex-col md:mt-2 md:flex-row md:gap-2">
+                <Button
                   onClick={() => redirect("/profile/edit")}
+                  icon={<EditOutlined />}
                 >
-                  <p className="font-bold">Edit Profile</p>
-                  <MdEdit />
-                </button>
+                  Edit Profile
+                </Button>
 
-                <button
-                  className="flex h-fit items-center justify-center gap-2 rounded-lg border border-black p-1"
+                <Button
                   onClick={() => redirect("/profile/password")}
+                  icon={<SyncOutlined />}
                 >
-                  <p className="font-bold">Change Password</p>
-                  <MdCached />
-                </button>
+                  Change Password
+                </Button>
               </div>
             </div>
 
@@ -224,39 +218,37 @@ const Profile = () => {
                   {/* Recent order list  */}
                   <div className="p- flex max-h-[80%] flex-col gap-3 overflow-x-hidden overflow-y-scroll p-1 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full">
                     {recentOrderList.map((order, index) => (
-                      <div
-                        className="flex h-10 w-full items-center justify-between rounded-xl border-2 p-3 shadow-md"
-                        key={index}
-                      >
-                        <div>
-                          <p className="text-xs font-semibold">
-                            {convertTimestampToDate(
-                              new Date(order.createdAt).getTime()
-                            )}
-                          </p>
-                          <p className="max-w-[50%] truncate font-mono text-[0.5rem] italic text-gray-300">
-                            {order.id}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-center gap-2">
-                          <p className="text-sm font-semibold">
-                            $
-                            {
-                              transformCartResponse(order.orderDetails)
-                                .cartValue
-                            }
-                          </p>
-                          <p
-                            className={`text-xs font-medium italic first-letter:capitalize ${
-                              order.orderStatus === OrderStatus.CANCELED
-                                ? "text-red-300"
-                                : "text-green-300"
-                            }`}
-                          >
-                            {order.orderStatus}
-                          </p>
-                        </div>
-                      </div>
+                      <Link to={`/orders/${order.id}`} key={index}>
+                        <motion.div
+                          whileHover={{ scale: 1.01 }}
+                          className="flex h-10 w-full items-center justify-between rounded-xl border-2 p-3 shadow-md"
+                        >
+                          <div>
+                            <p className="text-xs font-semibold">
+                              {convertTimestampToDate(
+                                new Date(order.createdAt).getTime()
+                              )}
+                            </p>
+                            <p className="max-w-[50%] truncate font-mono text-[0.5rem] italic text-gray-300">
+                              {order.id}
+                            </p>
+                          </div>
+                          <div className="flex items-center justify-center gap-2">
+                            <p className="text-sm font-semibold">
+                              {formatVNDPrice(order.amount)}đ
+                            </p>
+                            <p
+                              className={`text-xs font-medium italic first-letter:capitalize ${
+                                order.orderStatus === OrderStatus.CANCELED
+                                  ? "text-red-300"
+                                  : "text-green-300"
+                              }`}
+                            >
+                              {order.orderStatus}
+                            </p>
+                          </div>
+                        </motion.div>
+                      </Link>
                     ))}
                   </div>
                 </div>

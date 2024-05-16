@@ -1,12 +1,12 @@
 import { times } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigatePage } from "../hooks";
-import SmallButton from "../components/shared/SmallButton";
 import AddressCard from "../components/Address/AddressCard";
 import { AddressType, getAddresses } from "../services";
 import EmptyLego from "../components/shared/EmptyLego";
-import { Button } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Avatar, Button, List, Typography } from "antd";
+import { EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import { LegoHead } from "../assets/images";
 
 const NUMBER_OF_SKELETONS = 5;
 
@@ -36,13 +36,35 @@ const Address = () => {
         <AddressCard key={index} details={{}} />
       ));
 
-    return addresses.map((address) => (
-      <AddressCard
-        details={address}
-        key={address.id}
-        onClick={() => redirect(`/address/${address.id}`)}
-      />
-    ));
+    return (
+      <List
+        style={{ width: "100%" }}
+        itemLayout="vertical"
+        pagination={{ pageSize: 10 }}
+        size="large"
+        dataSource={addresses}
+        renderItem={(item) => (
+          <List.Item
+            extra={[
+              <Button
+                icon={<EyeOutlined />}
+                type="text"
+                onClick={() => redirect(`/address/${item.id}`)}
+              >
+                View
+              </Button>,
+            ]}
+          >
+            <List.Item.Meta
+              title={item.name}
+              avatar={<Avatar src={LegoHead} />}
+              description={`${item.email} | ${item.phoneNumber}`}
+            />
+            {item.address}
+          </List.Item>
+        )}
+      ></List>
+    );
   }, [isLoading, addresses]);
 
   return (

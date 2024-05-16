@@ -24,6 +24,8 @@ import Santa from "./santa_gift.png";
 import Announcement from "./announcement.png";
 import Robin from "./robin.png";
 import Waiter from "./waiter.png";
+import LegoHead from "./LegoHead.png";
+import BackgroundPayment from "./background-payment.jpg";
 
 import Loading from "./loading.gif";
 
@@ -99,6 +101,8 @@ export {
   Announcement,
   Robin,
   Waiter,
+  LegoHead,
+  BackgroundPayment,
 };
 
 export const themes: CategoryMap = {

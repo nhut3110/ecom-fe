@@ -7,22 +7,17 @@ import { loginFacebook } from "../services";
 import GifLoading from "../components/shared/GifLoading";
 import { updateLocalStorageValue } from "../utils";
 import { facebookConstants } from "../constants";
+import { message } from "antd";
 
 const DELAY_WHILE_LOADING = 2000;
 
 const GetToken = () => {
   const [searchParams] = useSearchParams();
-  const { notify } = useContext(NotificationContext);
   const { redirect } = useNavigatePage();
 
   const { mutate, isLoading } = useMutation(loginFacebook, {
     onSuccess: (response) => {
-      notify({
-        content: `Login successfully`,
-        type: "success",
-        open: true,
-        id: crypto.randomUUID(),
-      });
+      message.success(`Login successfully`);
 
       updateLocalStorageValue({
         key: "tokens",
@@ -31,14 +26,15 @@ const GetToken = () => {
           refreshToken: response?.refreshToken,
         },
       });
+
+      const timer = setTimeout(() => {
+        isLoading ? redirect("/") : redirect("/login");
+      }, DELAY_WHILE_LOADING);
+
+      return () => clearTimeout(timer);
     },
     onError: () => {
-      notify({
-        content: `Wrong credentials`,
-        type: "error",
-        open: true,
-        id: crypto.randomUUID(),
-      });
+      message.error(`Wrong credentials`);
     },
   });
 
@@ -46,14 +42,6 @@ const GetToken = () => {
     const authCode = searchParams.get("code");
     if (authCode) {
       mutate({ code: authCode, callbackUrl: facebookConstants.callbackUrl });
-    }
-
-    if (!isLoading) {
-      const timer = setTimeout(() => {
-        isLoading ? redirect("/") : redirect("/login");
-      }, DELAY_WHILE_LOADING);
-
-      return () => clearTimeout(timer);
     }
   }, []);
 

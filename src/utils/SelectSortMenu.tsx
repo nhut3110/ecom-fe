@@ -56,7 +56,7 @@ export const selectSortMenu = () => {
   const [selectedFilter, setSelectedFilter] = useState({});
   const [isReset, setIsReset] = useState<boolean>(false);
   const [selectedYear, setSelectedYear] = useState<number>();
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([50000, 30000000]);
   const lastChangedIndex = useRef(-1);
   const filterModalVisibility = useBoolean(false);
   const sortModalVisibility = useBoolean(false);
@@ -127,8 +127,8 @@ export const selectSortMenu = () => {
               <Row>
                 <Col span={10}>
                   <InputNumber
-                    min={0}
-                    max={1000}
+                    min={50000}
+                    max={30000000}
                     style={{ width: "100%" }}
                     value={priceRange[0]}
                     onChange={(value) =>
@@ -141,8 +141,8 @@ export const selectSortMenu = () => {
                 </Col>
                 <Col span={10}>
                   <InputNumber
-                    min={0}
-                    max={1000}
+                    min={50001}
+                    max={30000000}
                     style={{ width: "100%" }}
                     value={priceRange[1]}
                     onChange={(value) =>
@@ -153,8 +153,8 @@ export const selectSortMenu = () => {
               </Row>
               <Slider
                 range
-                min={0}
-                max={1000}
+                min={50000}
+                max={30000000}
                 value={priceRange}
                 onChange={(value) => setPriceRange(value)}
                 style={{ marginTop: 16 }}

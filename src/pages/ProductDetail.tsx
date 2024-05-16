@@ -25,8 +25,6 @@ import {
   checkFavorite,
   getProductList,
   fetchDiscussionList,
-  DiscussionListItem,
-  Discussion,
 } from "../services";
 import {
   BlockIcon,
@@ -76,6 +74,7 @@ import {
   getBuildingInstructionBySetNumber,
   getLegoSetData,
   getLegoSetParts,
+  getLocalStorageValue,
   getMinifigs,
 } from "../utils";
 import HtmlContent from "../components/shared/HtmlContent";
@@ -86,6 +85,7 @@ import DiscussionThread from "../components/Product/Discussion";
 import FanMoment from "../components/Product/FanMoment";
 import { fetchCommentList } from "../services/comment.api";
 import { formatVNDPrice } from "../utils/formatVNDPrice";
+import { useValidateLoginExpiration } from "../hooks";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 when click
 
@@ -113,6 +113,11 @@ const ProductDetail = (): React.ReactElement => {
   const [partList, setPartList] = useState<LegoPart[]>([]);
   const [legoFeatureData, setLegoFeatureDate] = useState<any>();
   const [love, setLove] = useState(false);
+
+  const isLogin = useMemo(
+    () => !!Object.keys(getLocalStorageValue({ key: "tokens" })).length,
+    []
+  );
 
   let sliderRef = useRef<CarouselRef>();
 
@@ -569,6 +574,7 @@ const ProductDetail = (): React.ReactElement => {
                     block
                     onClick={handleAddToCart}
                     shape="round"
+                    disabled={!isLogin}
                   >
                     Add to Cart
                   </Button>
@@ -673,6 +679,7 @@ const ProductDetail = (): React.ReactElement => {
                                   <Image
                                     src={minifig?.set_img_url ?? UnknownMinifig}
                                     alt={minifig?.set_name}
+                                    className="aspect-square object-contain"
                                     placeholder={
                                       <Skeleton.Image
                                         active

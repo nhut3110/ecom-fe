@@ -37,9 +37,7 @@ const login = async (loginData: LoginType) => {
 };
 
 const register = async (registerData: RegisterType) => {
-  const { data } = await publicApi.post("/auth/register", registerData);
-
-  return data;
+  return await publicApi.post("/auth/register", registerData);
 };
 
 const editProfile = async (profileData: EditProfileFormType) => {

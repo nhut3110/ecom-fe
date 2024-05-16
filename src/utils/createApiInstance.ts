@@ -9,7 +9,8 @@ type ApiInstanceType = { isPublic?: boolean; baseURL?: string };
 let refreshTokenFn: Promise<void | TokensType> | null = null;
 
 export function createApiInstance({ isPublic, baseURL }: ApiInstanceType) {
-  const BASE_URL_API = "http://localhost:3000/";
+  // const BASE_URL_API = "http://localhost:3000/";
+  const BASE_URL_API = import.meta.env.VITE_SERVER_URL;
   const instance = axios.create({
     baseURL: baseURL ?? BASE_URL_API,
   });
@@ -46,7 +47,7 @@ export function createApiInstance({ isPublic, baseURL }: ApiInstanceType) {
     },
     (error) => {
       if (+error.response.status === 401) {
-        window.location.href = "/login";
+        // window.location.href = "/login";
       }
 
       return Promise.reject(error);

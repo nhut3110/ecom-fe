@@ -6,6 +6,7 @@ import { useNavigatePage } from "../../hooks";
 import { Order } from "../../services";
 import { convertTimestampToDate, transformCartResponse } from "../../utils";
 import { OrderStatus, PaymentOptions } from "../../constants";
+import { formatVNDPrice } from "../../utils/formatVNDPrice";
 
 const OrderCard = ({ order }: { order: Order }): React.ReactElement => {
   const { redirect } = useNavigatePage();
@@ -13,17 +14,6 @@ const OrderCard = ({ order }: { order: Order }): React.ReactElement => {
   const orderDate = useMemo(() => {
     return convertTimestampToDate(new Date(order.createdAt).getTime());
   }, [order.createdAt]);
-
-  const orderValue = transformCartResponse(order.orderDetails).cartValue;
-
-  const determinePaymentType = () => {
-    if (order.paymentType === PaymentOptions.CASH) return order.paymentType;
-
-    const cardType = Payment.fns.cardType(order.payment!.cardNumber);
-    const cardNumber = order.payment?.cardNumber.split(" ")[3]; // 4 number at the end
-
-    return cardType + "-" + cardNumber;
-  };
 
   const isCancel = order.orderStatus === OrderStatus.CANCELED;
 
@@ -62,13 +52,6 @@ const OrderCard = ({ order }: { order: Order }): React.ReactElement => {
         </div>
 
         <div>
-          <p className="text-sm italic text-gray-400">Payment</p>
-          <p className="text-sm first-letter:capitalize">
-            {determinePaymentType()}
-          </p>
-        </div>
-
-        <div>
           <p className="text-sm italic text-gray-400">Email</p>
           <p className="text-sm">{order.address.email}</p>
         </div>
@@ -76,7 +59,7 @@ const OrderCard = ({ order }: { order: Order }): React.ReactElement => {
       <hr className="my-2 h-px border-0 bg-gray-200" />
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Total</p>
-        <p className="text-xl font-bold">${orderValue}</p>
+        <p className="text-xl font-bold">{formatVNDPrice(order.amount)}đ</p>
       </div>
       <hr className="my-2 h-px border-0 bg-gray-200" />
       <p className="text-xs">Shipping address: {order.address.address}</p>

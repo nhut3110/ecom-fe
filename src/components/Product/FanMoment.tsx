@@ -52,9 +52,9 @@ interface FanMomentProps {
   refetch: () => void;
 }
 
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+export type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-const getBase64 = (file: FileType): Promise<string> =>
+export const getBase64 = (file: FileType): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);

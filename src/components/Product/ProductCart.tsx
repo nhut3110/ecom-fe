@@ -1,16 +1,16 @@
-import { motion } from "framer-motion";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import QuantityButton from "../shared/QuantityButton";
-import Modal from "../shared/Modal";
 import { CartContext } from "../../context/CartContext";
 import { NotificationContext } from "../../context/NotificationContext";
-import { TrashIcon } from "../../assets/icons";
 import {
   CartProduct,
   deleteProductFromCart,
   updateQuantity,
 } from "../../services";
 import { formatVNDPrice } from "../../utils/formatVNDPrice";
+import { Button, Flex, Image, List, Modal, Tag } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 unit in cart page
 
@@ -64,7 +64,10 @@ const ProductCart = ({
   }, [quantities, product]);
 
   const [totalPrice] = useMemo(() => {
-    const price = (product.price * quantities).toFixed(2);
+    const price = (
+      (product.price - (product.price * product.discountPercentage) / 100) *
+      quantities
+    ).toFixed(0);
 
     return [price];
   }, [quantities]);
@@ -114,46 +117,60 @@ const ProductCart = ({
   }, [product, quantities]);
 
   return (
-    <div className="flex h-40 w-full gap-10 rounded-xl border border-gray-400 bg-white p-3">
-      <img
-        src={product.image}
-        alt={product.title}
-        className="h-4/5 min-w-[5.6rem] max-w-[6rem] self-center object-contain"
+    <div>
+      <List
+        pagination={false}
+        dataSource={[product]}
+        itemLayout="vertical"
+        renderItem={(item) => (
+          <List.Item
+            extra={
+              <Image src={product.image} alt={product.title} width={100} />
+            }
+            actions={[
+              <QuantityButton
+                quantity={quantities}
+                onIncrement={handleIncrement}
+                onDecrement={handleDecrement}
+                max={
+                  product.availableQuantity < 5 ? product.availableQuantity : 5
+                }
+              />,
+              <Button
+                danger
+                size="small"
+                icon={<DeleteOutlined />}
+                type="text"
+                onClick={() => setShowModal(true)}
+              >
+                Delete
+              </Button>,
+            ]}
+          >
+            <List.Item.Meta
+              title={<Link to={`/products/${item.id}`}>{item.title}</Link>}
+              description={
+                <Flex gap={3} align="center" justify="space-between">
+                  <p>{`${formatVNDPrice(Number(totalPrice))}đ`}</p>
+                  {!!product?.discountPercentage && (
+                    <Tag color="gold">-{product?.discountPercentage}%</Tag>
+                  )}
+                </Flex>
+              }
+            />
+          </List.Item>
+        )}
       />
-
-      <div className="flex w-full justify-between ">
-        <div className="flex flex-col justify-around p-2">
-          <p className="line-clamp-2 max-w-[5.5rem] text-xs font-semibold md:max-w-none md:text-base lg:text-lg">
-            {product.title}
-          </p>
-          <p className="md:text-md text-xs font-semibold">
-            {formatVNDPrice(Number(totalPrice))}đ
-          </p>
-          <QuantityButton
-            quantity={quantities}
-            onIncrement={handleIncrement}
-            onDecrement={handleDecrement}
-          />
-        </div>
-
-        <motion.img
-          variants={trashButtonVariants}
-          whileHover="hover"
-          src={TrashIcon}
-          alt="trash"
-          className="w-3 cursor-pointer self-start rounded-full md:w-5"
-          onClick={() => setShowModal(true)}
-        />
-      </div>
-
       <Modal
+        title="Remove from cart"
         open={showModal}
-        title="Warning"
-        onSubmit={handleRemove}
-        onClose={handleCloseModal}
+        onOk={handleRemove}
+        onCancel={handleCloseModal}
+        width={400}
+        centered
       >
         <p>
-          Do you want to delete <strong>{product.title}</strong> from the cart?
+          Do you want to delete <strong>{product.title}</strong> from your cart?
         </p>
       </Modal>
     </div>

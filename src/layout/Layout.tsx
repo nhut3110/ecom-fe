@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { Layout as AntdLayout } from "antd";
 import Footer from "../components/Layout/Footer";
@@ -7,6 +7,8 @@ import NavBar from "../components/Layout/NavBar";
 import CartButton from "../components/Cart/CartButton";
 import ValidateLoginModal from "../components/shared/ValidateLoginModal";
 import { notDisplayCartButton } from "../constants";
+import { useValidateLoginExpiration } from "../hooks";
+import { getLocalStorageValue } from "../utils";
 
 type ChildrenType = {
   children: React.ReactElement | React.ReactElement[] | undefined;
@@ -19,6 +21,10 @@ const Layout = ({ children }: ChildrenType): ReactElement => {
   const isNotDisplayCartButton = notDisplayCartButton.includes(
     location.pathname
   );
+  const isLogin = useMemo(
+    () => !!Object.keys(getLocalStorageValue({ key: "tokens" })).length,
+    []
+  );
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden">
@@ -29,7 +35,7 @@ const Layout = ({ children }: ChildrenType): ReactElement => {
         <AntdContent>
           {/* children component of layout here */}
           <main className="pt-[68px]">{children}</main>
-          {!isNotDisplayCartButton && <CartButton />}
+          {!isNotDisplayCartButton && isLogin && <CartButton />}
         </AntdContent>
         <Footer />
       </AntdLayout>

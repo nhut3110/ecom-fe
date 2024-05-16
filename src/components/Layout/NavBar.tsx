@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { BiSearch } from "react-icons/bi";
 import React, {
   useCallback,
   useContext,
@@ -13,7 +12,6 @@ import {
   useNavigatePage,
   useValidateLoginExpiration,
 } from "../../hooks";
-import SmallButton from "../shared/SmallButton";
 import { NavSideMenu } from "../Animation/NavSideMenu";
 import HamburgerButton from "../Animation/HamburgerButton";
 import SearchBar from "../shared/SearchBar";
@@ -21,13 +19,15 @@ import { LogoTransparent } from "../../assets/images";
 import { UserDataContext } from "../../context/UserDataContext";
 import { COLORS, navList, userMenu } from "../../constants";
 import { getProductList } from "../../services/products.api";
-import { LogoutOutlined, SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Menu } from "antd";
-import Icon from "@ant-design/icons/lib/components/Icon";
+import {
+  LoginOutlined,
+  LogoutOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { Avatar, Button, Menu, MenuProps, Tooltip } from "antd";
 
 const NavBar = (): React.ReactElement => {
   const [openUserBox, setOpenUserBox] = useState<boolean>(false);
-  const [sticky, setSticky] = useState<boolean>(false);
   const [openMobileNav, setOpenMobileNav] = useState<boolean>(false);
   const [isSearch, setIsSearch] = useState<boolean>(false);
 
@@ -86,18 +86,6 @@ const NavBar = (): React.ReactElement => {
     closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
   };
 
-  const handleScroll = () => {
-    const navPositions = navRef.current?.getBoundingClientRect().top;
-    if (navPositions !== undefined)
-      navPositions < window.scrollY ? setSticky(true) : setSticky(false);
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  });
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -124,7 +112,10 @@ const NavBar = (): React.ReactElement => {
   const renderUserAvatar = useCallback(() => {
     if (!userDataState)
       return (
-        <div className="aspect-square h-8 rounded-full border bg-gray-300 shadow-lg" />
+        <Avatar
+          alt="user-avatar"
+          className="object-fit aspect-square h-10 w-10 rounded-full border shadow-lg"
+        />
       );
 
     return (
@@ -137,9 +128,25 @@ const NavBar = (): React.ReactElement => {
         />
       </motion.div>
     );
-  }, [userDataState?.picture, openUserBox]);
+  }, [userDataState, openUserBox]);
 
   const renderLoggedInContent = useCallback(() => {
+    const items: MenuProps["items"] = [
+      ...userMenu.map((item) => {
+        return {
+          key: item.url,
+          onClick: () => setOpenUserBox(!openUserBox),
+          label: <Link to={`/${item.url}`}>{item.name}</Link>,
+          icon: item.icon,
+        };
+      }),
+      {
+        key: "logout",
+        label: "Log out",
+        icon: <LogoutOutlined />,
+        onClick: handleLogout,
+      },
+    ];
     return (
       <div>
         {!isLoading && (
@@ -154,22 +161,13 @@ const NavBar = (): React.ReactElement => {
               style={{ pointerEvents: openUserBox ? "auto" : "none" }}
             >
               <Menu
-                items={[
-                  ...userMenu.map((item) => {
-                    return {
-                      key: item.name,
-                      onClick: () => setOpenUserBox(!openUserBox),
-                      label: <Link to={`/${item.url}`}>{item.name}</Link>,
-                      icon: item.icon,
-                    };
-                  }),
-                  {
-                    key: "logout",
-                    label: "Log out",
-                    icon: <LogoutOutlined />,
-                    onClick: handleLogout,
-                  },
-                ]}
+                items={items}
+                selectedKeys={
+                  items.map((item) => {
+                    if (window.location.pathname.includes(item?.key as string))
+                      return item!.key as string;
+                  }) as string[]
+                }
               />
             </motion.div>
           </motion.div>
@@ -181,7 +179,17 @@ const NavBar = (): React.ReactElement => {
   const renderContent = useCallback(() => {
     if (isLogin) return renderLoggedInContent();
 
-    return <Button onClick={() => redirect("/login")}>sign in</Button>;
+    return (
+      <Tooltip title="Sign In">
+        <Button
+          type="text"
+          className="border border-white bg-transparent hover:bg-transparent"
+          shape="circle"
+          icon={<LoginOutlined className="text-white" />}
+          onClick={() => redirect("/login")}
+        />
+      </Tooltip>
+    );
   }, [isLogin, openUserBox, isLoading]);
 
   return (
@@ -221,35 +229,39 @@ const NavBar = (): React.ReactElement => {
             </Link>
             {/* Nav items */}
             <div className="z-30 hidden w-full items-center justify-center px-5 md:flex md:min-h-fit md:w-auto md:bg-transparent">
-              <ul className="flex items-center gap-8 bg-transparent md:flex-row md:gap-[4vw]">
-                {navList.map((item: string, index: number) => (
-                  <motion.li
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    key={index}
-                    className="bg-transparent text-xl font-bold text-white no-underline first-letter:capitalize"
-                  >
-                    <Link
-                      className={`hover:text-${COLORS.YELLOW}`}
-                      to={`/${item}`}
+              {isLogin && (
+                <ul className="flex items-center gap-8 bg-transparent md:flex-row md:gap-[4vw]">
+                  {navList.map((item: string, index: number) => (
+                    <motion.li
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      key={index}
+                      className="bg-transparent text-xl font-bold text-white no-underline first-letter:capitalize"
                     >
-                      {item}
-                    </Link>
-                  </motion.li>
-                ))}
-              </ul>
+                      <Link
+                        className={`hover:text-${COLORS.YELLOW}`}
+                        to={`/${item}`}
+                      >
+                        {item}
+                      </Link>
+                    </motion.li>
+                  ))}
+                </ul>
+              )}
             </div>
             {/* Avatar and User Dialog */}
             <div className="flex items-center gap-6">
-              <div
-                className={`hover:border-${COLORS.YELLOW} hover:text-${COLORS.YELLOW} flex h-8 w-8 items-center justify-center rounded-full border border-white`}
-              >
-                <SearchOutlined
-                  size={20}
-                  onClick={() => setIsSearch(!isSearch)}
-                  style={{ color: "white" }}
-                />
-              </div>
+              {isLogin && (
+                <div
+                  className={`hover:border-${COLORS.YELLOW} hover:text-${COLORS.YELLOW} flex h-8 w-8 items-center justify-center rounded-full border border-white`}
+                >
+                  <SearchOutlined
+                    size={20}
+                    onClick={() => setIsSearch(!isSearch)}
+                    style={{ color: "white" }}
+                  />
+                </div>
+              )}
               {renderContent()}
             </div>
           </div>

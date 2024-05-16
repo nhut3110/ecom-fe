@@ -91,7 +91,7 @@ const CartButton = () => {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="fixed bottom-32 z-50 max-h-96 w-full min-w-[25rem] max-w-xl overflow-auto rounded-xl border-2 bg-yellow-100 p-5 shadow-xl scrollbar-hide md:right-10 md:w-auto"
+              className="fixed bottom-32 z-50 max-h-96 w-full min-w-[25rem] max-w-xl overflow-auto rounded-xl border-2 bg-white p-5 shadow-xl scrollbar-hide md:right-10 md:w-auto"
             >
               <CartContent showSummary={false} />
             </motion.div>

@@ -34,6 +34,8 @@ import { Banner1, Banner2, Banner3, Banner4 } from "../assets/images";
 import { Theme } from "../pages/Theme";
 import ThemeDetail from "../pages/ThemeDetail";
 import Discount from "../pages/Discount";
+import GetPayment from "../pages/GetPayment";
+import GetGoogleToken from "../pages/GetGoogleToken";
 
 export type AddressCardType = {
   id?: string;
@@ -141,7 +143,7 @@ export const FAVORITE_PREFIX = "favorite:";
 
 export const enum PaymentOptions {
   CASH = "cash",
-  CARD = "card",
+  VNPAY = "vnpay",
 }
 
 export enum OrderStatus {
@@ -153,7 +155,7 @@ export enum OrderStatus {
   CANCELED = "canceled",
 }
 
-export const paymentOptions = [PaymentOptions.CASH, PaymentOptions.CARD];
+export const paymentOptions = [PaymentOptions.CASH, PaymentOptions.VNPAY];
 
 type RegisterFieldTypes = {
   name: string;
@@ -161,8 +163,8 @@ type RegisterFieldTypes = {
 };
 
 export const defaultLocation = {
-  lat: 16.060957158551425,
-  lng: 108.21611451111367,
+  lat: 48.85837009999999,
+  lng: 2.2944813,
 };
 
 export const OTP_LENGTH = 6;
@@ -373,5 +375,13 @@ export const publicRoutes: Routes[] = [
     path: "/discounts",
     component: Discount,
     layout: Layout,
+  },
+  {
+    path: "/get-payment-data",
+    component: GetPayment,
+  },
+  {
+    path: "/google",
+    component: GetGoogleToken,
   },
 ];

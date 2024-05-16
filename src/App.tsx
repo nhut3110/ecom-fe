@@ -5,6 +5,7 @@ import NotificationWrapper from "./components/shared/NotificationWrapper";
 import ScrollToTopWrapper from "./components/shared/ScrollToTopWrapper";
 import QueryWrapper from "./components/shared/QueryWrapper";
 import { publicRoutes } from "./constants";
+import "./App.css";
 
 function App() {
   return (

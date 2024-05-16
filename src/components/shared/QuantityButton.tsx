@@ -28,7 +28,6 @@ const QuantityButton = ({
         ...props.style,
         maxWidth: "170px",
         textAlign: "center",
-        margin: "10px 0px",
       }}
       controls={false}
       addonBefore={

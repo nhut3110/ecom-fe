@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "./api";
 import { AddOrderType, Order } from "./types.api";
-import { OrderStatus } from "../constants";
+import { OrderStatus, PaymentOptions } from "../constants";
 
 const addOrder = async (data: AddOrderType) => {
-  return await authApi.post("/orders", data);
+  return await authApi.post<Order>("/orders", data);
 };
 
 const getOrders = async () => {
@@ -19,12 +19,32 @@ const getOrder = async (id: String) => {
   return data as Order;
 };
 
+const verifyIpn = async (params: any) => {
+  return await authApi.get("verify-ipn", { params });
+};
+
+const createPaymentUrl = async (orderId: string) => {
+  const { data } = await authApi.post(`/orders/${orderId}/payment-url`);
+
+  return data;
+};
+
 const cancelOrder = async (id: string) => {
   const { data } = await authApi.patch(`/orders/${id}/cancel`, {
     status: OrderStatus.CANCELED,
   });
 
   return data as Order;
+};
+
+const getEstimateAmount = async (
+  discountId?: string
+): Promise<{ estimatedAmount: number }> => {
+  const { data } = await authApi.get("/orders/estimate-amount", {
+    params: { discountId },
+  });
+
+  return data;
 };
 
 const fetchOrderList = () => {
@@ -45,6 +65,22 @@ const fetchSingleOrder = (id: string) => {
   return { order: data, error, isLoading };
 };
 
+const useCreateOrder = () => {
+  const queryClient = useQueryClient();
+  return useMutation(addOrder, {
+    onSuccess: async (data) => {
+      queryClient.invalidateQueries(["orders"]);
+      const { data: orderData } = data;
+      const { paymentType } = orderData;
+      if (paymentType === PaymentOptions.VNPAY) {
+        const paymentData = await createPaymentUrl(orderData.id);
+        const { paymentUrl } = paymentData;
+        if (paymentUrl) window.location.href = paymentUrl;
+      }
+    },
+  });
+};
+
 export {
   addOrder,
   getOrders,
@@ -52,4 +88,7 @@ export {
   getOrder,
   fetchSingleOrder,
   cancelOrder,
+  getEstimateAmount,
+  useCreateOrder,
+  verifyIpn,
 };

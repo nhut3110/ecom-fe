@@ -73,7 +73,7 @@ export const validationInformationSchema = yup
     email: yup.string().required("Email is required").email("Invalid email"),
   });
 
-export const validationAddressSchema = yup.object<Shape<AddressType>>().shape({
+export const validationAddressSchema = yup.object<Shape<any>>().shape({
   address: yup.string().required("Address is required"),
 });
 

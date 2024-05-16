@@ -22,7 +22,7 @@ import { getProductList } from "../services";
 import ProductCard from "../components/Product/ProductCard";
 
 const { Meta } = Card;
-const PAGE_LIMIT = 6;
+const PAGE_LIMIT = 12;
 
 const Home = (): React.ReactElement => {
   const { redirect } = useNavigatePage();
@@ -246,15 +246,10 @@ const Home = (): React.ReactElement => {
       <div className="mb-10 flex flex-col items-center justify-center">
         <div className="w-4/5">
           <Typography.Title level={2}>Top Deals from Legood®</Typography.Title>
-          <Row align={"middle"} justify={"center"} gutter={[16, 16]}>
+          <Row align={"stretch"} justify={"space-around"} gutter={[16, 16]}>
             {products.map((item, index) => (
-              <Col sm={24} md={12} lg={8} key={index}>
-                <ProductCard
-                  product={item}
-                  isFavorite={false}
-                  hideFavorite
-                  hideHoverAnimation
-                />
+              <Col sm={24} md={12} lg={8} xl={6} key={index}>
+                <ProductCard product={item} isFavorite={false} hideFavorite />
               </Col>
             ))}
           </Row>
