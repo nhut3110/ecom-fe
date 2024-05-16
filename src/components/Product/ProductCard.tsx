@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import HeartButton from "./HeartButton";
 import RatingStar from "../shared/RatingStar";
-import SmallButton from "../shared/SmallButton";
 import { FlyingImageWrapper } from "../shared/FlyingImage";
 import GifLoading from "../shared/GifLoading";
 import { FavoriteContext } from "../../context/FavoriteContext";
@@ -22,9 +21,8 @@ import {
 } from "../../constants";
 import { addFavorite, removeFavorite } from "../../services/products.api";
 import { addToCart } from "../../services";
-import { Button, Tag, Typography } from "antd";
+import { Button, Tag } from "antd";
 import { formatVNDPrice } from "../../utils/formatVNDPrice";
-import { useValidateLoginExpiration } from "../../hooks";
 import { getLocalStorageValue } from "../../utils";
 
 const DEFAULT_QUANTITY = 1; // default value when user clicks on add to cart

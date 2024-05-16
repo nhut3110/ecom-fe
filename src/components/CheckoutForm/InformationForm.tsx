@@ -24,7 +24,6 @@ const InformationForm = (): React.ReactElement => {
     defaultValues: {
       name: formData.name,
       email: formData.email,
-      phone: formData.phone,
     },
     resolver: yupResolver(validationInformationSchema),
   });

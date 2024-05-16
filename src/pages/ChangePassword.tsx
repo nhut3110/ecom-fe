@@ -57,7 +57,7 @@ const ChangePassword = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ChangePasswordFormType>({
+  } = useForm<any>({
     resolver: yupResolver(validationChangePasswordSchema),
   });
 

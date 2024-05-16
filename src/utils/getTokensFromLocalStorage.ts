@@ -1,5 +1,5 @@
 import { TokensType } from "../services";
-import { getLocalStorageValue } from "./localStorage";
+import { getLocalStorageValue } from "./localStorageUtils";
 
 export const getTokensFromLocalStorage = (): TokensType | null => {
   const user = getLocalStorageValue({ key: "tokens" });

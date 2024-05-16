@@ -24,7 +24,6 @@ const PaymentForm = (): React.ReactElement => {
   } = useForm<PaymentType>({
     resolver: yupResolver(validationPaymentSchema),
     defaultValues: {
-      owner: formData.owner,
       cvc: formData.cvc,
       cardNumber: formData.cardNumber,
     },

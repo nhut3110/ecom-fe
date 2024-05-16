@@ -1,6 +1,6 @@
 import { getNewTokens } from "../services";
 import { getTokensFromLocalStorage } from "./getTokensFromLocalStorage";
-import { updateLocalStorageValue } from "./localStorage";
+import { updateLocalStorageValue } from "./localStorageUtils";
 
 export const refreshToken = async () => {
   const user = getTokensFromLocalStorage();

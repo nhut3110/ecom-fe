@@ -31,7 +31,7 @@ const Notification = ({
     determineNotificationType(type)
   );
   const { dismiss } = useContext(NotificationContext);
-  const [timerId, setTimerId] = useState<NodeJS.Timeout>();
+  const [timerId, setTimerId] = useState<any>();
 
   const handleHoverStart = () => {
     clearTimeout(timerId);

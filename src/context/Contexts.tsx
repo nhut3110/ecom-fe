@@ -31,7 +31,7 @@ const Contexts = ({ children }: ChildrenType): React.ReactElement => {
   const [list, setList] = useState<ProductDetails[]>(
     !favoriteList ? [] : favoriteList
   );
-  const [orders, setOrders] = useState<OrderType[]>(
+  const [orders, setOrders] = useState<any[]>(
     !!Object.keys(orderList).length ? orderList : []
   );
   const [tokens, setTokens] = useState<TokensType>(

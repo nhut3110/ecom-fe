@@ -9,7 +9,7 @@ export * from "./deleteEmptyKeys";
 export * from "./determineBadge";
 export * from "./formatDate";
 export * from "./getTokensFromLocalStorage";
-export * from "./localStorage";
+export * from "./localStorageUtils";
 export * from "./refreshToken";
 export * from "./determineSortDirections";
 export * from "./paymentFn";
