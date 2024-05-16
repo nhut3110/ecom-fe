@@ -142,7 +142,7 @@ const Login = (): React.ReactElement => {
           </motion.div>
           <motion.div variants={buttonVariants}>
             {/* <Link to={"http://localhost:3000/auth/google"}> */}
-            <Link to={`${import.meta.env.VITE_SERVER_URL}/auth/google`}>
+            <Link to={`${import.meta.env.VITE_SERVER_URL}auth/google`}>
               <Button
                 type="text"
                 shape="circle"
