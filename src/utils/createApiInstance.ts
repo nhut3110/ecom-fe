@@ -17,6 +17,8 @@ export function createApiInstance({ isPublic, baseURL }: ApiInstanceType) {
 
   instance.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
+      config.headers["Access-Control-Allow-Origin"] = "*";
+      config.headers["ngrok-skip-browser-warning"] = true;
       if (isPublic) return config;
 
       if (checkIsTokenExpired(getTokensFromLocalStorage()?.accessToken)) {
@@ -30,8 +32,6 @@ export function createApiInstance({ isPublic, baseURL }: ApiInstanceType) {
         config.headers.Authorization = `Bearer ${tokens.accessToken}`;
         return config;
       }
-
-      config.headers["Access-Control-Allow-Origin"] = "*";
 
       return config;
     },
