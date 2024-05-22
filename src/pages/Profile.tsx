@@ -123,6 +123,7 @@ const Profile = () => {
                 <Button
                   onClick={() => redirect("/profile/password")}
                   icon={<SyncOutlined />}
+                  disabled={userDataState.provider === "third_party"}
                 >
                   Change Password
                 </Button>

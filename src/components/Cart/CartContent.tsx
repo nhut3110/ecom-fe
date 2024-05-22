@@ -6,14 +6,13 @@ import React, {
   useState,
 } from "react";
 import { useNavigatePage } from "../../hooks";
-import Modal from "../shared/Modal";
 import CartList from "./CartList";
 import OrderSummary from "../Order/OrderSummary";
 import { CartContext } from "../../context/CartContext";
 import { NotificationContext } from "../../context/NotificationContext";
 import { clearCart, fetchCartList } from "../../services";
 import { transformCartResponse } from "../../utils/transformCartResponse";
-import { Button, Empty, Flex, Typography } from "antd";
+import { Button, Empty, Flex, Modal, Typography } from "antd";
 import { Detective } from "../../assets/images";
 import CountUp from "react-countup";
 
@@ -78,6 +77,8 @@ const CartContent = ({
         open: true,
         type: "error",
       });
+    } finally {
+      handleCloseModal();
     }
   };
 
@@ -96,8 +97,8 @@ const CartContent = ({
       <Modal
         open={showModal}
         title="Warning"
-        onSubmit={handleClearCart}
-        onClose={handleCloseModal}
+        onOk={handleClearCart}
+        onCancel={handleCloseModal}
       >
         <p>Do you want to delete all?</p>
       </Modal>

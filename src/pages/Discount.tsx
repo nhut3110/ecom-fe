@@ -36,7 +36,7 @@ const Discount = () => {
     isLoading: isLoadingDiscounts,
     refetchDiscountList,
   } = fetchDiscountList({
-    params: { userId: userDataState?.id },
+    params: { userId: userDataState?.id, isValid: true },
     enabled: !!userDataState?.id,
   });
 

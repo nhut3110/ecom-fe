@@ -1,4 +1,9 @@
-import { FiClipboard, FiGrid, FiHeart, FiShoppingCart } from "react-icons/fi";
+import {
+  FiClipboard,
+  FiDollarSign,
+  FiGrid,
+  FiShoppingCart,
+} from "react-icons/fi";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import React from "react";
@@ -11,7 +16,7 @@ type NavDataType = {
 const navData: NavDataType[] = [
   { image: <FiGrid />, name: "themes" },
   { image: <FiShoppingCart />, name: "products" },
-  { image: <FiHeart />, name: "favorites" },
+  { image: <FiDollarSign />, name: "discounts" },
   { image: <FiClipboard />, name: "orders" },
 ];
 
@@ -34,7 +39,7 @@ export const NavSideMenu = React.forwardRef<HTMLUListElement>((props, ref) => {
                   background: "gray",
                   transition: { duration: 0.5 },
                 }}
-                className="rounded-full bg-white p-2 shadow-lg"
+                className="rounded-full bg-white p-2 shadow-md"
               >
                 {item.image}
               </motion.div>

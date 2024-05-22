@@ -93,6 +93,7 @@ const Checkout = (): React.ReactElement => {
 
   const handleSubmit = async () => {
     if (!paymentType) return message.error("Please enter a valid payment type");
+    if (orderMutation.isLoading) return message.error("Too many requests");
 
     const formValues = await form.validateFields();
 
@@ -495,6 +496,8 @@ const Checkout = (): React.ReactElement => {
                 type="primary"
                 style={{ margin: "0 10px" }}
                 onClick={() => confirmModal.setTrue()}
+                disabled={orderMutation.isLoading}
+                loading={orderMutation.isLoading}
               >
                 Order
               </Button>

@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import QuantityButton from "../shared/QuantityButton";
 import { CartContext } from "../../context/CartContext";
 import { NotificationContext } from "../../context/NotificationContext";
@@ -11,6 +17,7 @@ import { formatVNDPrice } from "../../utils/formatVNDPrice";
 import { Button, Flex, Image, List, Modal, Tag } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { set } from "lodash";
 
 const DEFAULT_QUANTITY_CHANGE = 1; // Only increase or decrease 1 unit in cart page
 
@@ -72,6 +79,14 @@ const ProductCart = ({
     return [price];
   }, [quantities]);
 
+  useEffect(() => {
+    if (quantities > product.availableQuantity) {
+      updateQuantity(product.id, product.availableQuantity - quantities);
+      calculateCartValue(product.availableQuantity - quantities, product);
+      setQuantities(product.availableQuantity);
+    }
+  }, []);
+
   const handleDecrement = useCallback(async () => {
     try {
       await updateQuantity(product.id, -1); // Only increase or decrease 1 unit in cart page
@@ -132,9 +147,7 @@ const ProductCart = ({
                 quantity={quantities}
                 onIncrement={handleIncrement}
                 onDecrement={handleDecrement}
-                max={
-                  product.availableQuantity < 5 ? product.availableQuantity : 5
-                }
+                max={product.availableQuantity}
               />,
               <Button
                 danger
